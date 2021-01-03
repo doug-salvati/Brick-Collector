@@ -1,0 +1,611 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */; };
+		91ECB80925A25912008C5F72 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80825A25912008C5F72 /* ContentView.swift */; };
+		91ECB80B25A25913008C5F72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91ECB80A25A25913008C5F72 /* Assets.xcassets */; };
+		91ECB80E25A25913008C5F72 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91ECB80D25A25913008C5F72 /* Preview Assets.xcassets */; };
+		91ECB81025A25913008C5F72 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80F25A25913008C5F72 /* Persistence.swift */; };
+		91ECB81325A25913008C5F72 /* Brick_Collector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB81125A25913008C5F72 /* Brick_Collector.xcdatamodeld */; };
+		91ECB81F25A25913008C5F72 /* Brick_CollectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB81E25A25913008C5F72 /* Brick_CollectorTests.swift */; };
+		91ECB82A25A25913008C5F72 /* Brick_CollectorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB82925A25913008C5F72 /* Brick_CollectorUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		91ECB81B25A25913008C5F72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 91ECB7FB25A25912008C5F72 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 91ECB80225A25912008C5F72;
+			remoteInfo = "Brick Collector";
+		};
+		91ECB82625A25913008C5F72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 91ECB7FB25A25912008C5F72 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 91ECB80225A25912008C5F72;
+			remoteInfo = "Brick Collector";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		91ECB80325A25912008C5F72 /* Brick Collector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brick Collector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorApp.swift; sourceTree = "<group>"; };
+		91ECB80825A25912008C5F72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		91ECB80A25A25913008C5F72 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		91ECB80D25A25913008C5F72 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		91ECB80F25A25913008C5F72 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		91ECB81225A25913008C5F72 /* Brick_Collector.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Brick_Collector.xcdatamodel; sourceTree = "<group>"; };
+		91ECB81425A25913008C5F72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		91ECB81525A25913008C5F72 /* Brick_Collector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Brick_Collector.entitlements; sourceTree = "<group>"; };
+		91ECB81A25A25913008C5F72 /* Brick CollectorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Brick CollectorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91ECB81E25A25913008C5F72 /* Brick_CollectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorTests.swift; sourceTree = "<group>"; };
+		91ECB82025A25913008C5F72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		91ECB82525A25913008C5F72 /* Brick CollectorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Brick CollectorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91ECB82925A25913008C5F72 /* Brick_CollectorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorUITests.swift; sourceTree = "<group>"; };
+		91ECB82B25A25913008C5F72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		91ECB80025A25912008C5F72 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB81725A25913008C5F72 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB82225A25913008C5F72 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		91ECB7FA25A25912008C5F72 = {
+			isa = PBXGroup;
+			children = (
+				91ECB80525A25912008C5F72 /* Brick Collector */,
+				91ECB81D25A25913008C5F72 /* Brick CollectorTests */,
+				91ECB82825A25913008C5F72 /* Brick CollectorUITests */,
+				91ECB80425A25912008C5F72 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		91ECB80425A25912008C5F72 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				91ECB80325A25912008C5F72 /* Brick Collector.app */,
+				91ECB81A25A25913008C5F72 /* Brick CollectorTests.xctest */,
+				91ECB82525A25913008C5F72 /* Brick CollectorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		91ECB80525A25912008C5F72 /* Brick Collector */ = {
+			isa = PBXGroup;
+			children = (
+				91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */,
+				91ECB80825A25912008C5F72 /* ContentView.swift */,
+				91ECB80A25A25913008C5F72 /* Assets.xcassets */,
+				91ECB80F25A25913008C5F72 /* Persistence.swift */,
+				91ECB81425A25913008C5F72 /* Info.plist */,
+				91ECB81525A25913008C5F72 /* Brick_Collector.entitlements */,
+				91ECB81125A25913008C5F72 /* Brick_Collector.xcdatamodeld */,
+				91ECB80C25A25913008C5F72 /* Preview Content */,
+			);
+			path = "Brick Collector";
+			sourceTree = "<group>";
+		};
+		91ECB80C25A25913008C5F72 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				91ECB80D25A25913008C5F72 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		91ECB81D25A25913008C5F72 /* Brick CollectorTests */ = {
+			isa = PBXGroup;
+			children = (
+				91ECB81E25A25913008C5F72 /* Brick_CollectorTests.swift */,
+				91ECB82025A25913008C5F72 /* Info.plist */,
+			);
+			path = "Brick CollectorTests";
+			sourceTree = "<group>";
+		};
+		91ECB82825A25913008C5F72 /* Brick CollectorUITests */ = {
+			isa = PBXGroup;
+			children = (
+				91ECB82925A25913008C5F72 /* Brick_CollectorUITests.swift */,
+				91ECB82B25A25913008C5F72 /* Info.plist */,
+			);
+			path = "Brick CollectorUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		91ECB80225A25912008C5F72 /* Brick Collector */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91ECB82E25A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick Collector" */;
+			buildPhases = (
+				91ECB7FF25A25912008C5F72 /* Sources */,
+				91ECB80025A25912008C5F72 /* Frameworks */,
+				91ECB80125A25912008C5F72 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Brick Collector";
+			productName = "Brick Collector";
+			productReference = 91ECB80325A25912008C5F72 /* Brick Collector.app */;
+			productType = "com.apple.product-type.application";
+		};
+		91ECB81925A25913008C5F72 /* Brick CollectorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91ECB83125A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick CollectorTests" */;
+			buildPhases = (
+				91ECB81625A25913008C5F72 /* Sources */,
+				91ECB81725A25913008C5F72 /* Frameworks */,
+				91ECB81825A25913008C5F72 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91ECB81C25A25913008C5F72 /* PBXTargetDependency */,
+			);
+			name = "Brick CollectorTests";
+			productName = "Brick CollectorTests";
+			productReference = 91ECB81A25A25913008C5F72 /* Brick CollectorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		91ECB82425A25913008C5F72 /* Brick CollectorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91ECB83425A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick CollectorUITests" */;
+			buildPhases = (
+				91ECB82125A25913008C5F72 /* Sources */,
+				91ECB82225A25913008C5F72 /* Frameworks */,
+				91ECB82325A25913008C5F72 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91ECB82725A25913008C5F72 /* PBXTargetDependency */,
+			);
+			name = "Brick CollectorUITests";
+			productName = "Brick CollectorUITests";
+			productReference = 91ECB82525A25913008C5F72 /* Brick CollectorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		91ECB7FB25A25912008C5F72 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					91ECB80225A25912008C5F72 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					91ECB81925A25913008C5F72 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = 91ECB80225A25912008C5F72;
+					};
+					91ECB82425A25913008C5F72 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = 91ECB80225A25912008C5F72;
+					};
+				};
+			};
+			buildConfigurationList = 91ECB7FE25A25912008C5F72 /* Build configuration list for PBXProject "Brick Collector" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 91ECB7FA25A25912008C5F72;
+			productRefGroup = 91ECB80425A25912008C5F72 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				91ECB80225A25912008C5F72 /* Brick Collector */,
+				91ECB81925A25913008C5F72 /* Brick CollectorTests */,
+				91ECB82425A25913008C5F72 /* Brick CollectorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		91ECB80125A25912008C5F72 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91ECB80E25A25913008C5F72 /* Preview Assets.xcassets in Resources */,
+				91ECB80B25A25913008C5F72 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB81825A25913008C5F72 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB82325A25913008C5F72 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		91ECB7FF25A25912008C5F72 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91ECB81025A25913008C5F72 /* Persistence.swift in Sources */,
+				91ECB81325A25913008C5F72 /* Brick_Collector.xcdatamodeld in Sources */,
+				91ECB80925A25912008C5F72 /* ContentView.swift in Sources */,
+				91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB81625A25913008C5F72 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91ECB81F25A25913008C5F72 /* Brick_CollectorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ECB82125A25913008C5F72 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91ECB82A25A25913008C5F72 /* Brick_CollectorUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		91ECB81C25A25913008C5F72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 91ECB80225A25912008C5F72 /* Brick Collector */;
+			targetProxy = 91ECB81B25A25913008C5F72 /* PBXContainerItemProxy */;
+		};
+		91ECB82725A25913008C5F72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 91ECB80225A25912008C5F72 /* Brick Collector */;
+			targetProxy = 91ECB82625A25913008C5F72 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		91ECB82C25A25913008C5F72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		91ECB82D25A25913008C5F72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		91ECB82F25A25913008C5F72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Brick Collector/Brick_Collector.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Brick Collector/Preview Content\"";
+				DEVELOPMENT_TEAM = W7SSE97484;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Brick Collector/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-Collector";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		91ECB83025A25913008C5F72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Brick Collector/Brick_Collector.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Brick Collector/Preview Content\"";
+				DEVELOPMENT_TEAM = W7SSE97484;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Brick Collector/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-Collector";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		91ECB83225A25913008C5F72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = W7SSE97484;
+				INFOPLIST_FILE = "Brick CollectorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-CollectorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Brick Collector.app/Contents/MacOS/Brick Collector";
+			};
+			name = Debug;
+		};
+		91ECB83325A25913008C5F72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = W7SSE97484;
+				INFOPLIST_FILE = "Brick CollectorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-CollectorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Brick Collector.app/Contents/MacOS/Brick Collector";
+			};
+			name = Release;
+		};
+		91ECB83525A25913008C5F72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = W7SSE97484;
+				INFOPLIST_FILE = "Brick CollectorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-CollectorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Brick Collector";
+			};
+			name = Debug;
+		};
+		91ECB83625A25913008C5F72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = W7SSE97484;
+				INFOPLIST_FILE = "Brick CollectorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-CollectorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Brick Collector";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		91ECB7FE25A25912008C5F72 /* Build configuration list for PBXProject "Brick Collector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91ECB82C25A25913008C5F72 /* Debug */,
+				91ECB82D25A25913008C5F72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91ECB82E25A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick Collector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91ECB82F25A25913008C5F72 /* Debug */,
+				91ECB83025A25913008C5F72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91ECB83125A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick CollectorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91ECB83225A25913008C5F72 /* Debug */,
+				91ECB83325A25913008C5F72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91ECB83425A25913008C5F72 /* Build configuration list for PBXNativeTarget "Brick CollectorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91ECB83525A25913008C5F72 /* Debug */,
+				91ECB83625A25913008C5F72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		91ECB81125A25913008C5F72 /* Brick_Collector.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				91ECB81225A25913008C5F72 /* Brick_Collector.xcdatamodel */,
+			);
+			currentVersion = 91ECB81225A25913008C5F72 /* Brick_Collector.xcdatamodel */;
+			path = Brick_Collector.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 91ECB7FB25A25912008C5F72 /* Project object */;
+}
