@@ -9,7 +9,6 @@
         <attribute name="loose" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="color" optional="YES" maxCount="1" deletionRule="Nullify"/>
         <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Set" inverseName="parts" inverseEntity="Set"/>
     </entity>
     <entity name="Set" representedClassName="Set" syncable="YES" codeGenerationType="class">
@@ -22,7 +21,7 @@
     </entity>
     <elements>
         <element name="Item" positionX="-177.6046142578125" positionY="-471.1930847167969" width="128" height="44"/>
-        <element name="Part" positionX="-165.6788330078125" positionY="-269.5022277832031" width="128" height="134"/>
+        <element name="Part" positionX="-165.6788330078125" positionY="-269.5022277832031" width="128" height="119"/>
         <element name="Set" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="119"/>
     </elements>
 </model>
