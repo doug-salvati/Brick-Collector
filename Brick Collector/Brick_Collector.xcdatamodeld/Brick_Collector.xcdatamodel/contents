@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Color" representedClassName="Color" syncable="YES" codeGenerationType="class">
-        <attribute name="bricklinkName" optional="YES" attributeType="String"/>
-        <attribute name="hex" attributeType="String" minValueString="6" maxValueString="6" defaultValueString="000000" regularExpressionString="[0-9a-fA-F]+"/>
-        <attribute name="id" attributeType="Integer 64" usesScalarValueType="YES"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="rebrickableName" optional="YES" attributeType="String"/>
-        <relationship name="parts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Part" inverseName="color" inverseEntity="Part"/>
-    </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
@@ -15,9 +7,9 @@
         <attribute name="id" attributeType="String"/>
         <attribute name="img" optional="YES" attributeType="String"/>
         <attribute name="loose" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="color" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Color" inverseName="parts" inverseEntity="Color"/>
+        <relationship name="color" optional="YES" maxCount="1" deletionRule="Nullify"/>
         <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Set" inverseName="parts" inverseEntity="Set"/>
     </entity>
     <entity name="Set" representedClassName="Set" syncable="YES" codeGenerationType="class">
@@ -27,18 +19,10 @@
         <attribute name="partCount" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="parts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Part" inverseName="sets" inverseEntity="Part"/>
-        <relationship name="theme" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Theme" inverseName="sets" inverseEntity="Theme"/>
-    </entity>
-    <entity name="Theme" representedClassName="Theme" syncable="YES" codeGenerationType="class">
-        <attribute name="id" attributeType="Integer 64" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String"/>
-        <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Set" inverseName="theme" inverseEntity="Set"/>
     </entity>
     <elements>
         <element name="Item" positionX="-177.6046142578125" positionY="-471.1930847167969" width="128" height="44"/>
-        <element name="Color" positionX="-12.828857421875" positionY="-422.2713928222656" width="128" height="119"/>
-        <element name="Theme" positionX="174.2822265625" positionY="18.36236572265625" width="128" height="74"/>
         <element name="Part" positionX="-165.6788330078125" positionY="-269.5022277832031" width="128" height="134"/>
-        <element name="Set" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="134"/>
+        <element name="Set" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="119"/>
     </elements>
 </model>
