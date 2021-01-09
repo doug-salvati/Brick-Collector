@@ -10,6 +10,7 @@ import Foundation
 enum RebrickableError: Error {
     case InvalidURL
     case PartRetrievalFailure
+    case ColorRetrievalFailure
     case JSONParseError
 }
 
@@ -24,6 +25,7 @@ class RebrickableManager: ObservableObject {
         "?key=\(key)"
     }
     @Published var searchedPart:RebrickableResult<Element>?
+    @Published var colors:RebrickableResult<[ElementColor]>?
     private static let endpoint = "https://rebrickable.com/api/v3/lego"
     
     init(withAPIKey key: String) {
@@ -44,8 +46,7 @@ class RebrickableManager: ObservableObject {
                 do {
                     let json = try JSONDecoder().decode(Element.self, from: data!)
                     result = RebrickableResult<Element>(result: json)
-                } catch let error {
-                    print(error as Any)
+                } catch {
                     result = RebrickableResult<Element>(error: RebrickableError.JSONParseError)
                 }
             } else {
@@ -53,6 +54,32 @@ class RebrickableManager: ObservableObject {
             }
             DispatchQueue.main.async {
                 self.searchedPart = result
+            }
+        }.resume()
+    }
+    
+    func getColors() {
+        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)")
+        if url == nil {
+            let result = RebrickableResult<[ElementColor]>(error: RebrickableError.InvalidURL)
+            DispatchQueue.main.async {
+                self.colors = result
+            }
+        }
+        URLSession.shared.dataTask(with: url!) { (data, response, error) in
+            var result:RebrickableResult<[ElementColor]>
+            if error == nil && data != nil {
+                do {
+                    let json = try JSONDecoder().decode([ElementColor].self, from: data!)
+                    result = RebrickableResult<[ElementColor]>(result: json)
+                } catch {
+                    result = RebrickableResult<[ElementColor]>(error: RebrickableError.JSONParseError)
+                }
+            } else {
+                result = RebrickableResult<[ElementColor]>(error: RebrickableError.ColorRetrievalFailure)
+            }
+            DispatchQueue.main.async {
+                self.colors = result
             }
         }.resume()
     }
