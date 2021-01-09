@@ -20,7 +20,7 @@ struct AddPartView: View {
                     manager.searchPart(byElementId: input)
                 }) {
                     Text("Search")
-                }
+                }.disabled(input.isEmpty)
             }
             Spacer()
             if manager.searchedPart?.result != nil {
