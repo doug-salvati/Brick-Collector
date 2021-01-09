@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+var manager = RebrickableManager(withAPIKey: "")
+
 @main
 struct Brick_CollectorApp: App {
     let persistenceController = PersistenceController.shared
@@ -15,6 +17,7 @@ struct Brick_CollectorApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(manager)
         }
     }
 }

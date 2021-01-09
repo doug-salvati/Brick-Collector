@@ -13,10 +13,16 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-        }
+        let newPart = Part(context: viewContext)
+        newPart.id = "4106356"
+        newPart.name = "Brick 2x4"
+        newPart.loose = 1
+        newPart.quantity = 1
+        let newPart2 = Part(context: viewContext)
+        newPart2.id = "300323"
+        newPart2.name = "Brick 2x2"
+        newPart2.loose = 2
+        newPart2.quantity = 2
         do {
             try viewContext.save()
         } catch {
