@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum RebrickableError: Error {
     case InvalidURL
@@ -20,17 +21,14 @@ struct RebrickableResult<T> {
 }
 
 class RebrickableManager: ObservableObject {
-    private var key:String
+    @AppStorage("apiKey")
+    private var key:String = ""
     private var queryParams:String {
         "?key=\(key)"
     }
     @Published var searchedPart:RebrickableResult<Element>?
     @Published var colors:RebrickableResult<[ElementColor]>?
     private static let endpoint = "https://rebrickable.com/api/v3/lego"
-    
-    init(withAPIKey key: String) {
-        self.key = key
-    }
     
     func searchPart(byElementId element:String) {
         let url = URL(string: "\(RebrickableManager.endpoint)/elements/\(element)/\(queryParams)")
@@ -86,10 +84,6 @@ class RebrickableManager: ObservableObject {
 }
 
 class RebrickableManagerPreview: RebrickableManager {
-    init() {
-        super.init(withAPIKey: "preview")
-    }
-    
     override func searchPart(byElementId element: String) {
         var result:RebrickableResult<Element>
         print(element)

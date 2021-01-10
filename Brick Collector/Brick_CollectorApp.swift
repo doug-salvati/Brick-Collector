@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-var manager = RebrickableManager(withAPIKey: "")
+var manager = RebrickableManager()
 
 @main
 struct Brick_CollectorApp: App {
@@ -19,5 +19,10 @@ struct Brick_CollectorApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(manager)
         }
+        #if os(macOS)
+        Settings {
+            Preferences()
+        }
+        #endif
     }
 }
