@@ -12,7 +12,9 @@ struct Preferences: View {
     private var apiKey:String = ""
     
     @AppStorage("colorSet")
-    private var colorSet:ColorSet = .official
+    private var colorSet:ColorSet = .bricklink
+    
+    @EnvironmentObject private var manager: RebrickableManager
     
     var body: some View {
         VStack {
@@ -26,12 +28,19 @@ struct Preferences: View {
                 SecureField("", text: $apiKey)
             }.padding()
             Form {
-                Picker("Color Names:", selection: $colorSet) {
-                    ForEach(ColorSet.allCases) {
-                        set in
-                        Text(set.rawValue)
+                HStack {
+                    Picker("Color Names:", selection: $colorSet) {
+                        ForEach(ColorSet.allCases) {
+                            set in
+                            Text(set.rawValue)
+                        }
+                    }.frame(width:200)
+                    Button(action: {
+                        ColorManager.updateColors(using: manager)
+                    }) {
+                        Text("Update Colors")
                     }
-                }.frame(width:200)
+                }
             }
             .navigationTitle("Preferences")
         }
@@ -42,6 +51,7 @@ struct Preferences: View {
 
 struct Preferences_Previews: PreviewProvider {
     static var previews: some View {
-        Preferences()
+        let manager = RebrickableManagerPreview()
+        Preferences().environmentObject(manager as RebrickableManager)
     }
 }

@@ -18,10 +18,14 @@ struct Brick_CollectorApp: App {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(manager)
+                .onAppear(perform: {
+                    // TODO: only update once a week
+                    ColorManager.updateColors(using: manager)
+                })
         }
         #if os(macOS)
         Settings {
-            Preferences()
+            Preferences().environmentObject(manager)
         }
         #endif
     }

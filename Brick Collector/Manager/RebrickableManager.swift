@@ -20,6 +20,19 @@ struct RebrickableResult<T> {
     var error:RebrickableError?
 }
 
+struct ArrayResults<T:Decodable>: Decodable {
+    var results:[T]
+    
+    enum CodingKeys: String, CodingKey {
+        case results
+    }
+    
+    init(from decoder:Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        results = try container.decode([T].self, forKey: .results)
+    }
+}
+
 class RebrickableManager: ObservableObject {
     @AppStorage("apiKey")
     private var key:String = ""
@@ -56,8 +69,8 @@ class RebrickableManager: ObservableObject {
         }.resume()
     }
     
-    func getColors() {
-        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)")
+    func getColors(callback: @escaping (RebrickableResult<[ElementColor]>) -> Void) {
+        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=200")
         if url == nil {
             let result = RebrickableResult<[ElementColor]>(error: RebrickableError.InvalidURL)
             DispatchQueue.main.async {
@@ -68,8 +81,8 @@ class RebrickableManager: ObservableObject {
             var result:RebrickableResult<[ElementColor]>
             if error == nil && data != nil {
                 do {
-                    let json = try JSONDecoder().decode([ElementColor].self, from: data!)
-                    result = RebrickableResult<[ElementColor]>(result: json)
+                    let json = try JSONDecoder().decode(ArrayResults<ElementColor>.self, from: data!)
+                    result = RebrickableResult<[ElementColor]>(result: json.results)
                 } catch {
                     result = RebrickableResult<[ElementColor]>(error: RebrickableError.JSONParseError)
                 }
@@ -78,6 +91,7 @@ class RebrickableManager: ObservableObject {
             }
             DispatchQueue.main.async {
                 self.colors = result
+                callback(result)
             }
         }.resume()
     }
@@ -86,13 +100,17 @@ class RebrickableManager: ObservableObject {
 class RebrickableManagerPreview: RebrickableManager {
     override func searchPart(byElementId element: String) {
         var result:RebrickableResult<Element>
-        print(element)
         if (element.isEmpty) {
             result = RebrickableResult<Element>(error: RebrickableError.PartRetrievalFailure)
         } else {
-            let sample = Element(id: element, img: "foo.png", name: "Preview Element");
+            let sample = Element(id: element, img: "foo.png", name: "Preview Element", colorId: 0);
             result = RebrickableResult<Element>(result: sample)
         }
         self.searchedPart = result
+    }
+    override func getColors(callback: @escaping (RebrickableResult<[ElementColor]>) -> Void) {
+        let result = RebrickableResult<[ElementColor]>(result: [])
+        self.colors = result
+        callback(result)
     }
 }

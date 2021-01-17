@@ -18,11 +18,17 @@ struct PersistenceController {
         newPart.name = "Brick 2x4"
         newPart.loose = 1
         newPart.quantity = 1
+        newPart.colorId = 1
         let newPart2 = Part(context: viewContext)
         newPart2.id = "300323"
         newPart2.name = "Brick 2x2"
         newPart2.loose = 2
         newPart2.quantity = 2
+        newPart2.colorId = 1
+        let newColor = PartColor(context: viewContext)
+        newColor.id = 1
+        newColor.name = "Test Color"
+        newColor.hex = "000000"
         do {
             try viewContext.save()
         } catch {

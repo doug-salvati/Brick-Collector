@@ -22,7 +22,10 @@ struct ContentView: View {
         VStack {
             List {
                 ForEach(parts) { part in
-                    Text("\(part.quantity)x \(part.name!)")
+                    HStack {
+                        Text("\(part.quantity)x \(part.id!) \(part.name!)")
+                        ColorNameView(colorId: Int(part.colorId))
+                    }
                 }
                 .onDelete(perform: deleteParts)
             }

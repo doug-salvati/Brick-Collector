@@ -10,6 +10,7 @@ import SwiftUI
 struct AddPartView: View {
     @Binding var isPresented: Bool
     @EnvironmentObject private var manager: RebrickableManager
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
     
     var body: some View {
@@ -36,10 +37,23 @@ struct AddPartView: View {
                     Text("Cancel")
                 }
                 Spacer()
-                Button(action:{}) {
+                Button(action:{
+                    let element = manager.searchedPart!.result!
+                    let newPart = Part(context: viewContext)
+                    newPart.id = element.id
+                    newPart.name = element.name
+                    newPart.colorId = Int64(element.colorId)
+                    newPart.quantity = 1
+                    newPart.loose = 1
+                    newPart.img = ""
+                    DispatchQueue.main.async {
+                        try! viewContext.save()
+                    }
+                    isPresented = false
+                }) {
                     Text("Add Part")
-                }.disabled(true)
-//                .disabled(manager.searchedPart?.result == nil)
+                }
+                .disabled(manager.searchedPart?.result == nil)
                 .keyboardShortcut(.defaultAction)
             }
         }.padding()
@@ -51,5 +65,6 @@ struct AddPartView_Previews: PreviewProvider {
         let manager = RebrickableManagerPreview()
         AddPartView(isPresented: .constant(true))
             .environmentObject(manager as RebrickableManager)
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

@@ -16,7 +16,7 @@ struct AddPartPreview: View {
 
 struct AddPartPreview_Previews: PreviewProvider {
     static var previews: some View {
-        let element = Element(id: "4106356", img: "foo.png", name: "Brick 2x4")
+        let element = Element(id: "4106356", img: "foo.png", name: "Brick 2x4", colorId: 0)
         return AddPartPreview(element: element)
     }
 }
