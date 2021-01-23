@@ -24,10 +24,12 @@ struct AddPartView: View {
                 }.disabled(input.isEmpty)
             }
             Spacer()
-            if manager.searchedPart?.result != nil {
-                AddPartPreview(element: (manager.searchedPart?.result)!)
+            if manager.searchedPart.loading {
+                ProgressView()
+            } else if manager.searchedPart.result != nil {
+                AddPartPreview(element: (manager.searchedPart.result)!)
             } else {
-                Text(manager.searchedPart?.error?.localizedDescription ?? "Enter Search")
+                Text(manager.searchedPart.error?.localizedDescription ?? "Enter Search")
             }
             Spacer()
             HStack {
@@ -38,7 +40,7 @@ struct AddPartView: View {
                 }
                 Spacer()
                 Button(action:{
-                    let element = manager.searchedPart!.result!
+                    let element = manager.searchedPart.result!
                     let newPart = Part(context: viewContext)
                     newPart.id = element.id
                     newPart.name = element.name
@@ -53,7 +55,7 @@ struct AddPartView: View {
                 }) {
                     Text("Add Part")
                 }
-                .disabled(manager.searchedPart?.result == nil)
+                .disabled(manager.searchedPart.result == nil)
                 .keyboardShortcut(.defaultAction)
             }
         }.padding()

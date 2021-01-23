@@ -18,6 +18,7 @@ enum RebrickableError: Error {
 struct RebrickableResult<T> {
     var result:T?
     var error:RebrickableError?
+    var loading:Bool = false
 }
 
 struct ArrayResults<T:Decodable>: Decodable {
@@ -39,8 +40,8 @@ class RebrickableManager: ObservableObject {
     private var queryParams:String {
         "?key=\(key)"
     }
-    @Published var searchedPart:RebrickableResult<Element>?
-    @Published var colors:RebrickableResult<[ElementColor]>?
+    @Published var searchedPart:RebrickableResult<Element> = RebrickableResult<Element>()
+    @Published var colors:RebrickableResult<[ElementColor]> = RebrickableResult<[ElementColor]>()
     private static let endpoint = "https://rebrickable.com/api/v3/lego"
     
     func searchPart(byElementId element:String) {
@@ -50,6 +51,9 @@ class RebrickableManager: ObservableObject {
             DispatchQueue.main.async {
                 self.searchedPart = result
             }
+        }
+        DispatchQueue.main.async {
+            self.searchedPart.loading = true
         }
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
             var result:RebrickableResult<Element>
@@ -76,6 +80,9 @@ class RebrickableManager: ObservableObject {
             DispatchQueue.main.async {
                 self.colors = result
             }
+        }
+        DispatchQueue.main.async {
+            self.colors.loading = true
         }
         URLSession.shared.dataTask(with: url!) { (data, response, error) in
             var result:RebrickableResult<[ElementColor]>
