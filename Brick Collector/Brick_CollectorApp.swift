@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-var manager = RebrickableManager()
+var rebrickableManager = RebrickableManager()
+var appManager = AppManager(using: rebrickableManager)
 
 @main
 struct Brick_CollectorApp: App {
@@ -17,15 +18,15 @@ struct Brick_CollectorApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(manager)
+                .environmentObject(rebrickableManager)
+                .environmentObject(appManager)
                 .onAppear(perform: {
-                    // TODO: only update once a week
-                    ColorManager.updateColors(using: manager)
+                    // TODO: update colors once a week
                 })
         }
         #if os(macOS)
         Settings {
-            Preferences().environmentObject(manager)
+            Preferences().environmentObject(appManager)
         }
         #endif
     }

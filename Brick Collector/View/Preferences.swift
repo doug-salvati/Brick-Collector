@@ -14,9 +14,10 @@ struct Preferences: View {
     @AppStorage("colorSet")
     private var colorSet:ColorSet = .bricklink
     
-    @EnvironmentObject private var manager: RebrickableManager
+    @EnvironmentObject private var appManager: AppManager
     
     var body: some View {
+        let loadingColors:Bool = appManager.isLoading(type: .UpdateColors)
         VStack {
             VStack {
                 HStack {
@@ -36,9 +37,14 @@ struct Preferences: View {
                         }
                     }.frame(width:200)
                     Button(action: {
-                        ColorManager.updateColors(using: manager)
+                        appManager.updateColors()
                     }) {
                         Text("Update Colors")
+                    }.disabled(loadingColors)
+                    if loadingColors {
+                        ProgressView().scaleEffect(2/3)
+                    } else {
+                        ProgressView().scaleEffect(2/3).hidden()
                     }
                 }
             }

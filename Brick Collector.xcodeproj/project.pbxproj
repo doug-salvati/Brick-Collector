@@ -15,7 +15,7 @@
 		918324CF25A9340C007460D4 /* ElementColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324CE25A9340C007460D4 /* ElementColor.swift */; };
 		918324DC25A94515007460D4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324DB25A94515007460D4 /* Preferences.swift */; };
 		918324E125A9463C007460D4 /* ColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324E025A9463C007460D4 /* ColorSet.swift */; };
-		91C2772025B3CA330032336F /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C2771F25B3CA330032336F /* ColorManager.swift */; };
+		91C2772025B3CA330032336F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C2771F25B3CA330032336F /* AppManager.swift */; };
 		91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */; };
 		91ECB80925A25912008C5F72 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80825A25912008C5F72 /* ContentView.swift */; };
 		91ECB80B25A25913008C5F72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91ECB80A25A25913008C5F72 /* Assets.xcassets */; };
@@ -52,7 +52,7 @@
 		918324CE25A9340C007460D4 /* ElementColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementColor.swift; sourceTree = "<group>"; };
 		918324DB25A94515007460D4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		918324E025A9463C007460D4 /* ColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSet.swift; sourceTree = "<group>"; };
-		91C2771F25B3CA330032336F /* ColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
+		91C2771F25B3CA330032336F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		91ECB80325A25912008C5F72 /* Brick Collector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brick Collector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorApp.swift; sourceTree = "<group>"; };
 		91ECB80825A25912008C5F72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 		91C2772425B3CA3B0032336F /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				91C2771F25B3CA330032336F /* ColorManager.swift */,
+				91C2771F25B3CA330032336F /* AppManager.swift */,
 				9107F53325A3FA6000978EC6 /* RebrickableManager.swift */,
 			);
 			path = Manager;
@@ -325,7 +325,7 @@
 				918324CF25A9340C007460D4 /* ElementColor.swift in Sources */,
 				911A53E125AB9C73002F03E9 /* ColorNameView.swift in Sources */,
 				9107F53925A40BC700978EC6 /* Element.swift in Sources */,
-				91C2772025B3CA330032336F /* ColorManager.swift in Sources */,
+				91C2772025B3CA330032336F /* AppManager.swift in Sources */,
 				918324E125A9463C007460D4 /* ColorSet.swift in Sources */,
 				91ECB80925A25912008C5F72 /* ContentView.swift in Sources */,
 				91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */,

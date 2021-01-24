@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var appManager: AppManager
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Part.id, ascending: true)],
@@ -30,6 +31,11 @@ struct ContentView: View {
                 .onDelete(perform: deleteParts)
             }
             .toolbar {
+                if appManager.isLoading() {
+                    Button(action: {}) {
+                        ProgressView().scaleEffect(2/3)
+                    }
+                }
                 Button(action: {
                     showModal = true
                 }) {
