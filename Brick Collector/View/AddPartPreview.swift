@@ -10,7 +10,10 @@ import SwiftUI
 struct AddPartPreview: View {
     var element:Element
     var body: some View {
-        Text(element.name)
+        VStack {
+            Text(element.name)
+            AsyncImage(url: URL(string: element.img)!)
+        }.padding()
     }
 }
 
