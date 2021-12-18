@@ -7,8 +7,18 @@
 
 import SwiftUI
 
+enum ColorViewType {
+    case Icon
+    case Label
+    case IconAndLabel
+}
+
 struct ColorNameView: View {
+    var type:ColorViewType = .IconAndLabel
     var colorId:Int
+    var color:PartColor? {
+        colors.first(where: {$0.id == colorId})
+    }
     
     @AppStorage("colorSet") private var colorSet:ColorSet = .bricklink
 
@@ -17,8 +27,7 @@ struct ColorNameView: View {
         animation: .default)
     private var colors: FetchedResults<PartColor>
     
-    func colorDisplayName(id:Int) -> String {
-        let color = colors.first(where: {$0.id == id})
+    private func colorDisplayName(id:Int) -> String {
         let defaultName:String = color?.name ?? color?.bricklinkName ?? color?.rebrickableName ?? "Unknown"
         switch(colorSet) {
         case .bricklink:
@@ -31,6 +40,28 @@ struct ColorNameView: View {
     }
     
     var body: some View {
+        Group {
+            switch(type) {
+            case .Icon:
+                icon
+            case .Label:
+                label
+            case .IconAndLabel:
+                HStack {
+                    icon
+                    label
+                }
+            }
+        }
+    }
+    
+    var icon: some View {
+        Circle()
+            .foregroundColor(Color(hex: color?.hex ?? "000000"))
+            .fixedSize()
+            .overlay(Circle().stroke(Color("IconBorder")), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+    }
+    var label: some View {
         Text(colorDisplayName(id: colorId))
     }
 }

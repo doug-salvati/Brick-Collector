@@ -10,17 +10,15 @@ import SwiftUI
 
 extension Color {
     init(hex: String) {
-        var r:Double = 0
-        var g:Double = 0
-        var b:Double = 0
+        var r:UInt64 = 0
+        var g:UInt64 = 0
+        var b:UInt64 = 0
         let scanner = Scanner(string: hex)
         var hexNumber:UInt64 = 0
         if scanner.scanHexInt64(&hexNumber) {
-            r = Double((hexNumber & 0xff0000) >> 16) / 255
-            g = Double((hexNumber & 0xff0000) >> 8) / 255
-            b = Double(hexNumber & 0xff0000) / 255
+            (r, g, b) = (hexNumber >> 16, hexNumber >> 8 & 0xFF, hexNumber & 0xFF)
         }
-        self.init(red: r, green: g, blue: b)
+        self.init(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255)
     }
 }
 

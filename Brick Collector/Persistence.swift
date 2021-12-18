@@ -28,7 +28,7 @@ struct PersistenceController {
         let newColor = PartColor(context: viewContext)
         newColor.id = 1
         newColor.name = "Test Color"
-        newColor.hex = "000000"
+        newColor.hex = "FF0000"
         do {
             try viewContext.save()
         } catch {

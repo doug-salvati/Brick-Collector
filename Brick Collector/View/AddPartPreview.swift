@@ -11,7 +11,10 @@ struct AddPartPreview: View {
     var element:Element
     var body: some View {
         VStack {
-            Text(element.name)
+            HStack {
+                ColorNameView(type: .Icon, colorId: element.colorId)
+                Text(element.name)
+            }
             AsyncImage(url: URL(string: element.img)!)
         }.padding()
     }
