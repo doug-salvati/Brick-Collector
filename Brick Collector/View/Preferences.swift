@@ -58,6 +58,6 @@ struct Preferences: View {
 struct Preferences_Previews: PreviewProvider {
     static var previews: some View {
         let manager = RebrickableManagerPreview()
-        Preferences().environmentObject(manager as RebrickableManager)
+        Preferences().environmentObject(AppManager(using: manager))
     }
 }
