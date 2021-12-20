@@ -10,6 +10,7 @@ import SwiftUI
 
 enum AppOperationType {
     case UpdateColors
+    case UpsertPart
 }
 
 struct AppOperation {
@@ -98,4 +99,37 @@ class AppManager: ObservableObject {
         }
     }
 
+    func upsertPart(element:Element) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpsertPart))
+        let context = PersistenceController.shared.container.viewContext
+        let request: NSFetchRequest<Part> = Part.fetchRequest()
+        request.predicate = NSPredicate(format: "id LIKE %@", element.id);
+        var existingPart:Part? = nil
+        do {
+            existingPart = try context.fetch(request).first
+        } catch let error {
+            self.finish(opId: id, withError: error)
+        }
+        if existingPart != nil {
+            existingPart!.quantity += 1
+            existingPart!.loose += 1
+        } else {
+            let newPart = Part(context: context)
+            newPart.id = element.id
+            newPart.name = element.name
+            newPart.colorId = Int64(element.colorId)
+            newPart.quantity = 1
+            newPart.loose = 1
+            newPart.img = ""
+        }
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+
+    }
 }
