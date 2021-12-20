@@ -8,72 +8,66 @@
 import SwiftUI
 import CoreData
 
-struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject private var appManager: AppManager
+enum AppView {
+    case sets
+    case parts
+}
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Part.id, ascending: true)],
-        animation: .default)
-    private var parts: FetchedResults<Part>
+struct ContentView: View {
+    @EnvironmentObject private var appManager: AppManager
     
     @State private var showModal = false
     @State private var showQueue = false
+    @State private var activeView: AppView = .parts
     
     var body: some View {
         VStack {
-            List {
-                ForEach(parts) { part in
-                    HStack {
-                        Text("\(part.quantity)x \(part.id!) \(part.name!)")
-                        ColorNameView(colorId: Int(part.colorId))
-                    }
+            VStack {
+                switch activeView {
+                    case .parts: PartListView()
+                    case .sets: Text("Sets")
                 }
-                .onDelete(perform: deleteParts)
             }
             .toolbar {
-                let showQueueButton = appManager.isLoading() || appManager.hasError()
-                if showQueueButton {
-                    Button(action: {
-                        showQueue = true
-                    }) {
-                        if appManager.hasError() {
-                            Label("Status", systemImage: "exclamationmark.triangle")
-                        } else {
-                            ProgressView().scaleEffect(2/3).offset(x: 0, y: -4)
+                ToolbarItem(placement: .principal) {
+                    Picker(selection: $activeView, label: Text("View")) {
+                        Text("Parts").tag(AppView.parts)
+                        Text("Sets").tag(AppView.sets)
+                    }.pickerStyle(SegmentedPickerStyle())
+                }
+                ToolbarItem {
+                    Spacer()
+                }
+                ToolbarItem {
+                    let showQueueButton = appManager.isLoading() || appManager.hasError()
+                    if showQueueButton {
+                        Button(action: {
+                            showQueue = true
+                        }) {
+                            if appManager.hasError() {
+                                Label("Status", systemImage: "exclamationmark.triangle")
+                            } else {
+                                ProgressView().scaleEffect(2/3).offset(x: 0, y: -4)
+                            }
+                        }.popover(isPresented: $showQueue,
+                                  attachmentAnchor: .point(.bottom),
+                                  arrowEdge: .bottom) {
+                            AppOperationQueueView()
                         }
-                    }.popover(isPresented: $showQueue,
-                              attachmentAnchor: .point(.bottom),
-                              arrowEdge: .bottom) {
-                        AppOperationQueueView()
                     }
                 }
-                Button(action: {
-                    showModal = true
-                }) {
-                    Label("Add Part", systemImage: "plus")
+                ToolbarItem {
+                    Button(action: {
+                        showModal = true
+                    }) {
+                        Label("Add Part", systemImage: "plus")
+                    }
                 }
             }
-            .accessibilityLabel("Errors")
         }.sheet(isPresented: $showModal) {
             AddPartView(isPresented: $showModal)
                 .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
         }.frame(width: 800, height: 500, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-    }
-
-    private func deleteParts(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { parts[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
     }
 }
 
