@@ -41,13 +41,21 @@ struct AddPartView: View {
                 Spacer()
                 Button(action:{
                     let element = manager.searchedPart.result!
-                    let newPart = Part(context: viewContext)
-                    newPart.id = element.id
-                    newPart.name = element.name
-                    newPart.colorId = Int64(element.colorId)
-                    newPart.quantity = 1
-                    newPart.loose = 1
-                    newPart.img = ""
+                    let request: NSFetchRequest<Part> = Part.fetchRequest()
+                    request.predicate = NSPredicate(format: "id LIKE %@", element.id);
+                    let existingPart = try! viewContext.fetch(request).first
+                    if existingPart != nil {
+                        existingPart!.quantity += 1
+                        existingPart!.loose += 1
+                    } else {
+                        let newPart = Part(context: viewContext)
+                        newPart.id = element.id
+                        newPart.name = element.name
+                        newPart.colorId = Int64(element.colorId)
+                        newPart.quantity = 1
+                        newPart.loose = 1
+                        newPart.img = ""
+                    }
                     DispatchQueue.main.async {
                         try! viewContext.save()
                     }
