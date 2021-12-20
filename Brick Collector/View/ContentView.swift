@@ -18,6 +18,7 @@ struct ContentView: View {
     private var parts: FetchedResults<Part>
     
     @State private var showModal = false
+    @State private var showQueue = false
     
     var body: some View {
         VStack {
@@ -31,9 +32,20 @@ struct ContentView: View {
                 .onDelete(perform: deleteParts)
             }
             .toolbar {
-                if appManager.isLoading() {
-                    Button(action: {}) {
-                        ProgressView().scaleEffect(2/3)
+                let showQueueButton = appManager.isLoading() || appManager.hasError()
+                if showQueueButton {
+                    Button(action: {
+                        showQueue = true
+                    }) {
+                        if appManager.hasError() {
+                            Label("Status", systemImage: "exclamationmark.triangle")
+                        } else {
+                            ProgressView().scaleEffect(2/3).offset(x: 0, y: -4)
+                        }
+                    }.popover(isPresented: $showQueue,
+                              attachmentAnchor: .point(.bottom),
+                              arrowEdge: .bottom) {
+                        AppOperationQueueView()
                     }
                 }
                 Button(action: {
@@ -42,6 +54,7 @@ struct ContentView: View {
                     Label("Add Part", systemImage: "plus")
                 }
             }
+            .accessibilityLabel("Errors")
         }.sheet(isPresented: $showModal) {
             AddPartView(isPresented: $showModal)
                 .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)

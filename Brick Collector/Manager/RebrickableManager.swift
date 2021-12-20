@@ -15,6 +15,22 @@ enum RebrickableError: Error {
     case JSONParseError
 }
 
+extension RebrickableError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .InvalidURL:
+            return NSLocalizedString("Failed to submit request.", comment: "Failed to create URL object")
+        case .PartRetrievalFailure:
+            return NSLocalizedString("Failed to retrieve part. Check API key and try again.", comment: "Failed part API call")
+        case .ColorRetrievalFailure:
+            return NSLocalizedString("Failed to retrieve colors. Check API key and try again.", comment: "Failed color API call")
+        case .JSONParseError:
+            return NSLocalizedString("Failed to receive data.", comment: "Response JSON failed to parse")
+        }
+    }
+}
+
+
 struct RebrickableResult<T> {
     var result:T?
     var error:RebrickableError?

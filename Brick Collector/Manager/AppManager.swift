@@ -18,6 +18,7 @@ struct AppOperation {
     var description:String?
     var done:Bool = false
     var error:Error?
+    var dismissed:Bool = false
 }
 
 class AppManager: ObservableObject {
@@ -40,6 +41,7 @@ class AppManager: ObservableObject {
         var op:AppOperation? = self.queue[opId]
         if op != nil {
             op!.done = true
+            op!.dismissed = true
             DispatchQueue.main.async {
                 self.queue[opId] = op
             }
@@ -57,6 +59,16 @@ class AppManager: ObservableObject {
         }
     }
     
+    func dismiss(opId:UUID) {
+        var op:AppOperation? = self.queue[opId]
+        if op != nil {
+            op!.dismissed = true
+            DispatchQueue.main.async {
+                self.queue[opId] = op
+            }
+        }
+    }
+    
     func isLoading() -> Bool {
         return queue.filter({!$0.value.done}).count > 0
     }
@@ -65,8 +77,12 @@ class AppManager: ObservableObject {
         return queue.filter({!$0.value.done && $0.value.type == type}).count > 0
     }
     
+    func hasError() -> Bool {
+        return queue.filter({!$0.value.dismissed && $0.value.error != nil}).count > 0
+    }
+    
     func updateColors() {
-        let id:UUID = self.queue(op: AppOperation(type: .UpdateColors))
+        let id:UUID = self.queue(op: AppOperation(type: .UpdateColors, description: "Get colors"))
         manager.getColors { response in
             guard response.error == nil else {
                 DispatchQueue.main.async {
@@ -100,7 +116,7 @@ class AppManager: ObservableObject {
     }
 
     func upsertPart(element:Element) {
-        let id:UUID = self.queue(op: AppOperation(type: .UpsertPart))
+        let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
         let context = PersistenceController.shared.container.viewContext
         let request: NSFetchRequest<Part> = Part.fetchRequest()
         request.predicate = NSPredicate(format: "id LIKE %@", element.id);
