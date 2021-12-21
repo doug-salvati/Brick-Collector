@@ -25,7 +25,7 @@ struct ContentView: View {
             VStack {
                 switch activeView {
                     case .parts: PartListView()
-                    case .sets: Text("Sets")
+                    case .sets: SetListView()
                 }
             }
             .toolbar {
