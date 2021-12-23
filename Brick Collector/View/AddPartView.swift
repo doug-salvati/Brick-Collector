@@ -13,6 +13,12 @@ enum AddPartMethod: String {
     case bySet = "bySet"
 }
 
+struct ElementSelection: Identifiable {
+    var value: Element
+    var id: String { value.id }
+    var selected: Bool
+}
+
 let placeholders: [AddPartMethod : String] = [
     .byElement: "Element ID",
     .byMoldAndColor: "Part ID",
@@ -26,6 +32,16 @@ struct AddPartView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
     @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod")!) ?? .byElement
+    @State
+    var selections:[ElementSelection] = []
+
+    func getSelections() -> [Element] {
+        return selections.filter { element in
+            element.selected
+        }.map { element in
+            element.value
+        }
+    }
     
     var body: some View {
         VStack {
@@ -63,29 +79,40 @@ struct AddPartView: View {
             if manager.searchedParts.loading {
                 ProgressView()
             } else if manager.searchedParts.result != nil {
-                PartSelectionView(parts: (manager.searchedParts.result)!)
+                PartSelectionView(parts: (manager.searchedParts.result)!, selections: $selections)
             } else {
                 Text(manager.searchedParts.error?.localizedDescription ?? "Enter Search")
             }
             Spacer()
             HStack {
                 Button(action:{
+                    manager.resetParts()
                     isPresented = false
                 }) {
                     Text("Cancel")
                 }
                 Spacer()
                 Button(action:{
-                    let elements = manager.searchedParts.result!
-                    appManager.upsertParts(elements: elements)
+                    appManager.upsertParts(elements: getSelections())
+                    manager.resetParts()
                     isPresented = false
                 }) {
-                    Text("Add Part")
+                    let partCount = getSelections().count
+                    switch partCount {
+                    case 0, 1:
+                        Text("Add Part")
+                    default:
+                        Text("Add \(partCount) Parts")
+                    }
                 }
-                .disabled(manager.searchedParts.result == nil)
+                .disabled(manager.searchedParts.result == nil || getSelections().count < 1)
                 .keyboardShortcut(.defaultAction)
             }
-        }.padding()
+        }.padding().onReceive(manager.$searchedParts) { newParts in
+            self.selections = (newParts.result ?? []).map { part in
+                    return ElementSelection(value: part, selected: true)
+                }
+        }
     }
 }
 

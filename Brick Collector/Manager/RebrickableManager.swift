@@ -103,6 +103,10 @@ class RebrickableManager: ObservableObject {
         self.searchedParts = result
     }
     
+    func resetParts() {
+        self.searchedParts = RebrickableResult<[Element]>()
+    }
+    
     func getColors(callback: @escaping (RebrickableResult<[ElementColor]>) -> Void) async {
         let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=200")
         if url == nil {
