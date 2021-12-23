@@ -81,9 +81,9 @@ class AppManager: ObservableObject {
         return queue.filter({!$0.value.dismissed && $0.value.error != nil}).count > 0
     }
     
-    func updateColors() {
+    func updateColors() async {
         let id:UUID = self.queue(op: AppOperation(type: .UpdateColors, description: "Get colors"))
-        manager.getColors { response in
+        await manager.getColors { response in
             guard response.error == nil else {
                 DispatchQueue.main.async {
                     self.finish(opId: id, withError: response.error!)
@@ -115,29 +115,32 @@ class AppManager: ObservableObject {
         }
     }
 
-    func upsertPart(element:Element) {
+    func upsertParts(elements:[Element]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
         let context = PersistenceController.shared.container.viewContext
-        let request: NSFetchRequest<Part> = Part.fetchRequest()
-        request.predicate = NSPredicate(format: "id LIKE %@", element.id);
-        var existingPart:Part? = nil
-        do {
-            existingPart = try context.fetch(request).first
-        } catch let error {
-            self.finish(opId: id, withError: error)
+        elements.forEach { element in
+            let request: NSFetchRequest<Part> = Part.fetchRequest()
+            request.predicate = NSPredicate(format: "id LIKE %@", element.id);
+            var existingPart:Part? = nil
+            do {
+                existingPart = try context.fetch(request).first
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+            if existingPart != nil {
+                existingPart!.quantity += 1
+                existingPart!.loose += 1
+            } else {
+                let newPart = Part(context: context)
+                newPart.id = element.id
+                newPart.name = element.name
+                newPart.colorId = Int64(element.colorId)
+                newPart.quantity = 1
+                newPart.loose = 1
+                newPart.img = ""
+            }
         }
-        if existingPart != nil {
-            existingPart!.quantity += 1
-            existingPart!.loose += 1
-        } else {
-            let newPart = Part(context: context)
-            newPart.id = element.id
-            newPart.name = element.name
-            newPart.colorId = Int64(element.colorId)
-            newPart.quantity = 1
-            newPart.loose = 1
-            newPart.img = ""
-        }
+
         DispatchQueue.main.async {
             do {
                 try context.save()

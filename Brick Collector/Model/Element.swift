@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Element: Decodable {
+struct Element: Decodable, Identifiable {
     var id:String
     var img:String
     var name:String

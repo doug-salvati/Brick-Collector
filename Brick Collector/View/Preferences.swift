@@ -14,6 +14,9 @@ struct Preferences: View {
     @AppStorage("colorSet")
     private var colorSet:ColorSet = .bricklink
     
+    @AppStorage("defaultAddPartMethod")
+    private var defaultAddPartMethod:AddPartMethod = .byElement
+    
     @EnvironmentObject private var appManager: AppManager
     
     var body: some View {
@@ -37,7 +40,9 @@ struct Preferences: View {
                         }
                     }.frame(width:200)
                     Button(action: {
-                        appManager.updateColors()
+                        Task {
+                            await appManager.updateColors()
+                        }
                     }) {
                         Text("Update Colors")
                     }.disabled(loadingColors)
@@ -46,6 +51,12 @@ struct Preferences: View {
                     } else {
                         ProgressView().scaleEffect(2/3).hidden()
                     }
+                }
+                HStack {
+                    Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
+                        Text("by Element ID").tag(AddPartMethod.byElement)
+                        Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
+                    }.frame(width:250)
                 }
             }
             .navigationTitle("Preferences")

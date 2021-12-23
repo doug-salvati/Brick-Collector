@@ -7,30 +7,65 @@
 
 import SwiftUI
 
+enum AddPartMethod: String {
+    case byElement = "byElement"
+    case byMoldAndColor = "byMoldAndColor"
+    case bySet = "bySet"
+}
+
+let placeholders: [AddPartMethod : String] = [
+    .byElement: "Element ID",
+    .byMoldAndColor: "Part ID",
+    .bySet: "Set ID"
+]
+
 struct AddPartView: View {
     @Binding var isPresented: Bool
     @EnvironmentObject private var manager: RebrickableManager
     @EnvironmentObject private var appManager: AppManager
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
+    @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod")!) ?? .byElement
     
     var body: some View {
         VStack {
+            VStack {
+                HStack {
+                    Text("Add Part")
+                        .font(.largeTitle)
+                    Spacer()
+                }
+                Picker(selection: $method, label: Text("by:")) {
+                    Text("Element ID").tag(AddPartMethod.byElement)
+                    Text("Part ID").tag(AddPartMethod.byMoldAndColor)
+//                    Text("Set").tag(AddPartMethod.bySet)
+                }.pickerStyle(SegmentedPickerStyle())
+            }.padding(.bottom)
+            
             HStack {
-                TextField("Element ID", text: $input)
+                TextField(placeholders[method]!, text: $input)
                 Button(action: {
-                    manager.searchPart(byElementId: input)
+                    Task {
+                        switch method {
+                        case .byElement:
+                            await manager.searchParts(byElementId: input)
+                        case .byMoldAndColor:
+                            await manager.searchParts(byPartId: input)
+                        case .bySet:
+                            print("TODO")
+                        }
+                    }
                 }) {
                     Text("Search")
                 }.disabled(input.isEmpty)
             }
             Spacer()
-            if manager.searchedPart.loading {
+            if manager.searchedParts.loading {
                 ProgressView()
-            } else if manager.searchedPart.result != nil {
-                AddPartPreview(element: (manager.searchedPart.result)!)
+            } else if manager.searchedParts.result != nil {
+                PartSelectionView(parts: (manager.searchedParts.result)!)
             } else {
-                Text(manager.searchedPart.error?.localizedDescription ?? "Enter Search")
+                Text(manager.searchedParts.error?.localizedDescription ?? "Enter Search")
             }
             Spacer()
             HStack {
@@ -41,13 +76,13 @@ struct AddPartView: View {
                 }
                 Spacer()
                 Button(action:{
-                    let element = manager.searchedPart.result!
-                    appManager.upsertPart(element: element)
+                    let elements = manager.searchedParts.result!
+                    appManager.upsertParts(elements: elements)
                     isPresented = false
                 }) {
                     Text("Add Part")
                 }
-                .disabled(manager.searchedPart.result == nil)
+                .disabled(manager.searchedParts.result == nil)
                 .keyboardShortcut(.defaultAction)
             }
         }.padding()
