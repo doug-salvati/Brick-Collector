@@ -11,15 +11,25 @@ struct PartSelectionView: View {
     var parts:[Element]
     @Binding
     var selections:[ElementSelection]
+    @State private var colorFilter:Int = -999
     
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
-        ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach($selections) { $selection in
-                    Toggle(isOn: $selection.selected) {
-                        AsyncImage(url: URL(string: selection.value.img)!)
-                    }.toggleStyle(.gallery)
+        let colorIds = Set(selections.map { $0.value.colorId })
+        VStack {
+            Picker("Color:", selection: $colorFilter) {
+                Text("All").tag(-999)
+                ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0).tag($0) }
+            }
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    ForEach($selections) { $selection in
+                        if (colorFilter == -999 || selection.value.colorId == colorFilter) {
+                            Toggle(isOn: $selection.selected) {
+                                AsyncImage(url: URL(string: selection.value.img)!)
+                            }.toggleStyle(.gallery)
+                        }
+                    }
                 }
             }
         }

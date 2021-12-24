@@ -55,7 +55,9 @@ struct AddPartView: View {
                     Text("Element ID").tag(AddPartMethod.byElement)
                     Text("Part ID").tag(AddPartMethod.byMoldAndColor)
 //                    Text("Set").tag(AddPartMethod.bySet)
-                }.pickerStyle(SegmentedPickerStyle())
+                }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
+                    manager.resetParts()
+                }
             }.padding(.bottom)
             
             HStack {
@@ -110,8 +112,8 @@ struct AddPartView: View {
             }
         }.padding().onReceive(manager.$searchedParts) { newParts in
             self.selections = (newParts.result ?? []).map { part in
-                    return ElementSelection(value: part, selected: true)
-                }
+                return ElementSelection(value: part, selected: method != .byMoldAndColor)
+            }
         }
     }
 }

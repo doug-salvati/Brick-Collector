@@ -17,7 +17,7 @@ struct GalleryToggleStyle: ToggleStyle {
                     Spacer()
                     HStack {
                         Button(action: { configuration.isOn.toggle() }) {
-                            Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle").foregroundColor(.blue).scaleEffect(2).padding()
+                            Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle").foregroundColor(.blue).font(.system(size: 30))
                         }.buttonStyle(.plain)
                         Spacer()
                     }

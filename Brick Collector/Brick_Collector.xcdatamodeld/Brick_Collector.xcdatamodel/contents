@@ -3,23 +3,7 @@
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
-    <entity name="Part" representedClassName="Part" syncable="YES" codeGenerationType="class">
-        <attribute name="colorId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" attributeType="String"/>
-        <attribute name="img" optional="YES" attributeType="String"/>
-        <attribute name="loose" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Set" inverseName="parts" inverseEntity="Set"/>
-    </entity>
-    <entity name="PartColor" representedClassName="PartColor" syncable="YES" codeGenerationType="class">
-        <attribute name="bricklinkName" optional="YES" attributeType="String"/>
-        <attribute name="hex" attributeType="String"/>
-        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="rebrickableName" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="Set" representedClassName="Set" syncable="YES" codeGenerationType="class">
+    <entity name="Kit" representedClassName="Kit" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String"/>
         <attribute name="img" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
@@ -28,10 +12,26 @@
         <attribute name="theme" attributeType="String"/>
         <relationship name="parts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Part" inverseName="sets" inverseEntity="Part"/>
     </entity>
+    <entity name="Part" representedClassName="Part" syncable="YES" codeGenerationType="class">
+        <attribute name="colorId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="img" optional="YES" attributeType="String"/>
+        <attribute name="loose" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Kit" inverseName="parts" inverseEntity="Kit"/>
+    </entity>
+    <entity name="PartColor" representedClassName="PartColor" syncable="YES" codeGenerationType="class">
+        <attribute name="bricklinkName" optional="YES" attributeType="String"/>
+        <attribute name="hex" attributeType="String"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="rebrickableName" optional="YES" attributeType="String"/>
+    </entity>
     <elements>
         <element name="Item" positionX="-177.6046142578125" positionY="-471.1930847167969" width="128" height="44"/>
         <element name="Part" positionX="-165.6788330078125" positionY="-269.5022277832031" width="128" height="134"/>
         <element name="PartColor" positionX="-18" positionY="-315" width="128" height="104"/>
-        <element name="Set" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="134"/>
+        <element name="Kit" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="134"/>
     </elements>
 </model>
