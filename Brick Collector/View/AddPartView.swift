@@ -54,7 +54,7 @@ struct AddPartView: View {
                 Picker(selection: $method, label: Text("by:")) {
                     Text("Element ID").tag(AddPartMethod.byElement)
                     Text("Part ID").tag(AddPartMethod.byMoldAndColor)
-//                    Text("Set").tag(AddPartMethod.bySet)
+                    Text("Set").tag(AddPartMethod.bySet)
                 }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
                     manager.resetParts()
                 }
@@ -70,7 +70,7 @@ struct AddPartView: View {
                         case .byMoldAndColor:
                             await manager.searchParts(byPartId: input)
                         case .bySet:
-                            print("TODO")
+                            await manager.searchParts(bySetId: input)
                         }
                     }
                 }) {

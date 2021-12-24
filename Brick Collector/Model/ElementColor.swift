@@ -26,7 +26,7 @@ struct ElementColor: Decodable {
     var id:Int
     var hex:String
     var name:String?
-    var rebrickableName:String?
+    var rebrickableName:String
     var bricklinkName:String?
     var rgb:Color {
         return Color(hex)
@@ -48,7 +48,7 @@ struct ElementColor: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
         hex = try container.decode(String.self, forKey: .rgb)
-        rebrickableName = try? container.decode(String.self, forKey: .name)
+        rebrickableName = try container.decode(String.self, forKey: .name)
         let externalIds = try container.nestedContainer(keyedBy: ExternalIdCodingKeys.self, forKey: .external_ids)
         let official = try? externalIds.nestedContainer(keyedBy: VendorCodingKey.self, forKey: .LEGO)
         if official != nil {

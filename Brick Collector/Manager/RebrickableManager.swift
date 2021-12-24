@@ -103,6 +103,32 @@ class RebrickableManager: ObservableObject {
         self.searchedParts = result
     }
     
+    func searchParts(bySetId set:String) async {
+        let partUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(set)/parts/\(queryParams)&page_size=10000")
+        if partUrl == nil {
+            let result = RebrickableResult<[Element]>(error: RebrickableError.InvalidURL)
+            self.searchedParts = result
+        }
+        self.searchedParts.loading = true
+        var result:RebrickableResult<[Element]>
+        do {
+            let (partData, _) = try await URLSession.shared.data(from: partUrl!)
+            let items = try JSONDecoder().decode(ArrayResults<InventoryItem>.self, from: partData).results
+            if (items.count == 0) {
+                result = RebrickableResult<[Element]>(error: RebrickableError.PartRetrievalFailure)
+            } else {
+                let elements:[Element] = items.filter { !$0.isSpare }.map { item in
+                    let id = item.elementId ?? "\(item.part.partNum) (\(item.color.rebrickableName)"
+                    return Element(id: id, img: item.part.img!, name: item.part.name, colorId: item.color.id)
+                }
+                result = RebrickableResult<[Element]>(result: elements)
+            }
+        } catch {
+            result = RebrickableResult<[Element]>(error: RebrickableError.PartRetrievalFailure)
+        }
+        self.searchedParts = result
+    }
+    
     func resetParts() {
         self.searchedParts = RebrickableResult<[Element]>()
     }
@@ -140,14 +166,11 @@ class RebrickableManagerPreview: RebrickableManager {
     }
     
     override func searchParts(byPartId part: String) async {
-        var result:RebrickableResult<[Element]>
-        if (part.isEmpty) {
-            result = RebrickableResult<[Element]>(error: RebrickableError.PartRetrievalFailure)
-        } else {
-            let sample = Element(id: "elementID", img: "foo.png", name: "Preview Element", colorId: 0);
-            result = RebrickableResult<[Element]>(result: [sample])
-        }
-        self.searchedParts = result
+        await searchParts(byElementId: "elementId")
+    }
+    
+    override func searchParts(bySetId set: String) async {
+        await searchParts(byElementId: "elementId")
     }
     
     override func getColors(callback: @escaping (RebrickableResult<[ElementColor]>) -> Void) async {
