@@ -21,6 +21,23 @@ struct PartSelectionView: View {
                 Text("All").tag(-999)
                 ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0).tag($0) }
             }
+            HStack {
+                Button(action: {
+                    $selections.forEach { $selection in
+                        if (!selection.selected) {
+                            selection.selected.toggle()
+                        }
+                    }
+                }, label: { Text("Select All") })
+                Button(action: {
+                    $selections.forEach { $selection in
+                        if (selection.selected) {
+                            selection.selected.toggle()
+                        }
+                    }
+                }, label: { Text("Deselect All") })
+                Spacer()
+            }
             ScrollView {
                 LazyVGrid(columns: columns) {
                     ForEach($selections) { $selection in
