@@ -27,6 +27,15 @@ extension RebrickableError: LocalizedError {
     }
 }
 
+extension Sequence {
+    func asyncForEach(
+        _ op: (Element) async throws -> Void
+    ) async rethrows {
+        for element in self {
+            try await op(element)
+        }
+    }
+}
 
 struct RebrickableResult<T> {
     var result:T?
@@ -113,10 +122,16 @@ class RebrickableManager: ObservableObject {
         var result:RebrickableResult<[Element]>
         do {
             let (partData, _) = try await URLSession.shared.data(from: partUrl!)
-            let items = try JSONDecoder().decode(ArrayResults<InventoryItem>.self, from: partData).results
+            var items = try JSONDecoder().decode(ArrayResults<InventoryItem>.self, from: partData).results
             if (items.count == 0) {
                 result = RebrickableResult<[Element]>(error: RebrickableError.PartRetrievalFailure)
             } else {
+                try await getMinifigs(bySetId: set).asyncForEach { minifig in
+                    let minifigParts = try await getParts(byMinifig: minifig.setNum).map { part in
+                        return InventoryItem(part: part.part, color: part.color, elementId: part.elementId, quantity: part.quantity * minifig.quantity, isSpare: part.isSpare)
+                    }
+                    items.append(contentsOf: minifigParts)
+                }
                 let elements:[Element] = items.filter { !$0.isSpare }.map { item in
                     let id = item.elementId ?? "\(item.part.partNum) (\(item.color.rebrickableName)"
                     return Element(id: id, img: item.part.img!, name: item.part.name, colorId: item.color.id)
@@ -127,6 +142,18 @@ class RebrickableManager: ObservableObject {
             result = RebrickableResult<[Element]>(error: RebrickableError.PartRetrievalFailure)
         }
         self.searchedParts = result
+    }
+    
+    func getMinifigs(bySetId set:String) async throws -> [MinifigInventoryItem] {
+        let minifigUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(set)/minifigs/\(queryParams)")
+        let (minifigData, _) = try await URLSession.shared.data(from: minifigUrl!)
+        return try JSONDecoder().decode(ArrayResults<MinifigInventoryItem>.self, from: minifigData).results
+    }
+    
+    func getParts(byMinifig minifig:String) async throws -> [InventoryItem] {
+        let partUrl = URL(string: "\(RebrickableManager.endpoint)/minifigs/\(minifig)/parts/\(queryParams)")
+        let (partData, _) = try await URLSession.shared.data(from: partUrl!)
+        return try JSONDecoder().decode(ArrayResults<InventoryItem>.self, from: partData).results
     }
     
     func resetParts() {
