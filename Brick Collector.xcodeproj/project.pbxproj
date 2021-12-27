@@ -17,13 +17,14 @@
 		9110E0E32772DB5400A7F3F7 /* PartSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E22772DB5400A7F3F7 /* PartSelectionView.swift */; };
 		9110E0E52772E35700A7F3F7 /* MoldColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E42772E35700A7F3F7 /* MoldColor.swift */; };
 		9110E0E7277419AE00A7F3F7 /* GalleryToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */; };
-		9113431727765CB70035A7A1 /* InventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113431627765CB70035A7A1 /* InventoryItem.swift */; };
+		9113431727765CB70035A7A1 /* RBInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113431627765CB70035A7A1 /* RBInventoryItem.swift */; };
 		911A53E125AB9C73002F03E9 /* ColorNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911A53E025AB9C73002F03E9 /* ColorNameView.swift */; };
 		918324CF25A9340C007460D4 /* ElementColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324CE25A9340C007460D4 /* ElementColor.swift */; };
 		918324DC25A94515007460D4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324DB25A94515007460D4 /* Preferences.swift */; };
 		918324E125A9463C007460D4 /* ColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324E025A9463C007460D4 /* ColorSet.swift */; };
 		918AD40025BE6CCC00FCD903 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918AD3FF25BE6CCC00FCD903 /* ImageLoader.swift */; };
 		918AD40525BE6D7C00FCD903 /* AsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918AD40425BE6D7C00FCD903 /* AsyncImage.swift */; };
+		91B86476277A629F00638F4D /* AddSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B86475277A629F00638F4D /* AddSetView.swift */; };
 		91C2772025B3CA330032336F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C2771F25B3CA330032336F /* AppManager.swift */; };
 		91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */; };
 		91ECB80925A25912008C5F72 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80825A25912008C5F72 /* ContentView.swift */; };
@@ -63,13 +64,14 @@
 		9110E0E22772DB5400A7F3F7 /* PartSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartSelectionView.swift; sourceTree = "<group>"; };
 		9110E0E42772E35700A7F3F7 /* MoldColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoldColor.swift; sourceTree = "<group>"; };
 		9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryToggleStyle.swift; sourceTree = "<group>"; };
-		9113431627765CB70035A7A1 /* InventoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryItem.swift; sourceTree = "<group>"; };
+		9113431627765CB70035A7A1 /* RBInventoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBInventoryItem.swift; sourceTree = "<group>"; };
 		911A53E025AB9C73002F03E9 /* ColorNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNameView.swift; sourceTree = "<group>"; };
 		918324CE25A9340C007460D4 /* ElementColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementColor.swift; sourceTree = "<group>"; };
 		918324DB25A94515007460D4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		918324E025A9463C007460D4 /* ColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSet.swift; sourceTree = "<group>"; };
 		918AD3FF25BE6CCC00FCD903 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		918AD40425BE6D7C00FCD903 /* AsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImage.swift; sourceTree = "<group>"; };
+		91B86475277A629F00638F4D /* AddSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSetView.swift; sourceTree = "<group>"; };
 		91C2771F25B3CA330032336F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		91ECB80325A25912008C5F72 /* Brick Collector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brick Collector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorApp.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				91ECB80825A25912008C5F72 /* ContentView.swift */,
+				91B86475277A629F00638F4D /* AddSetView.swift */,
 				9110E0DE2771443300A7F3F7 /* SetListView.swift */,
 				9110E0DC277133BB00A7F3F7 /* PartListView.swift */,
 				9110E0DA2770FCFB00A7F3F7 /* AppOperationQueueView.swift */,
@@ -134,7 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				9107F53825A40BC700978EC6 /* Element.swift */,
-				9113431627765CB70035A7A1 /* InventoryItem.swift */,
+				9113431627765CB70035A7A1 /* RBInventoryItem.swift */,
 				918324CE25A9340C007460D4 /* ElementColor.swift */,
 				918324E025A9463C007460D4 /* ColorSet.swift */,
 				9110E0E02772707100A7F3F7 /* Mold.swift */,
@@ -361,11 +364,12 @@
 				918AD40525BE6D7C00FCD903 /* AsyncImage.swift in Sources */,
 				9110E0E32772DB5400A7F3F7 /* PartSelectionView.swift in Sources */,
 				91ECB80925A25912008C5F72 /* ContentView.swift in Sources */,
-				9113431727765CB70035A7A1 /* InventoryItem.swift in Sources */,
+				9113431727765CB70035A7A1 /* RBInventoryItem.swift in Sources */,
 				91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */,
 				9110E0E12772707100A7F3F7 /* Mold.swift in Sources */,
 				9107F53425A3FA6000978EC6 /* RebrickableManager.swift in Sources */,
 				9110E0E52772E35700A7F3F7 /* MoldColor.swift in Sources */,
+				91B86476277A629F00638F4D /* AddSetView.swift in Sources */,
 				9107F52B25A2952700978EC6 /* AddPartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

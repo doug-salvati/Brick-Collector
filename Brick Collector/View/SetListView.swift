@@ -8,13 +8,28 @@
 import SwiftUI
 
 struct SetListView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Kit.id, ascending: true)],
+        animation: .default)
+    private var sets: FetchedResults<Kit>
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List {
+            ForEach(sets) { set in
+                HStack {
+                    Text("\(set.quantity)x \(set.theme!) \(set.id!) \(set.name!)")
+                }
+            }
+        }
     }
+
 }
 
 struct SetListView_Previews: PreviewProvider {
     static var previews: some View {
-        SetListView()
+        let manager = RebrickableManagerPreview()
+        SetListView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext).environmentObject(AppManager(using: manager))
     }
 }

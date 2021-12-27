@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct InventoryItem: Decodable {
+struct RBInventoryItem: Decodable {
     var part:Mold
     var color:ElementColor
     var elementId:String?

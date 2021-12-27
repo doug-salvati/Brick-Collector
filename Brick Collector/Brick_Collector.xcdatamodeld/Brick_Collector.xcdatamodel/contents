@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21C52" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    <entity name="InventoryItem" representedClassName="InventoryItem" syncable="YES" codeGenerationType="class">
+        <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="kit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kit" inverseName="inventory" inverseEntity="Kit"/>
+        <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="usages" inverseEntity="Part"/>
     </entity>
     <entity name="Kit" representedClassName="Kit" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String"/>
@@ -10,7 +12,7 @@
         <attribute name="partCount" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="theme" attributeType="String"/>
-        <relationship name="parts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Part" inverseName="sets" inverseEntity="Part"/>
+        <relationship name="inventory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InventoryItem" inverseName="kit" inverseEntity="InventoryItem"/>
     </entity>
     <entity name="Part" representedClassName="Part" syncable="YES" codeGenerationType="class">
         <attribute name="colorId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -19,7 +21,7 @@
         <attribute name="loose" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="sets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Kit" inverseName="parts" inverseEntity="Kit"/>
+        <relationship name="usages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InventoryItem" inverseName="part" inverseEntity="InventoryItem"/>
     </entity>
     <entity name="PartColor" representedClassName="PartColor" syncable="YES" codeGenerationType="class">
         <attribute name="bricklinkName" optional="YES" attributeType="String"/>
@@ -29,9 +31,9 @@
         <attribute name="rebrickableName" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-177.6046142578125" positionY="-471.1930847167969" width="128" height="44"/>
-        <element name="Kit" positionX="138.5469970703125" positionY="-261.6827392578125" width="128" height="134"/>
-        <element name="Part" positionX="-165.6788330078125" positionY="-269.5022277832031" width="128" height="134"/>
+        <element name="Kit" positionX="337.2584228515625" positionY="-207.1449890136719" width="128" height="134"/>
+        <element name="Part" positionX="-412.3745727539062" positionY="-210.2648620605469" width="128" height="134"/>
         <element name="PartColor" positionX="-18" positionY="-315" width="128" height="104"/>
+        <element name="InventoryItem" positionX="-12.943115234375" positionY="-85.716064453125" width="128" height="58"/>
     </elements>
 </model>

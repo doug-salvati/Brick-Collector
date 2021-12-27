@@ -60,14 +60,23 @@ struct ContentView: View {
                     Button(action: {
                         showModal = true
                     }) {
-                        Label("Add Part", systemImage: "plus")
+                        switch activeView {
+                            case .parts: Label("Add Part", systemImage: "plus")
+                            case .sets: Label("Add Set", systemImage: "plus")
+                        }
                     }
                 }
             }
         }.sheet(isPresented: $showModal) {
-            AddPartView(isPresented: $showModal)
-                .frame(width: 300, height: 500, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-        }.frame(width: 800, height: 500, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            switch activeView {
+            case .parts:
+                AddPartView(isPresented: $showModal)
+                    .frame(width: 300, height: 500, alignment: .center)
+            case .sets:
+                AddSetView(isPresented: $showModal)
+                    .frame(width: 300, height: 500, alignment: .center)
+            }
+        }.frame(width: 800, height: 500, alignment: .center)
     }
 }
 

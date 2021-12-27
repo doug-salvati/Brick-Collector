@@ -29,6 +29,12 @@ struct PersistenceController {
         newColor.id = 1
         newColor.name = "Test Color"
         newColor.hex = "FF0000"
+        let newSet = Kit(context: viewContext)
+        newSet.id = "12345"
+        newSet.name = "Test Set"
+        newSet.partCount = 2
+        newSet.quantity = 1
+        newSet.theme = "Test Theme"
         do {
             try viewContext.save()
         } catch {
