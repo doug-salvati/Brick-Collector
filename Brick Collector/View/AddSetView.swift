@@ -118,7 +118,7 @@ struct AddSetView: View {
                         Text("Previous")
                     }
                     Button(action:{
-                        appManager.upsertSet(set: manager.searchedSet.result!, containingParts: [])
+                        appManager.upsertSet(manager.searchedSet.result!, containingParts: manager.searchedInventory.result!)
                         secondPage = false
                         isPresented = false
                         manager.resetSet()

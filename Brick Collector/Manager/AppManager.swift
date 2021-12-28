@@ -120,7 +120,7 @@ class AppManager: ObservableObject {
         let context = PersistenceController.shared.container.viewContext
         elements.forEach { element in
             let request: NSFetchRequest<Part> = Part.fetchRequest()
-            request.predicate = NSPredicate(format: "id LIKE %@", element.id);
+            request.predicate = NSPredicate(format: "id LIKE %@", element.id)
             var existingPart:Part? = nil
             do {
                 existingPart = try context.fetch(request).first
@@ -150,5 +150,73 @@ class AppManager: ObservableObject {
             }
         }
 
+    }
+    
+    func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem]) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
+        let context = PersistenceController.shared.container.viewContext
+        
+        let request: NSFetchRequest<Kit> = Kit.fetchRequest()
+        request.predicate = NSPredicate(format: "id LIKE %@", set.id)
+        var existingKit:Kit? = nil
+        var kit:Kit
+        do {
+            existingKit = try context.fetch(request).first
+        } catch let error {
+            self.finish(opId: id, withError: error)
+        }
+        if existingKit != nil {
+            existingKit!.quantity += 1
+            kit = existingKit!
+        } else {
+            let newKit = Kit(context: context)
+            newKit.id = set.id
+            newKit.name = set.name
+            newKit.theme = set.theme!
+            newKit.quantity = 1
+            newKit.partCount = Int64(set.partCount)
+            newKit.img = ""
+            kit = newKit
+        }
+        
+        parts.forEach { item in
+            let request: NSFetchRequest<Part> = Part.fetchRequest()
+            request.predicate = NSPredicate(format: "id LIKE %@", item.id)
+            var existingPart:Part? = nil
+            var part:Part
+            do {
+                existingPart = try context.fetch(request).first
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+            if existingPart != nil {
+                existingPart!.quantity += Int64(item.quantity)
+                part = existingPart!
+            } else {
+                let newPart = Part(context: context)
+                newPart.id = item.id
+                newPart.name = item.part.name
+                newPart.colorId = Int64(item.color.id)
+                newPart.quantity = Int64(item.quantity)
+                newPart.loose = 0
+                newPart.img = ""
+                part = newPart
+            }
+            if existingKit == nil {
+                let newInventoryItem = InventoryItem(context: context)
+                newInventoryItem.kit = kit
+                newInventoryItem.quantity = Int64(item.quantity)
+                newInventoryItem.part = part
+            }
+        }
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
     }
 }
