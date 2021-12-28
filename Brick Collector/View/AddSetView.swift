@@ -62,17 +62,28 @@ struct AddSetView: View {
                         Spacer()
                         Text(manager.searchedSet.result!.name)
                     }
-                    if (manager.searchedParts.loading) {
+                    if (manager.searchedInventory.loading) {
                         ProgressView()
-                    } else if (manager.searchedParts.error != nil) {
-                        Text(manager.searchedParts.error!.localizedDescription)
+                    } else if (manager.searchedInventory.error != nil) {
+                        Text(manager.searchedInventory.error!.localizedDescription)
                     } else {
+                        let partCount = manager.searchedInventory.result!.reduce(0) { $0 + $1.quantity }
                         ScrollView {
                             LazyVGrid(columns: columns) {
-                                ForEach(manager.searchedParts.result!) { part in
-                                    AsyncImage(url: URL(string: part.img)!)
+                                ForEach(manager.searchedInventory.result!) { item in
+                                    ZStack {
+                                        AsyncImage(url: URL(string: item.part.img!)!)
+                                        VStack {
+                                            Spacer()
+                                            HStack {
+                                                Text("\(item.quantity)x").fontWeight(.bold).colorInvert()
+                                                Spacer()
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                            Text("\(partCount) Parts").font(.footnote).padding()
                         }
                     }
                 }
@@ -92,7 +103,7 @@ struct AddSetView: View {
                     Button(action:{
                         Task {
                             secondPage = true
-                            await manager.searchParts(bySetId: manager.searchedSet.result!.id)
+                            await manager.searchInventory(bySetId: manager.searchedSet.result!.id)
                         }
                     }) {
                         Text("Next")
@@ -107,14 +118,14 @@ struct AddSetView: View {
                         Text("Previous")
                     }
                     Button(action:{
-                        // TODO: upsert set
+                        appManager.upsertSet(set: manager.searchedSet.result!, containingParts: [])
                         secondPage = false
                         isPresented = false
                         manager.resetSet()
                         manager.resetParts()
                     }) {
                         Text("Add Set")
-                    }.disabled(manager.searchedParts.result == nil)
+                    }.disabled(manager.searchedInventory.result == nil)
                         .keyboardShortcut(.defaultAction)
                 }
             }

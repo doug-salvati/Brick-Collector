@@ -7,12 +7,15 @@
 
 import Foundation
 
-struct RBInventoryItem: Decodable {
+struct RBInventoryItem: Decodable, Identifiable {
     var part:Mold
     var color:ElementColor
     var elementId:String?
     var quantity:Int
     var isSpare:Bool
+    var id:String {
+        elementId ?? "\(part.name) (\(color.rebrickableName))"
+    }
     
     enum CodingKeys: String, CodingKey {
         case part, color, element_id, quantity, is_spare
