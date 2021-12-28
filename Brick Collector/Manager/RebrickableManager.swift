@@ -11,6 +11,7 @@ import SwiftUI
 enum RebrickableError: Error {
     case InvalidURL
     case PartRetrievalFailure
+    case SetRetrievalFailure
     case ColorRetrievalFailure
 }
 
@@ -21,6 +22,8 @@ extension RebrickableError: LocalizedError {
             return NSLocalizedString("Failed to submit request.", comment: "Failed to create URL object")
         case .PartRetrievalFailure:
             return NSLocalizedString("No results found.", comment: "Failed part API call")
+        case .SetRetrievalFailure:
+            return NSLocalizedString("No results found.", comment: "Failed set API call")
         case .ColorRetrievalFailure:
             return NSLocalizedString("Failed to retrieve colors. Check API key and try again.", comment: "Failed color API call")
         }
@@ -64,6 +67,7 @@ class RebrickableManager: ObservableObject {
         "?key=\(key)"
     }
     @Published var searchedParts:RebrickableResult<[Element]> = RebrickableResult<[Element]>()
+    @Published var searchedSet:RebrickableResult<RBSet> = RebrickableResult<RBSet>()
     @Published var colors:RebrickableResult<[ElementColor]> = RebrickableResult<[ElementColor]>()
     private static let endpoint = "https://rebrickable.com/api/v3/lego"
     
@@ -144,6 +148,19 @@ class RebrickableManager: ObservableObject {
         self.searchedParts = result
     }
     
+    func searchSet(byId id:String) async {
+        self.searchedSet.loading = true
+        var result:RebrickableResult<RBSet>
+        do {
+            let set = try await getSet(byId: id)
+            result = RebrickableResult<RBSet>(result: set)
+        } catch let error {
+            print(error.localizedDescription)
+            result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
+        }
+        self.searchedSet = result
+    }
+    
     func getMinifigs(bySetId set:String) async throws -> [MinifigInventoryItem] {
         let minifigUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(set)/minifigs/\(queryParams)")
         let (minifigData, _) = try await URLSession.shared.data(from: minifigUrl!)
@@ -156,8 +173,26 @@ class RebrickableManager: ObservableObject {
         return try JSONDecoder().decode(ArrayResults<RBInventoryItem>.self, from: partData).results
     }
     
+    func getSet(byId id:String) async throws -> RBSet {
+        let setUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(id)/\(queryParams)")
+        let (setData, _) = try await URLSession.shared.data(from: setUrl!)
+        var set = try JSONDecoder().decode(RBSet.self, from: setData)
+        set.theme = try await getTheme(byId: set.themeId)
+        return set
+    }
+    
+    func getTheme(byId id:Int) async throws -> String {
+        let themeUrl = URL(string: "\(RebrickableManager.endpoint)/themes/\(id)/\(queryParams)")
+        let (themeData, _) = try await URLSession.shared.data(from: themeUrl!)
+        return try JSONDecoder().decode(RBTheme.self, from: themeData).name
+    }
+    
     func resetParts() {
         self.searchedParts = RebrickableResult<[Element]>()
+    }
+    
+    func resetSet() {
+        self.searchedSet = RebrickableResult<RBSet>()
     }
     
     func getColors(callback: @escaping (RebrickableResult<[ElementColor]>) -> Void) async {
