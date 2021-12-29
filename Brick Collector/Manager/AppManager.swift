@@ -120,16 +120,22 @@ class AppManager: ObservableObject {
     func downloadImages(forSet setId:String, withParts images:[String:String]) {
         let id:UUID = self.queue(op: AppOperation(type: .DownloadImagesForSet, description: "Downloading images for set \(setId)"))
         let context = PersistenceController.shared.container.viewContext
+        var downloadedImages:[String:Data] = [:]
         images.keys.forEach { partId in
             let img = try? Data(contentsOf: URL(string: images[partId]!)!)
-            let request: NSFetchRequest<Part> = Part.fetchRequest()
-            request.predicate = NSPredicate(format: "id LIKE %@", partId)
-            let part = try? context.fetch(request).first
-            guard part != nil else { return }
-            part!.img = img
+            if img != nil {
+                downloadedImages[partId] = img!
+            }
         }
         DispatchQueue.main.async {
             do {
+                downloadedImages.keys.forEach { partId in
+                    let request: NSFetchRequest<Part> = Part.fetchRequest()
+                    request.predicate = NSPredicate(format: "id LIKE %@", partId)
+                    let part = try? context.fetch(request).first
+                    guard part != nil else { return }
+                    part!.img = downloadedImages[partId]
+                }
                 try context.save()
                 self.finish(opId: id)
             } catch let error {
@@ -148,7 +154,10 @@ class AppManager: ObservableObject {
             do {
                 existingPart = try context.fetch(request).first
             } catch let error {
-                self.finish(opId: id, withError: error)
+                DispatchQueue.main.async {
+                    self.finish(opId: id, withError: error)
+                }
+                return
             }
             if existingPart != nil {
                 existingPart!.quantity += 1
@@ -186,7 +195,10 @@ class AppManager: ObservableObject {
         do {
             existingKit = try context.fetch(request).first
         } catch let error {
-            self.finish(opId: id, withError: error)
+            DispatchQueue.main.async {
+                self.finish(opId: id, withError: error)
+            }
+            return
         }
         if existingKit != nil {
             existingKit!.quantity += 1
@@ -210,8 +222,10 @@ class AppManager: ObservableObject {
             do {
                 existingPart = try context.fetch(request).first
             } catch let error {
-                self.finish(opId: id, withError: error)
-            }
+                DispatchQueue.main.async {
+                    self.finish(opId: id, withError: error)
+                }
+                return            }
             if existingPart != nil {
                 existingPart!.quantity += Int64(item.quantity)
                 part = existingPart!
@@ -238,18 +252,23 @@ class AppManager: ObservableObject {
             imageMap[item.id] = item.part.img
         }
         
-        DispatchQueue(label: "downloadImage").async {
-            DispatchQueue.main.async {
-                do {
-                    try context.save()
-                    self.finish(opId: id)
-                } catch let error {
-                    self.finish(opId: id, withError: error)
-                }
+        let group = DispatchGroup()
+        group.enter()
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
             }
+            group.leave()
         }
-        DispatchQueue(label: "downloadImage").async {
-            self.downloadImages(forSet: set.id, withParts: imageMap)
+        
+        group.notify(queue: .main) {
+            DispatchQueue(label: "downloadImage").async {
+                self.downloadImages(forSet: set.id, withParts: imageMap)
+            }
         }
     }
 }
