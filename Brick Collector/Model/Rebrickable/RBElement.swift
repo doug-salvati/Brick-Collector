@@ -9,7 +9,7 @@ import Foundation
 
 struct RBElement: Decodable, Identifiable {
     var id:String
-    var img:String
+    var img:String?
     var name:String
     var colorId:Int
     
@@ -28,14 +28,14 @@ struct RBElement: Decodable, Identifiable {
     init(from decoder:Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .element_id)
-        img = try container.decode(String.self, forKey: .part_img_url)
+        img = try? container.decode(String.self, forKey: .part_img_url)
         let part = try container.nestedContainer(keyedBy: PartCodingKeys.self, forKey: .part)
         name = try part.decode(String.self, forKey: .name)
         let color = try container.nestedContainer(keyedBy: ColorCodingKeys.self, forKey: .color)
         colorId = try color.decode(Int.self, forKey: .id)
     }
     
-    init(id:String, img:String, name:String, colorId:Int) {
+    init(id:String, img:String?, name:String, colorId:Int) {
         self.id = id
         self.img = img
         self.name = name

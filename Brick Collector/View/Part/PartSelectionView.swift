@@ -43,7 +43,11 @@ struct PartSelectionView: View {
                     ForEach($selections) { $selection in
                         if (colorFilter == -999 || selection.value.colorId == colorFilter) {
                             Toggle(isOn: $selection.selected) {
-                                AsyncImage(url: URL(string: selection.value.img)!)
+                                if selection.value.img != nil {
+                                    AsyncImage(url: URL(string: selection.value.img!)!)
+                                } else {
+                                    Image(systemName: "photo")
+                                }
                             }.toggleStyle(.gallery)
                         }
                     }

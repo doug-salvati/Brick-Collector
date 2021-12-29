@@ -19,6 +19,11 @@ struct PartListView: View {
         List {
             ForEach(parts) { part in
                 HStack {
+                    if part.img != nil {
+                        Image(nsImage: NSImage(data: part.img!)!)
+                    } else {
+                        Image(systemName: "photo")
+                    }
                     Text("\(part.quantity)x \(part.id!) \(part.name!)")
                     ColorNameView(colorId: Int(part.colorId))
                 }

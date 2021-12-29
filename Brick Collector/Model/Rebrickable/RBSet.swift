@@ -12,7 +12,7 @@ struct RBSet: Decodable {
     var name:String
     var themeId:Int
     var partCount:Int
-    var img:String
+    var img:String?
     var theme:String?
     
     enum CodingKeys: String, CodingKey {
@@ -25,6 +25,6 @@ struct RBSet: Decodable {
         name = try container.decode(String.self, forKey: .name)
         themeId = try container.decode(Int.self, forKey: .theme_id)
         partCount = try container.decode(Int.self, forKey: .num_parts)
-        img = try container.decode(String.self, forKey: .set_img_url)
+        img = try? container.decode(String.self, forKey: .set_img_url)
     }
 }

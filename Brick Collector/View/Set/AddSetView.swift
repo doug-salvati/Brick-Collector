@@ -49,7 +49,12 @@ struct AddSetView: View {
                     ProgressView()
                 } else if manager.searchedSet.result != nil {
                     VStack {
-                        AsyncImage(url: URL(string: manager.searchedSet.result!.img)!)
+                        if manager.searchedSet.result!.img == nil {
+                            Image(systemName: "photo")
+                            Text("No Image Available")
+                        } else {
+                            AsyncImage(url: URL(string: manager.searchedSet.result!.img!)!)
+                        }
                         HStack {
                             Text(manager.searchedSet.result!.id)
                                 .fontWeight(.bold)

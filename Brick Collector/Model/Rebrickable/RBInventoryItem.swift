@@ -25,7 +25,7 @@ struct RBInventoryItem: Decodable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         part = try container.decode(RBMold.self, forKey: .part)
         color = try container.decode(RBElementColor.self, forKey: .color)
-        elementId = try container.decode(String.self, forKey: .element_id)
+        elementId = try? container.decode(String.self, forKey: .element_id)
         quantity = try container.decode(Int.self, forKey: .quantity)
         isSpare = try container.decode(Bool.self, forKey: .is_spare)
     }

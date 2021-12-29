@@ -137,7 +137,7 @@ class AppManager: ObservableObject {
                 newPart.colorId = Int64(element.colorId)
                 newPart.quantity = 1
                 newPart.loose = 1
-                newPart.img = ""
+                newPart.img = element.img == nil ? nil : try? Data(contentsOf: URL(string: element.img!)!)
             }
         }
 
@@ -175,7 +175,7 @@ class AppManager: ObservableObject {
             newKit.theme = set.theme!
             newKit.quantity = 1
             newKit.partCount = Int64(set.partCount)
-            newKit.img = ""
+//            newKit.img = ""
             kit = newKit
         }
         
@@ -199,7 +199,7 @@ class AppManager: ObservableObject {
                 newPart.colorId = Int64(item.color.id)
                 newPart.quantity = Int64(item.quantity)
                 newPart.loose = 0
-                newPart.img = ""
+//                newPart.img = ""
                 part = newPart
             }
             if existingKit == nil {
