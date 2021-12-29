@@ -59,7 +59,7 @@ struct ColorNameView: View {
         Circle()
             .foregroundColor(Color(hex: color?.hex ?? "000000"))
             .fixedSize()
-            .overlay(Circle().stroke(Color("IconBorder")), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .overlay(Circle().stroke(.black), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
     }
     var label: some View {
         Text(colorDisplayName(id: colorId))

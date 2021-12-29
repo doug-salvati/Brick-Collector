@@ -16,18 +16,35 @@ struct PartListView: View {
     private var parts: FetchedResults<Part>
 
     var body: some View {
-        List {
-            ForEach(parts) { part in
-                HStack {
-                    if part.img != nil {
-                        Image(nsImage: NSImage(data: part.img!)!)
-                    } else {
-                        Image(systemName: "photo")
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+        let partCount = parts.reduce(0) { $0 + $1.quantity }
+        ScrollView {
+            LazyVGrid(columns: columns) {
+                ForEach(parts) { part in
+                    HStack {
+                        ZStack {
+                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                            if part.img != nil {
+                                Image(nsImage: NSImage(data: part.img!)!).resizable().scaledToFit().padding()
+                            } else {
+                                Image(systemName: "photo").foregroundColor(.black)
+                            }
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    ColorNameView(type: .Icon, colorId: Int(part.colorId)).scaleEffect(2).padding()
+                                }
+                                Spacer()
+                                HStack {
+                                    Text("\(part.quantity)x").fontWeight(.bold).colorInvert().padding()
+                                    Spacer()
+                                }
+                            }
+                        }
                     }
-                    Text("\(part.quantity)x \(part.id!) \(part.name!)")
-                    ColorNameView(colorId: Int(part.colorId))
                 }
             }
+            Text("\(partCount) Parts (\(parts.count) Unique)").font(.footnote).padding()
         }
     }
 

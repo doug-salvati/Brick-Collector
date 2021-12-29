@@ -16,17 +16,31 @@ struct SetListView: View {
     private var sets: FetchedResults<Kit>
 
     var body: some View {
-        List {
-            ForEach(sets) { set in
-                HStack {
-                    if set.img != nil {
-                        Image(nsImage: NSImage(data: set.img!)!).resizable().frame(height: 100).aspectRatio(1, contentMode: .fit)
-                    } else {
-                        Image(systemName: "photo")
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+        let setCount = sets.reduce(0) { $0 + $1.quantity }
+        ScrollView {
+            LazyVGrid(columns: columns) {
+                ForEach(sets) { set in
+                    HStack {
+                        ZStack {
+                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                            if set.img != nil {
+                                Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit().padding()
+                            } else {
+                                Image(systemName: "photo").foregroundColor(.black)
+                            }
+                            VStack {
+                                Spacer()
+                                HStack {
+                                    Text(set.id!).fontWeight(.bold).colorInvert().padding()
+                                    Spacer()
+                                }
+                            }
+                        }
                     }
-                    Text("\(set.quantity)x \(set.theme!) \(set.id!) \(set.name!)")
                 }
             }
+            Text("\(setCount) Sets").font(.footnote).padding()
         }
     }
 
