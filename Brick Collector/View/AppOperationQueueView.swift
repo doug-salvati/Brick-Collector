@@ -25,9 +25,10 @@ struct AppOperationQueueView: View {
                     VStack(alignment: .leading) {
                         Text(op?.description ?? "Unknown")
                             .font(.headline)
-                        Text(op?.error?.localizedDescription ?? "Loading")
-                            .fontWeight(.thin)
-                            .foregroundColor(Color.red)
+                        if op?.error != nil {
+                            Text(op!.error!.localizedDescription)
+                                .fontWeight(.thin).foregroundColor(.red)
+                        }
                     }
                 }
             }.onDelete { offsets in

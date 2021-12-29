@@ -85,7 +85,11 @@ struct AddSetView: View {
                             LazyVGrid(columns: columns) {
                                 ForEach(manager.searchedInventory.result!) { item in
                                     ZStack {
-                                        AsyncImage(url: URL(string: item.part.img!)!)
+                                        if (item.part.img != nil) {
+                                            AsyncImage(url: URL(string: item.part.img!)!)
+                                        } else {
+                                            Image(systemName: "photo")
+                                        }
                                         VStack {
                                             Spacer()
                                             HStack {

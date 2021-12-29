@@ -19,6 +19,11 @@ struct SetListView: View {
         List {
             ForEach(sets) { set in
                 HStack {
+                    if set.img != nil {
+                        Image(nsImage: NSImage(data: set.img!)!).resizable().frame(height: 100).aspectRatio(1, contentMode: .fit)
+                    } else {
+                        Image(systemName: "photo")
+                    }
                     Text("\(set.quantity)x \(set.theme!) \(set.id!) \(set.name!)")
                 }
             }

@@ -11,6 +11,8 @@ import SwiftUI
 enum AppOperationType {
     case UpdateColors
     case UpsertPart
+    case UpsertSet
+    case DownloadImagesForSet
 }
 
 struct AppOperation {
@@ -114,6 +116,27 @@ class AppManager: ObservableObject {
             }
         }
     }
+    
+    func downloadImages(forSet setId:String, withParts images:[String:String]) {
+        let id:UUID = self.queue(op: AppOperation(type: .DownloadImagesForSet, description: "Downloading images for set \(setId)"))
+        let context = PersistenceController.shared.container.viewContext
+        images.keys.forEach { partId in
+            let img = try? Data(contentsOf: URL(string: images[partId]!)!)
+            let request: NSFetchRequest<Part> = Part.fetchRequest()
+            request.predicate = NSPredicate(format: "id LIKE %@", partId)
+            let part = try? context.fetch(request).first
+            guard part != nil else { return }
+            part!.img = img
+        }
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
 
     func upsertParts(elements:[RBElement]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
@@ -153,7 +176,7 @@ class AppManager: ObservableObject {
     }
     
     func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem]) {
-        let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
+        let id:UUID = self.queue(op: AppOperation(type: .UpsertSet, description: "Insert set"))
         let context = PersistenceController.shared.container.viewContext
         
         let request: NSFetchRequest<Kit> = Kit.fetchRequest()
@@ -175,7 +198,7 @@ class AppManager: ObservableObject {
             newKit.theme = set.theme!
             newKit.quantity = 1
             newKit.partCount = Int64(set.partCount)
-//            newKit.img = ""
+            newKit.img = set.img == nil ? nil : try? Data(contentsOf: URL(string: set.img!)!)
             kit = newKit
         }
         
@@ -199,7 +222,7 @@ class AppManager: ObservableObject {
                 newPart.colorId = Int64(item.color.id)
                 newPart.quantity = Int64(item.quantity)
                 newPart.loose = 0
-//                newPart.img = ""
+                // add img later asynchronously
                 part = newPart
             }
             if existingKit == nil {
@@ -210,13 +233,23 @@ class AppManager: ObservableObject {
             }
         }
         
-        DispatchQueue.main.async {
-            do {
-                try context.save()
-                self.finish(opId: id)
-            } catch let error {
-                self.finish(opId: id, withError: error)
+        var imageMap:[String:String] = [:]
+        parts.forEach { item in
+            imageMap[item.id] = item.part.img
+        }
+        
+        DispatchQueue(label: "downloadImage").async {
+            DispatchQueue.main.async {
+                do {
+                    try context.save()
+                    self.finish(opId: id)
+                } catch let error {
+                    self.finish(opId: id, withError: error)
+                }
             }
+        }
+        DispatchQueue(label: "downloadImage").async {
+            self.downloadImages(forSet: set.id, withParts: imageMap)
         }
     }
 }
