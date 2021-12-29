@@ -13,7 +13,11 @@ struct AddSetView: View {
     @EnvironmentObject private var appManager: AppManager
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
+    @State private var suffix:String = "-1"
     @State private var secondPage:Bool = false
+    private var searchString:String {
+        "\(input)\(suffix)"
+    }
     
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
@@ -28,9 +32,13 @@ struct AddSetView: View {
             if (!secondPage) {
                 HStack {
                     TextField("Set ID", text: $input)
+                    Picker("Suffix", selection: $suffix) {
+                        Text("No Suffix").tag("")
+                        ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
+                    }.labelsHidden()
                     Button(action: {
                         Task {
-                            await manager.searchSet(byId: input)
+                            await manager.searchSet(byId: searchString)
                         }
                     }) {
                         Text("Search")

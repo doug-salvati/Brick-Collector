@@ -31,9 +31,13 @@ struct AddPartView: View {
     @EnvironmentObject private var appManager: AppManager
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
+    @State private var suffix:String = "-1"
     @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod")!) ?? .byElement
     @State
     var selections:[ElementSelection] = []
+    private var setSearch:String {
+        "\(input)\(suffix)"
+    }
 
     func getSelections() -> [RBElement] {
         return selections.filter { element in
@@ -62,6 +66,12 @@ struct AddPartView: View {
             
             HStack {
                 TextField(placeholders[method]!, text: $input)
+                if method == .bySet {
+                    Picker("Suffix", selection: $suffix) {
+                        Text("No Suffix").tag("")
+                        ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
+                    }.labelsHidden()
+                }
                 Button(action: {
                     Task {
                         switch method {
@@ -70,7 +80,7 @@ struct AddPartView: View {
                         case .byMoldAndColor:
                             await manager.searchParts(byPartId: input)
                         case .bySet:
-                            await manager.searchParts(bySetId: input)
+                            await manager.searchParts(bySetId: setSearch)
                         }
                     }
                 }) {
