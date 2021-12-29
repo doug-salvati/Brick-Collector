@@ -56,8 +56,7 @@ struct AddSetView: View {
                             AsyncImage(url: URL(string: manager.searchedSet.result!.img!)!)
                         }
                         HStack {
-                            Text(manager.searchedSet.result!.id)
-                                .fontWeight(.bold)
+                            SetIdView(setId: manager.searchedSet.result!.id, fontWeight: .bold)
                             Spacer()
                             Text(manager.searchedSet.result!.name)
                         }
@@ -70,8 +69,7 @@ struct AddSetView: View {
                     Text("Review Parts")
                         .font(.title)
                     HStack {
-                        Text(manager.searchedSet.result!.id)
-                            .fontWeight(.bold)
+                        SetIdView(setId: manager.searchedSet.result!.id, fontWeight: .bold)
                         Spacer()
                         Text(manager.searchedSet.result!.name)
                     }

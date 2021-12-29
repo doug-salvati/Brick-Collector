@@ -17,6 +17,9 @@ struct Preferences: View {
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
+    @AppStorage("showSetSuffix")
+    private var showSetSuffix:Bool = false
+    
     @EnvironmentObject private var appManager: AppManager
     
     var body: some View {
@@ -52,11 +55,13 @@ struct Preferences: View {
                         ProgressView().scaleEffect(2/3).hidden()
                     }
                 }
-                HStack {
-                    Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
-                        Text("by Element ID").tag(AddPartMethod.byElement)
-                        Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
-                    }.frame(width:250)
+                Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
+                    Text("by Element ID").tag(AddPartMethod.byElement)
+                    Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
+                    Text("by Set").tag(AddPartMethod.bySet)
+                }.frame(width:250)
+                Toggle(isOn: $showSetSuffix) {
+                    Text("Display Set Suffixes")
                 }
             }
             .navigationTitle("Preferences")

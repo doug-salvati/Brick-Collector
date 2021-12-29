@@ -19,6 +19,7 @@
 		9110E0E7277419AE00A7F3F7 /* GalleryToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */; };
 		9113431727765CB70035A7A1 /* RBInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113431627765CB70035A7A1 /* RBInventoryItem.swift */; };
 		911A53E125AB9C73002F03E9 /* ColorNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911A53E025AB9C73002F03E9 /* ColorNameView.swift */; };
+		911AD521277CEDCD005EB716 /* SetIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD520277CEDCD005EB716 /* SetIdView.swift */; };
 		918324CF25A9340C007460D4 /* RBElementColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324CE25A9340C007460D4 /* RBElementColor.swift */; };
 		918324DC25A94515007460D4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324DB25A94515007460D4 /* Preferences.swift */; };
 		918324E125A9463C007460D4 /* ColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324E025A9463C007460D4 /* ColorSet.swift */; };
@@ -68,6 +69,7 @@
 		9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryToggleStyle.swift; sourceTree = "<group>"; };
 		9113431627765CB70035A7A1 /* RBInventoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBInventoryItem.swift; sourceTree = "<group>"; };
 		911A53E025AB9C73002F03E9 /* ColorNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNameView.swift; sourceTree = "<group>"; };
+		911AD520277CEDCD005EB716 /* SetIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetIdView.swift; sourceTree = "<group>"; };
 		918324CE25A9340C007460D4 /* RBElementColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBElementColor.swift; sourceTree = "<group>"; };
 		918324DB25A94515007460D4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		918324E025A9463C007460D4 /* ColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSet.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				91B86475277A629F00638F4D /* AddSetView.swift */,
+				911AD520277CEDCD005EB716 /* SetIdView.swift */,
 				9110E0DE2771443300A7F3F7 /* SetListView.swift */,
 			);
 			path = Set;
@@ -390,6 +393,7 @@
 				91B8647A277AAABE00638F4D /* RBTheme.swift in Sources */,
 				9107F53925A40BC700978EC6 /* RBElement.swift in Sources */,
 				9110E0DB2770FCFB00A7F3F7 /* AppOperationQueueView.swift in Sources */,
+				911AD521277CEDCD005EB716 /* SetIdView.swift in Sources */,
 				91C2772025B3CA330032336F /* AppManager.swift in Sources */,
 				918324E125A9463C007460D4 /* ColorSet.swift in Sources */,
 				918AD40525BE6D7C00FCD903 /* AsyncImage.swift in Sources */,

@@ -32,7 +32,7 @@ struct SetListView: View {
                             VStack {
                                 Spacer()
                                 HStack {
-                                    Text(set.id!).fontWeight(.bold).colorInvert().padding()
+                                    SetIdView(setId: set.id!, fontWeight: .bold).colorInvert().padding()
                                     Spacer()
                                 }
                             }
