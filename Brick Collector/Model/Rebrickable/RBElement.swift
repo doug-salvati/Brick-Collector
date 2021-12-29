@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Element: Decodable, Identifiable {
+struct RBElement: Decodable, Identifiable {
     var id:String
     var img:String
     var name:String

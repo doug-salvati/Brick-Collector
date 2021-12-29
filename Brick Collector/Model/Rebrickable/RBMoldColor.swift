@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MoldColor: Decodable {
+struct RBMoldColor: Decodable {
     var colorId:Int
     var colorName:String
     var img:String

@@ -14,7 +14,7 @@ enum AddPartMethod: String {
 }
 
 struct ElementSelection: Identifiable {
-    var value: Element
+    var value: RBElement
     var id: String { value.id }
     var selected: Bool
 }
@@ -35,7 +35,7 @@ struct AddPartView: View {
     @State
     var selections:[ElementSelection] = []
 
-    func getSelections() -> [Element] {
+    func getSelections() -> [RBElement] {
         return selections.filter { element in
             element.selected
         }.map { element in

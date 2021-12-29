@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PartSelectionView: View {
-    var parts:[Element]
+    var parts:[RBElement]
     @Binding
     var selections:[ElementSelection]
     @State private var colorFilter:Int = -999
@@ -55,7 +55,7 @@ struct PartSelectionView: View {
 
 struct PartSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        let element = Element(id: "4106356", img: "foo.png", name: "Brick 2x4", colorId: 0)
+        let element = RBElement(id: "4106356", img: "foo.png", name: "Brick 2x4", colorId: 0)
         PartSelectionView(parts: [element], selections: .constant([])).frame(width: 300)
     }
 }

@@ -115,7 +115,7 @@ class AppManager: ObservableObject {
         }
     }
 
-    func upsertParts(elements:[Element]) {
+    func upsertParts(elements:[RBElement]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
         let context = PersistenceController.shared.container.viewContext
         elements.forEach { element in

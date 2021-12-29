@@ -22,7 +22,7 @@ extension Color {
     }
 }
 
-struct ElementColor: Decodable {
+struct RBElementColor: Decodable {
     var id:Int
     var hex:String
     var name:String?

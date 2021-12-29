@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Mold: Decodable {
+struct RBMold: Decodable {
     var partNum:String
     var name:String
     var img:String? // included on set inventory requests
