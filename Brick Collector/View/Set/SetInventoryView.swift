@@ -12,16 +12,33 @@ struct SetInventoryView: View {
     var inventory:[InventoryItem]
     
     var body: some View {
-        List {
-            ForEach(inventory) { item in
-                HStack {
-                    Text("\(item.quantity)x \(item.part!.id!)")
-                    Button("GO") {
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
+        ScrollView {
+            LazyVGrid(columns: columns) {
+                ForEach(inventory) { item in
+                    let part = item.part!
+                    Button(action: {
                         appManager.activeTab = .parts
-                        appManager.activePartFeature = item.part!
+                        appManager.activePartFeature = part
+                    }) {
+                        ZStack {
+                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                            if part.img != nil {
+                                Image(nsImage: NSImage(data: part.img!)!).resizable().scaledToFit().padding()
+                            } else {
+                                Image(systemName: "photo").foregroundColor(.black)
+                            }
+                            VStack {
+                                Spacer()
+                                HStack {
+                                    Text("\(item.quantity)x").fontWeight(.bold).colorInvert().padding()
+                                    Spacer()
+                                }
+                            }
+                        }
                     }
                 }
-            }
+            }.buttonStyle(.plain)
         }
     }
 }

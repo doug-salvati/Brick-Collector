@@ -31,7 +31,7 @@ struct PartFeatureView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Stepper(value: $quantity, in: Int(setCount)...(.max)) {
+                            Stepper(value: $quantity, in: max(Int(setCount),1)...(Int.max)) {
                                 Text(String(quantity))
                             }.font(.title)
                             Text(part.name!).font(.title2)
