@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct PartInventoryView: View {
+    @EnvironmentObject private var appManager: AppManager
     var inventory:[InventoryItem]
     
     var body: some View {
         List {
             ForEach(inventory) { usage in
-                Text("\(usage.quantity)x in \(usage.kit!.id!)")
+                HStack {
+                    Text("\(usage.quantity)x in \(usage.kit!.id!)")
+                    Button("GO") {
+                        appManager.activeTab = .sets
+                        appManager.activePartFeature = nil
+                        appManager.activeSetFeature = usage.kit!
+                    }
+                }
             }
         }
     }
@@ -21,6 +29,7 @@ struct PartInventoryView: View {
 
 struct PartInventoryView_Previews: PreviewProvider {
     static var previews: some View {
-        PartInventoryView(inventory: [])
+        let manager = RebrickableManagerPreview()
+        PartInventoryView(inventory: []).environmentObject(AppManager(using: manager))
     }
 }

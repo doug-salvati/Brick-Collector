@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SetListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+    @EnvironmentObject private var appManager: AppManager
+
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Kit.id, ascending: true)],
         animation: .default)
@@ -18,29 +19,43 @@ struct SetListView: View {
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
         let setCount = sets.reduce(0) { $0 + $1.quantity }
-        ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach(sets) { set in
-                    HStack {
-                        ZStack {
-                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
-                            if set.img != nil {
-                                Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit().padding()
-                            } else {
-                                Image(systemName: "photo").foregroundColor(.black)
-                            }
-                            VStack {
-                                Spacer()
-                                HStack {
-                                    SetIdView(setId: set.id!, fontWeight: .bold).colorInvert().padding()
-                                    Spacer()
+        VStack {
+            if appManager.activeSetFeature == nil {
+                ScrollView {
+                    LazyVGrid(columns: columns) {
+                        ForEach(sets) { set in
+                            Button(action: {
+                                withAnimation {
+                                    appManager.activeSetFeature = set
                                 }
-                            }
+                            }) {
+                                HStack {
+                                    ZStack {
+                                        Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                                        if set.img != nil {
+                                            Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit().padding()
+                                        } else {
+                                            Image(systemName: "photo").foregroundColor(.black)
+                                        }
+                                        VStack {
+                                            Spacer()
+                                            HStack {
+                                                SetIdView(setId: set.id!, fontWeight: .bold).colorInvert().padding()
+                                                Spacer()
+                                            }
+                                        }
+                                    }
+                                }
+                            }.buttonStyle(.plain)
                         }
                     }
+                    Text("\(setCount) Sets").font(.footnote).padding()
                 }
+            } else {
+                SetFeatureView(set: appManager.activeSetFeature!).transition(AnyTransition.move(edge: .trailing))
             }
-            Text("\(setCount) Sets").font(.footnote).padding()
+        }.onAppear {
+            appManager.activePartFeature = nil
         }
     }
 
