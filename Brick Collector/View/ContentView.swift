@@ -55,10 +55,10 @@ struct ContentView: View {
                         showModal = true
                     }) {
                         switch appManager.activeTab {
-                            case .parts: Label("Add Part", systemImage: "plus")
-                            case .sets: Label("Add Set", systemImage: "plus")
+                        case .parts: Label("Add Part", systemImage: "plus")
+                        case .sets: Label("Add Set", systemImage: "plus")
                         }
-                    }
+                    }.disabled(appManager.activePartFeature != nil || appManager.activeSetFeature != nil)
                 }
             }
         }.sheet(isPresented: $showModal) {
