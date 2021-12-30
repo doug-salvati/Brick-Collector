@@ -8,29 +8,23 @@
 import SwiftUI
 import CoreData
 
-enum AppView {
-    case sets
-    case parts
-}
-
 struct ContentView: View {
     @EnvironmentObject private var appManager: AppManager
     
     @State private var showModal = false
     @State private var showQueue = false
-    @State private var activeView: AppView = .parts
     
     var body: some View {
         VStack {
             VStack {
-                switch activeView {
+                switch appManager.activeTab {
                     case .parts: PartListView()
                     case .sets: SetListView()
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Picker(selection: $activeView, label: Text("View")) {
+                    Picker(selection: $appManager.activeTab, label: Text("View")) {
                         Text("Parts").tag(AppView.parts)
                         Text("Sets").tag(AppView.sets)
                     }.pickerStyle(SegmentedPickerStyle())
@@ -60,7 +54,7 @@ struct ContentView: View {
                     Button(action: {
                         showModal = true
                     }) {
-                        switch activeView {
+                        switch appManager.activeTab {
                             case .parts: Label("Add Part", systemImage: "plus")
                             case .sets: Label("Add Set", systemImage: "plus")
                         }
@@ -68,7 +62,7 @@ struct ContentView: View {
                 }
             }
         }.sheet(isPresented: $showModal) {
-            switch activeView {
+            switch appManager.activeTab {
             case .parts:
                 AddPartView(isPresented: $showModal)
                     .frame(width: 300, height: 500, alignment: .center)

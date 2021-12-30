@@ -16,6 +16,7 @@ enum ColorViewType {
 struct ColorNameView: View {
     var type:ColorViewType = .IconAndLabel
     var colorId:Int
+    var stroke:Color = Color("IconBorder")
     var color:PartColor? {
         colors.first(where: {$0.id == colorId})
     }
@@ -59,7 +60,7 @@ struct ColorNameView: View {
         Circle()
             .foregroundColor(Color(hex: color?.hex ?? "000000"))
             .fixedSize()
-            .overlay(Circle().stroke(.black), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .overlay(Circle().stroke(stroke), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
     }
     var label: some View {
         Text(colorDisplayName(id: colorId))

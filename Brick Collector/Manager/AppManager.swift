@@ -23,9 +23,17 @@ struct AppOperation {
     var dismissed:Bool = false
 }
 
+enum AppView {
+    case sets
+    case parts
+}
+
 class AppManager: ObservableObject {
     private var manager:RebrickableManager
     @Published var queue:[UUID:AppOperation] = [:]
+    @Published var activeTab:AppView = .parts
+    @Published var activePartFeature:Part?
+    @Published var activeSetFeature:Kit?
     
     init(using manager:RebrickableManager) {
         self.manager = manager
