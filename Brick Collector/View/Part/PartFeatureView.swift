@@ -21,7 +21,7 @@ struct PartFeatureView: View {
         HSplitView {
             VStack {
                 HStack {
-                    Button("Back") {
+                    Button("Close") {
                         withAnimation {
                             appManager.activePartFeature = nil
                         }

@@ -18,7 +18,7 @@ struct SetFeatureView: View {
         HSplitView {
             VStack {
                 HStack {
-                    Button("Back") {
+                    Button("Close") {
                         withAnimation {
                             appManager.activeSetFeature = nil
                         }
@@ -31,6 +31,7 @@ struct SetFeatureView: View {
                             Stepper(value: $quantity, in: 1...(.max)) {
                                 Text(String(quantity))
                             }.font(.title)
+                            SetIdView(setId: set.id!, fontWeight: .bold)
                             Text(set.name!).font(.title2)
                         }
                         Text(set.theme!)
@@ -43,6 +44,7 @@ struct SetFeatureView: View {
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {
+                Text("\(set.partCount) parts (\(inventory.count) unique)").fontWeight(.bold)
                 SetInventoryView(inventory: inventory)
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
