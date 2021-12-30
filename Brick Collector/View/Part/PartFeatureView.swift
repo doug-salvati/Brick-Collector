@@ -12,6 +12,11 @@ struct PartFeatureView: View {
 
     var part:Part
     @State private var quantity = 0
+    private var quantityChange:Int64 {
+        Int64(quantity) - part.quantity
+    }
+    @State private var showWarning = false
+    @State private var showTooltip = false
     
     var body: some View {
         let looseCount = part.loose
@@ -26,7 +31,28 @@ struct PartFeatureView: View {
                             appManager.activePartFeature = nil
                         }
                     }
+                    if quantityChange != 0 {
+                        Button("Save") {
+                            appManager.adjustQuantity(of: part, by: quantityChange)
+                        }
+                    }
                     Spacer()
+                    Button(action: {
+                        showWarning = true
+                    }) {
+                        Label("Delete Part", systemImage: "trash").labelStyle(.iconOnly)
+                    }.buttonStyle(.borderless).alert("Really delete \(part.name!)?", isPresented: $showWarning) {
+                        Button("Cancel", role: .cancel) { }
+                        Button(role: .destructive, action: {
+                            appManager.activePartFeature = nil
+                            appManager.delete(part: part)
+                        }) {
+                            Text("Delete")
+                        }
+                    }.disabled(part.quantity > part.loose)
+                        .popover(isPresented: $showTooltip) {
+                            Text("Part must not be used in any sets to be deleted.").padding()
+                        }.onHover { showTooltip = $0 && part.quantity > part.loose}
                 }
                 HStack {
                     VStack(alignment: .leading) {

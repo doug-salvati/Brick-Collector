@@ -12,6 +12,10 @@ struct SetFeatureView: View {
 
     var set:Kit
     @State private var quantity = 0
+    private var quantityChange:Int64 {
+        Int64(quantity) - set.quantity
+    }
+    @State private var showWarning = false
     
     var body: some View {
         let inventory = set.inventory!.allObjects as! [InventoryItem]
@@ -23,7 +27,25 @@ struct SetFeatureView: View {
                             appManager.activeSetFeature = nil
                         }
                     }
+                    if quantityChange != 0 {
+                        Button("Save") {
+                            appManager.adjustQuantity(of: set, by: quantityChange)
+                        }
+                    }
                     Spacer()
+                    Button(action: {
+                        showWarning = true
+                    }) {
+                        Label("Delete Set", systemImage: "trash").labelStyle(.iconOnly)
+                    }.buttonStyle(.borderless).alert("Really delete \(set.name!)?", isPresented: $showWarning) {
+                        Button("Cancel", role: .cancel) { }
+                        Button(role: .destructive, action: {
+                            appManager.activeSetFeature = nil
+                            appManager.delete(set: set)
+                        }) {
+                            Text("Delete")
+                        }
+                    }
                 }
                 HStack {
                     VStack(alignment: .leading) {

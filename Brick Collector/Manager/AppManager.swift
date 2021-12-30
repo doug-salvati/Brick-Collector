@@ -13,6 +13,10 @@ enum AppOperationType {
     case UpsertPart
     case UpsertSet
     case DownloadImagesForSet
+    case UpdatePartQuantity
+    case UpdateSetQuantity
+    case DeleteSet
+    case DeletePart
 }
 
 struct AppOperation {
@@ -27,6 +31,20 @@ enum AppView {
     case sets
     case parts
 }
+
+enum AppError: Error {
+    case DeletingUsedPart
+}
+
+extension AppError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .DeletingUsedPart:
+            return NSLocalizedString("Can't delete part because it's being used by a set.", comment: "Refuse to delete parts that aren't loose")
+        }
+    }
+}
+
 
 class AppManager: ObservableObject {
     private var manager:RebrickableManager
@@ -276,6 +294,90 @@ class AppManager: ObservableObject {
         group.notify(queue: .main) {
             DispatchQueue(label: "downloadImage").async {
                 self.downloadImages(forSet: set.id, withParts: imageMap)
+            }
+        }
+    }
+    
+    func adjustQuantity(of part:Part, by difference:Int64) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdatePartQuantity, description: "Updating quantity of part \(part.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        let change = max(-part.loose, difference)
+        part.quantity += change
+        part.loose += change
+
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    func adjustQuantity(of kit:Kit, by difference:Int64) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdateSetQuantity, description: "Updating quantity of set \(kit.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        let change = max(-kit.quantity, difference)
+        kit.quantity += change
+        
+        let inventory = kit.inventory!.allObjects as! [InventoryItem]
+        inventory.forEach { item in
+            item.part!.quantity += change * item.quantity
+        }
+
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    func delete(set kit:Kit) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdateSetQuantity, description: "Deleting set \(kit.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        let inventory = kit.inventory!.allObjects as! [InventoryItem]
+        inventory.forEach { item in
+            let part = item.part!
+            part.quantity -= kit.quantity * item.quantity
+            if (part.quantity == 0) {
+                context.delete(part)
+            }
+            context.delete(item)
+        }
+        context.delete(kit)
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    func delete(part:Part) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdateSetQuantity, description: "Deleting part \(part.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        if (part.quantity != part.loose) {
+            self.finish(opId: id, withError: AppError.DeletingUsedPart)
+        }
+        context.delete(part)
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
             }
         }
     }
