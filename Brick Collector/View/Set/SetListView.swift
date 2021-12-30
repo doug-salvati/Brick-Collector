@@ -40,9 +40,10 @@ struct SetListView: View {
                                         VStack {
                                             Spacer()
                                             HStack {
-                                                SetIdView(setId: set.id!, fontWeight: .bold).colorInvert().padding()
+                                                SetIdView(setId: set.id!, fontWeight: .bold).colorInvert()
+                                                Text(set.quantity > 1 ? "(\(set.quantity))" : "").fontWeight(.bold).colorInvert()
                                                 Spacer()
-                                            }
+                                            }.padding()
                                         }
                                     }
                                 }
