@@ -58,7 +58,7 @@ struct ContentView: View {
                         case .parts: Label("Add Part", systemImage: "plus")
                         case .sets: Label("Add Set", systemImage: "plus")
                         }
-                    }.disabled(appManager.activePartFeature != nil || appManager.activeSetFeature != nil)
+                    }
                 }
             }
         }.sheet(isPresented: $showModal) {

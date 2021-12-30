@@ -49,6 +49,8 @@ struct SetFeatureView: View {
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(set.quantity)
+        }.onChange(of: set.quantity) { newQuantity in
+            quantity = Int(newQuantity)
         }
     }
 }

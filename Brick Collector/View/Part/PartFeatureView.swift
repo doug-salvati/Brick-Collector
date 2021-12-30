@@ -53,6 +53,8 @@ struct PartFeatureView: View {
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(part.quantity)
+        }.onChange(of: part.quantity) { newQuantity in
+            quantity = Int(newQuantity)
         }
     }
 }
