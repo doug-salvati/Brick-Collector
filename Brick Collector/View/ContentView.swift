@@ -86,7 +86,7 @@ struct ContentView: View {
                 AddSetView(isPresented: $showModal)
                     .frame(width: 300, height: 500, alignment: .center)
             }
-        }.frame(width: 800, height: 500, alignment: .center)
+        }.frame(idealWidth: 800, idealHeight: 500, alignment: .center)
     }
 }
 

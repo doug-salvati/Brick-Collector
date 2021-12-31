@@ -25,6 +25,7 @@
 		911AD527277D389D005EB716 /* SetFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD526277D389D005EB716 /* SetFeatureView.swift */; };
 		911AD529277D3990005EB716 /* SetInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD528277D3990005EB716 /* SetInventoryView.swift */; };
 		911AD52B277E8649005EB716 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD52A277E8649005EB716 /* Utils.swift */; };
+		911AD52D277E9802005EB716 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD52C277E9802005EB716 /* AppDelegate.swift */; };
 		918324CF25A9340C007460D4 /* RBElementColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324CE25A9340C007460D4 /* RBElementColor.swift */; };
 		918324DC25A94515007460D4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324DB25A94515007460D4 /* Preferences.swift */; };
 		918324E125A9463C007460D4 /* ColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918324E025A9463C007460D4 /* ColorSet.swift */; };
@@ -80,6 +81,7 @@
 		911AD526277D389D005EB716 /* SetFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetFeatureView.swift; sourceTree = "<group>"; };
 		911AD528277D3990005EB716 /* SetInventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetInventoryView.swift; sourceTree = "<group>"; };
 		911AD52A277E8649005EB716 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		911AD52C277E9802005EB716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		918324CE25A9340C007460D4 /* RBElementColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBElementColor.swift; sourceTree = "<group>"; };
 		918324DB25A94515007460D4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		918324E025A9463C007460D4 /* ColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSet.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				91ECB81125A25913008C5F72 /* Brick_Collector.xcdatamodeld */,
 				91ECB80C25A25913008C5F72 /* Preview Content */,
 				9107F53D25A40BCC00978EC6 /* Model */,
+				911AD52C277E9802005EB716 /* AppDelegate.swift */,
 			);
 			path = "Brick Collector";
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				91ECB81325A25913008C5F72 /* Brick_Collector.xcdatamodeld in Sources */,
 				918324CF25A9340C007460D4 /* RBElementColor.swift in Sources */,
 				911A53E125AB9C73002F03E9 /* ColorNameView.swift in Sources */,
+				911AD52D277E9802005EB716 /* AppDelegate.swift in Sources */,
 				9110E0E7277419AE00A7F3F7 /* GalleryToggleStyle.swift in Sources */,
 				91B8647A277AAABE00638F4D /* RBTheme.swift in Sources */,
 				9107F53925A40BC700978EC6 /* RBElement.swift in Sources */,

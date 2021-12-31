@@ -15,6 +15,7 @@ var appManager = AppManager(using: Globals.rebrickableManager)
 
 @main
 struct Brick_CollectorApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
@@ -26,6 +27,8 @@ struct Brick_CollectorApp: App {
                 .onAppear(perform: {
                     // TODO: update colors once a week
                 })
+        }.commands {
+            CommandGroup(replacing: .newItem, addition: { })
         }
         #if os(macOS)
         Settings {
