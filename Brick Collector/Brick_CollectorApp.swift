@@ -29,6 +29,25 @@ struct Brick_CollectorApp: App {
                 })
         }.commands {
             CommandGroup(replacing: .newItem, addition: { })
+            CommandGroup(before: .toolbar) {
+                Button("Parts") {
+                    appManager.activeTab = .parts
+                }.keyboardShortcut("1")
+                Button("Sets") {
+                    appManager.activeTab = .sets
+                }.keyboardShortcut("2")
+                Divider()
+            }
+            CommandMenu("Collection") {
+                Button("Add Part") {
+                    appManager.activeTab = .parts
+                    appManager.showAdditionModal = true
+                }.keyboardShortcut("P")
+                Button("Add Set") {
+                    appManager.activeTab = .sets
+                    appManager.showAdditionModal = true
+                }.keyboardShortcut("S")
+            }
         }
         #if os(macOS)
         Settings {

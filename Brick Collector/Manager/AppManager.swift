@@ -52,6 +52,7 @@ class AppManager: ObservableObject {
     @Published var activeTab:AppView = .parts
     @Published var activePartFeature:Part?
     @Published var activeSetFeature:Kit?
+    @Published var showAdditionModal:Bool = false
     
     init(using manager:RebrickableManager) {
         self.manager = manager

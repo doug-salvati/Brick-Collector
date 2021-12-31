@@ -11,7 +11,6 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject private var appManager: AppManager
     
-    @State private var showModal = false
     @State private var showQueue = false
     @State private var showFilter = false
     @State private var focusFilter = false
@@ -68,7 +67,7 @@ struct ContentView: View {
                 }
                 ToolbarItem {
                     Button(action: {
-                        showModal = true
+                        appManager.showAdditionModal = true
                     }) {
                         switch appManager.activeTab {
                         case .parts: Label("Add Part", systemImage: "plus")
@@ -77,13 +76,13 @@ struct ContentView: View {
                     }
                 }
             }
-        }.sheet(isPresented: $showModal) {
+        }.sheet(isPresented: $appManager.showAdditionModal) {
             switch appManager.activeTab {
             case .parts:
-                AddPartView(isPresented: $showModal)
+                AddPartView(isPresented: $appManager.showAdditionModal)
                     .frame(width: 300, height: 500, alignment: .center)
             case .sets:
-                AddSetView(isPresented: $showModal)
+                AddSetView(isPresented: $appManager.showAdditionModal)
                     .frame(width: 300, height: 500, alignment: .center)
             }
         }.frame(idealWidth: 800, idealHeight: 500, alignment: .center)
