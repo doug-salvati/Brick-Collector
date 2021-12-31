@@ -13,13 +13,16 @@ struct ContentView: View {
     
     @State private var showModal = false
     @State private var showQueue = false
+    @State private var showFilter = false
+    @State private var focusFilter = false
+    @State private var activeFilter = ""
     
     var body: some View {
         VStack {
             VStack {
                 switch appManager.activeTab {
-                    case .parts: PartListView()
-                    case .sets: SetListView()
+                case .parts: PartListView(filter: activeFilter)
+                case .sets: SetListView(filter: activeFilter)
                 }
             }
             .toolbar {
@@ -48,6 +51,19 @@ struct ContentView: View {
                                   arrowEdge: .bottom) {
                             AppOperationQueueView()
                         }
+                    }
+                }
+                ToolbarItem {
+                    if !showFilter {
+                        Button(action: {
+                            showFilter = true
+                        }) {
+                            Label("Filter", systemImage: activeFilter.isEmpty ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
+                        }
+                    } else {
+                        TextField("Filter", text: $activeFilter, onEditingChanged: { editing in
+                            showFilter = editing
+                        }).textFieldStyle(.roundedBorder).frame(width: 200)
                     }
                 }
                 ToolbarItem {

@@ -15,15 +15,42 @@ struct SetListView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Kit.id, ascending: true)],
         animation: .default)
     private var sets: FetchedResults<Kit>
+    private var filteredSets: [Kit] {
+        sets.filter {
+            (
+                filter == nil ||
+                filter == "" ||
+                $0.name!.filterable().contains(filter!.filterable())
+            ) && (
+                themeFilter == "All" ||
+                themeFilter == $0.theme!
+            )
+        }
+    }
+    var filter:String?
+    @State private var themeFilter:String = "All"
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
         let setCount = sets.reduce(0) { $0 + $1.quantity }
+        let themeNames = Set(sets.map { $0.theme! })
         VStack {
             if appManager.activeSetFeature == nil {
+                HStack {
+                    Picker(selection: $themeFilter, content: {
+                        Text("All").tag("All")
+                        ForEach(Array(themeNames).sorted(), id: \.self) {
+                            Text($0).tag($0)
+                        }
+                    }) {
+                        Label("Color", systemImage: "tag").labelStyle(.iconOnly)
+                    }.frame(width: 200).padding()
+                    Spacer()
+                    Text("\(setCount) Sets").font(.title2).padding()
+                }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(sets) { set in
+                        ForEach(filteredSets) { set in
                             Button(action: {
                                 withAnimation {
                                     appManager.activeSetFeature = set
@@ -45,12 +72,11 @@ struct SetListView: View {
                                                 Spacer()
                                             }.padding()
                                         }
-                                    }
+                                    }.clipped()
                                 }
                             }.buttonStyle(.plain)
                         }
                     }
-                    Text("\(setCount) Sets").font(.footnote).padding()
                 }
             } else {
                 SetFeatureView(set: appManager.activeSetFeature!).transition(AnyTransition.move(edge: .trailing))

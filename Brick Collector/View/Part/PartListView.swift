@@ -15,15 +15,41 @@ struct PartListView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Part.id, ascending: true)],
         animation: .default)
     private var parts: FetchedResults<Part>
+    private var filteredParts: [Part] {
+        parts.filter {
+            (
+                filter == nil ||
+                filter == "" ||
+                $0.name!.filterable().contains(filter!.filterable())
+            ) && (
+                colorFilter == -999 ||
+                colorFilter == $0.colorId
+            )
+        }
+    }
+    var filter:String?
+    @State private var colorFilter:Int = -999
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
         let partCount = parts.reduce(0) { $0 + $1.quantity }
+        let colorIds = Set(parts.map { Int($0.colorId) })
+        
         VStack {
             if appManager.activePartFeature == nil {
+                HStack {
+                    Picker(selection: $colorFilter, content: {
+                        Text("All").tag(-999)
+                        ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
+                    }) {
+                        Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)
+                    }.frame(width: 200).padding()
+                    Spacer()
+                    Text("\(partCount) Parts (\(parts.count) Unique)").font(.title2).padding()
+                }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(parts) { part in
+                        ForEach(filteredParts) { part in
                             Button(action: {
                                 withAnimation {
                                     appManager.activePartFeature = part
@@ -48,12 +74,11 @@ struct PartListView: View {
                                                 Spacer()
                                             }
                                         }
-                                    }
+                                    }.clipped()
                                 }
                             }.buttonStyle(.plain)
                         }
                     }
-                    Text("\(partCount) Parts (\(parts.count) Unique)").font(.footnote).padding()
                 }
             } else {
                 PartFeatureView(part: appManager.activePartFeature!).transition(AnyTransition.move(edge: .trailing))
