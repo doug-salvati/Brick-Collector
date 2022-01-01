@@ -17,6 +17,7 @@ enum AppOperationType {
     case UpdateSetQuantity
     case DeleteSet
     case DeletePart
+    case ImportFile
 }
 
 struct AppOperation {
@@ -34,6 +35,7 @@ enum AppView {
 
 enum AppError: Error {
     case DeletingUsedPart
+    case FileReadError
 }
 
 extension AppError: LocalizedError {
@@ -41,6 +43,8 @@ extension AppError: LocalizedError {
         switch self {
         case .DeletingUsedPart:
             return NSLocalizedString("Can't delete part because it's being used by a set.", comment: "Refuse to delete parts that aren't loose")
+        case .FileReadError:
+            return NSLocalizedString("Unable to import the file.", comment: "Error parsing XML")
         }
     }
 }
@@ -53,6 +57,7 @@ class AppManager: ObservableObject {
     @Published var activePartFeature:Part?
     @Published var activeSetFeature:Kit?
     @Published var showAdditionModal:Bool = false
+    @Published var importing = false
     
     init(using manager:RebrickableManager) {
         self.manager = manager
@@ -98,6 +103,14 @@ class AppManager: ObservableObject {
         }
     }
     
+    func issueError(type:AppOperationType, description:String, error:AppError) {
+        let op = AppOperation(type: type, description: description, done: true, error: error)
+        let uuid:UUID = UUID()
+        DispatchQueue.main.async {
+            self.queue[uuid] = op
+        }
+    }
+    
     func isLoading() -> Bool {
         return queue.filter({!$0.value.done}).count > 0
     }
@@ -112,7 +125,7 @@ class AppManager: ObservableObject {
     
     func updateColors() async {
         let id:UUID = self.queue(op: AppOperation(type: .UpdateColors, description: "Get colors"))
-        await manager.getColors { response in
+        await manager.updateColors { response in
             guard response.error == nil else {
                 DispatchQueue.main.async {
                     self.finish(opId: id, withError: response.error!)

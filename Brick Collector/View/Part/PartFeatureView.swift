@@ -30,7 +30,7 @@ struct PartFeatureView: View {
                         withAnimation {
                             appManager.activePartFeature = nil
                         }
-                    }
+                    }.keyboardShortcut(.cancelAction)
                     if quantityChange != 0 {
                         Button("Save") {
                             appManager.adjustQuantity(of: part, by: quantityChange)
@@ -42,7 +42,7 @@ struct PartFeatureView: View {
                     }) {
                         Label("Delete Part", systemImage: "trash").labelStyle(.iconOnly)
                     }.buttonStyle(.borderless).alert("Really delete \(part.name!)?", isPresented: $showWarning) {
-                        Button("Cancel", role: .cancel) { }
+                        Button("Cancel", role: .cancel) { }.keyboardShortcut(.cancelAction)
                         Button(role: .destructive, action: {
                             appManager.activePartFeature = nil
                             appManager.delete(part: part)
@@ -53,6 +53,7 @@ struct PartFeatureView: View {
                         .popover(isPresented: $showTooltip) {
                             Text("Part must not be used in any sets to be deleted.").padding()
                         }.onHover { showTooltip = $0 && part.quantity > part.loose}
+                        .keyboardShortcut("D")
                 }
                 HStack {
                     VStack(alignment: .leading) {

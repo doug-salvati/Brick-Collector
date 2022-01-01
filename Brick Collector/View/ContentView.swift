@@ -58,7 +58,7 @@ struct ContentView: View {
                             showFilter = true
                         }) {
                             Label("Filter", systemImage: activeFilter.isEmpty ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
-                        }
+                        }.keyboardShortcut("F")
                     } else {
                         TextField("Filter", text: $activeFilter, onEditingChanged: { editing in
                             showFilter = editing

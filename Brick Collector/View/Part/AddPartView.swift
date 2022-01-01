@@ -51,45 +51,54 @@ struct AddPartView: View {
         VStack {
             VStack {
                 HStack {
-                    Text("Add Part")
+                    Text("Add Parts")
                         .font(.largeTitle)
                     Spacer()
                 }
-                Picker(selection: $method, label: Text("by:")) {
-                    Text("Element ID").tag(AddPartMethod.byElement)
-                    Text("Part ID").tag(AddPartMethod.byMoldAndColor)
-                    Text("Set").tag(AddPartMethod.bySet)
-                }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
-                    manager.resetParts()
+                if !appManager.importing {
+                    Picker(selection: $method, label: Text("by:")) {
+                        Text("Element ID").tag(AddPartMethod.byElement)
+                        Text("Part ID").tag(AddPartMethod.byMoldAndColor)
+                        Text("Set").tag(AddPartMethod.bySet)
+                    }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
+                        manager.resetParts()
+                    }
                 }
             }.padding(.bottom)
-            
-            HStack {
-                TextField(placeholders[method]!, text: $input)
-                if method == .bySet {
-                    Picker("Suffix", selection: $suffix) {
-                        Text("No Suffix").tag("")
-                        ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
-                    }.labelsHidden()
-                }
-                Button(action: {
-                    Task {
-                        switch method {
-                        case .byElement:
-                            await manager.searchParts(byElementId: input)
-                        case .byMoldAndColor:
-                            await manager.searchParts(byPartId: input)
-                        case .bySet:
-                            await manager.searchParts(bySetId: setSearch)
-                        }
+
+            if !appManager.importing {
+                HStack {
+                    TextField(placeholders[method]!, text: $input)
+                    if method == .bySet {
+                        Picker("Suffix", selection: $suffix) {
+                            Text("No Suffix").tag("")
+                            ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
+                        }.labelsHidden()
                     }
-                }) {
-                    Text("Search")
-                }.disabled(input.isEmpty)
+                    Button(action: {
+                        Task {
+                            switch method {
+                            case .byElement:
+                                await manager.searchParts(byElementId: input)
+                            case .byMoldAndColor:
+                                await manager.searchParts(byPartId: input)
+                            case .bySet:
+                                await manager.searchParts(bySetId: setSearch)
+                            }
+                        }
+                    }) {
+                        Text("Search")
+                    }.disabled(input.isEmpty)
+                }
             }
             Spacer()
             if manager.searchedParts.loading {
-                ProgressView()
+                VStack {
+                    ProgressView().padding()
+                    if appManager.importing {
+                        Text("Fetching data at reduced speed. Please be patient.").font(.footnote).italic().multilineTextAlignment(.center)
+                    }
+                }
             } else if manager.searchedParts.result != nil {
                 PartSelectionView(parts: (manager.searchedParts.result)!, selections: $selections)
             } else {
@@ -100,14 +109,16 @@ struct AddPartView: View {
                 Button(action:{
                     manager.resetParts()
                     isPresented = false
+                    appManager.importing = false
                 }) {
                     Text("Cancel")
-                }
+                }.disabled(appManager.importing)
                 Spacer()
                 Button(action:{
                     appManager.upsertParts(elements: getSelections())
                     manager.resetParts()
                     isPresented = false
+                    appManager.importing = false
                 }) {
                     let partCount = getSelections().count
                     switch partCount {
@@ -122,7 +133,7 @@ struct AddPartView: View {
             }
         }.padding().onReceive(manager.$searchedParts) { newParts in
             self.selections = (newParts.result ?? []).map { part in
-                return ElementSelection(value: part, selected: method != .byMoldAndColor)
+                return ElementSelection(value: part, selected: appManager.importing || method != .byMoldAndColor)
             }
         }
     }

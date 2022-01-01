@@ -91,21 +91,11 @@ class RebrickableManager: ObservableObject {
     }
     
     func searchParts(byPartId part:String) async {
-        let partUrl = URL(string: "\(RebrickableManager.endpoint)/parts/\(part)/\(queryParams)")
-        let colorsUrl = URL(string: "\(RebrickableManager.endpoint)/parts/\(part)/colors/\(queryParams)&page_size=1000")
-        if partUrl == nil || colorsUrl == nil {
-            let result = RebrickableResult<[RBElement]>(error: RebrickableError.InvalidURL)
-            self.searchedParts = result
-        }
         self.searchedParts.loading = true
         var result:RebrickableResult<[RBElement]>
-        var mold:RBMold
-        var moldColors:[RBMoldColor]
         do {
-            let (partData, _) = try await URLSession.shared.data(from: partUrl!)
-            mold = try JSONDecoder().decode(RBMold.self, from: partData)
-            let (colorData, _) = try await URLSession.shared.data(from: colorsUrl!)
-            moldColors = try JSONDecoder().decode(ArrayResults<RBMoldColor>.self, from: colorData).results
+            let mold = try await getMold(byId: part)
+            let moldColors = try await getMoldColors(byMoldId: part)
             let elements:[RBElement] = moldColors.map { moldColor in
                 let id = moldColor.elements.first ?? "\(mold.partNum) (\(moldColor.colorName))"
                 return RBElement(id: id, img: moldColor.img, name: mold.name, colorId: moldColor.colorId)
@@ -137,14 +127,45 @@ class RebrickableManager: ObservableObject {
         self.searchedParts = result
     }
     
+    func searchParts(byBricklinkItems items:[BrickLinkXMLItem]) async {
+        self.searchedParts.loading = true
+        var result:RebrickableResult<[RBElement]>
+        var elements:[RBElement] = []
+        do {
+            let colors = try await getColors()
+            try await items.asyncForEach { item in
+                sleep(2)
+                let mold = try await getMold(byBricklinkId: item.id)
+                guard mold != nil else { return }
+                let moldColors = try await getMoldColors(byMoldId: mold!.partNum)
+                let color = colors.first(where: { $0.bricklinkId != nil && String($0.bricklinkId!) == item.colorId })
+                guard color != nil else { return }
+                let moldColor = moldColors.first(where: { $0.colorId == color!.id })
+                guard moldColor != nil else { return }
+                let id = moldColor!.elements.first ?? "\(mold!.partNum) (\(moldColor!.colorName))"
+                let element = RBElement(id: id, img: moldColor!.img, name: mold!.name, colorId: moldColor!.colorId)
+                elements.append(element)
+            }
+            if elements.isEmpty {
+                print("oops")
+                result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
+            } else {
+                result = RebrickableResult<[RBElement]>(result: elements)
+            }
+        } catch let error {
+            print(error)
+            result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
+        }
+        self.searchedParts = result
+    }
+    
     func searchSet(byId id:String) async {
         self.searchedSet.loading = true
         var result:RebrickableResult<RBSet>
         do {
             let set = try await getSet(byId: id)
             result = RebrickableResult<RBSet>(result: set)
-        } catch let error {
-            print(error.localizedDescription)
+        } catch {
             result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
         }
         self.searchedSet = result
@@ -164,6 +185,24 @@ class RebrickableManager: ObservableObject {
             result = RebrickableResult<[RBInventoryItem]>(error: RebrickableError.PartRetrievalFailure)
         }
         self.searchedInventory = result
+    }
+    
+    func getMold(byId id:String) async throws -> RBMold {
+        let moldUrl = URL(string: "\(RebrickableManager.endpoint)/parts/\(id)/\(queryParams)")
+        let (moldData, _) = try await URLSession.shared.data(from: moldUrl!)
+        return try JSONDecoder().decode(RBMold.self, from: moldData)
+    }
+    
+    func getMold(byBricklinkId id:String) async throws -> RBMold? {
+        let moldUrl = URL(string: "\(RebrickableManager.endpoint)/parts/\(queryParams)&bricklink_id=\(id)")
+        let (moldData, _) = try await URLSession.shared.data(from: moldUrl!)
+        return try JSONDecoder().decode(ArrayResults<RBMold>.self, from: moldData).results.first
+    }
+    
+    func getMoldColors(byMoldId id:String) async throws -> [RBMoldColor] {
+        let colorsUrl = URL(string: "\(RebrickableManager.endpoint)/parts/\(id)/colors/\(queryParams)&page_size=1000")
+        let (colorData, _) = try await URLSession.shared.data(from: colorsUrl!)
+        return try JSONDecoder().decode(ArrayResults<RBMoldColor>.self, from: colorData).results
     }
     
     func getMinifigs(bySetId set:String) async throws -> [MinifigInventoryItem] {
@@ -205,6 +244,12 @@ class RebrickableManager: ObservableObject {
         return try JSONDecoder().decode(RBTheme.self, from: themeData).name
     }
     
+    func getColors() async throws -> [RBElementColor] {
+        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=200")
+        let (data, _) = try await URLSession.shared.data(from: url!)
+        return try JSONDecoder().decode(ArrayResults<RBElementColor>.self, from: data).results
+    }
+    
     func resetParts() {
         self.searchedParts = RebrickableResult<[RBElement]>()
     }
@@ -213,18 +258,12 @@ class RebrickableManager: ObservableObject {
         self.searchedSet = RebrickableResult<RBSet>()
     }
     
-    func getColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
-        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=200")
-        if url == nil {
-            let result = RebrickableResult<[RBElementColor]>(error: RebrickableError.InvalidURL)
-            self.colors = result
-        }
+    func updateColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
         self.colors.loading = true
         var result:RebrickableResult<[RBElementColor]>
         do {
-            let (data, _) = try await URLSession.shared.data(from: url!)
-            let json = try JSONDecoder().decode(ArrayResults<RBElementColor>.self, from: data)
-            result = RebrickableResult<[RBElementColor]>(result: json.results)
+            let colors = try await getColors()
+            result = RebrickableResult<[RBElementColor]>(result: colors)
         } catch {
             result = RebrickableResult<[RBElementColor]>(error: RebrickableError.ColorRetrievalFailure)
         }
@@ -253,7 +292,7 @@ class RebrickableManagerPreview: RebrickableManager {
         await searchParts(byElementId: "elementId")
     }
     
-    override func getColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
+    override func updateColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
         let result = RebrickableResult<[RBElementColor]>(result: [])
         self.colors = result
         callback(result)

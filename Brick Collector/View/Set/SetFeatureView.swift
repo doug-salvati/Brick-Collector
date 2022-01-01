@@ -26,7 +26,7 @@ struct SetFeatureView: View {
                         withAnimation {
                             appManager.activeSetFeature = nil
                         }
-                    }
+                    }.keyboardShortcut(.cancelAction)
                     if quantityChange != 0 {
                         Button("Save") {
                             appManager.adjustQuantity(of: set, by: quantityChange)
@@ -38,14 +38,14 @@ struct SetFeatureView: View {
                     }) {
                         Label("Delete Set", systemImage: "trash").labelStyle(.iconOnly)
                     }.buttonStyle(.borderless).alert("Really delete \(set.name!)?", isPresented: $showWarning) {
-                        Button("Cancel", role: .cancel) { }
+                        Button("Cancel", role: .cancel) { }.keyboardShortcut(.cancelAction)
                         Button(role: .destructive, action: {
                             appManager.activeSetFeature = nil
                             appManager.delete(set: set)
                         }) {
                             Text("Delete")
                         }
-                    }
+                    }.keyboardShortcut("D")
                 }
                 HStack {
                     VStack(alignment: .leading) {

@@ -17,7 +17,8 @@ var appManager = AppManager(using: Globals.rebrickableManager)
 struct Brick_CollectorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
-
+    @State private var importXML = false
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -27,8 +28,36 @@ struct Brick_CollectorApp: App {
                 .onAppear(perform: {
                     // TODO: update colors once a week
                 })
+                .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml]) { result in
+                    do {
+                        let selectedFile: URL = try result.get()
+                        let input = try Data(contentsOf: selectedFile)
+                        let parser = BrickLinkParser(data: input)
+                        if parser.parse() {
+                            appManager.importing = true
+                            appManager.activeTab = .parts
+                            appManager.showAdditionModal = true
+                            DispatchQueue(label: "loadXML").async {
+                                Task {
+                                    await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+                                }
+                            }
+                        } else {
+                            appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
+                        }
+                    } catch {
+                        appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
+                    }
+
+                }
         }.commands {
-            CommandGroup(replacing: .newItem, addition: { })
+            CommandGroup(replacing: .newItem) {
+                Menu("Import") {
+                    Button("BrickLink XML") {
+                        importXML = true
+                    }
+                }
+            }
             CommandGroup(before: .toolbar) {
                 Button("Parts") {
                     appManager.activeTab = .parts

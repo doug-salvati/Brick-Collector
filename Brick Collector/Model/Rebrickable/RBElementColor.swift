@@ -28,6 +28,7 @@ struct RBElementColor: Decodable {
     var name:String?
     var rebrickableName:String
     var bricklinkName:String?
+    var bricklinkId:Int?
     var rgb:Color {
         return Color(hex)
     }
@@ -41,7 +42,7 @@ struct RBElementColor: Decodable {
     }
     
     enum VendorCodingKey: String, CodingKey {
-        case ext_descrs
+        case ext_ids, ext_descrs
     }
     
     init(from decoder:Decoder) throws {
@@ -57,20 +58,7 @@ struct RBElementColor: Decodable {
         let bricklink = try? externalIds.nestedContainer(keyedBy: VendorCodingKey.self, forKey: .BrickLink)
         if bricklink != nil {
             bricklinkName = try? bricklink!.decode([[String]].self, forKey: .ext_descrs)[0][0]
+            bricklinkId = try? bricklink!.decode([Int].self, forKey: .ext_ids)[0]
         }
-    }
-    
-    init(
-        id:Int,
-        hex:String,
-        name:String,
-        rebrickableName:String,
-        bricklinkName:String
-    ) {
-        self.id = id
-        self.hex = hex
-        self.name = name
-        self.rebrickableName = rebrickableName
-        self.bricklinkName = bricklinkName
     }
 }
