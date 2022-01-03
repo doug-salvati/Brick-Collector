@@ -134,7 +134,7 @@ class RebrickableManager: ObservableObject {
         do {
             let colors = try await getColors()
             try await items.asyncForEach { item in
-                sleep(2)
+                sleep(2) // TODO: can we reduce the number of requests to prevent throttling?
                 let mold = try await getMold(byBricklinkId: item.id)
                 guard mold != nil else { return }
                 let moldColors = try await getMoldColors(byMoldId: mold!.partNum)

@@ -112,7 +112,7 @@ struct AddPartView: View {
                     appManager.importing = false
                 }) {
                     Text("Cancel")
-                }.disabled(appManager.importing)
+                }.disabled(appManager.importing && manager.searchedParts.loading)
                 Spacer()
                 Button(action:{
                     appManager.upsertParts(elements: getSelections())
