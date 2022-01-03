@@ -12,7 +12,6 @@ struct ContentView: View {
     @EnvironmentObject private var appManager: AppManager
     
     @State private var showQueue = false
-    @State private var showFilter = false
     @State private var focusFilter = false
     @State private var activeFilter = ""
     
@@ -53,17 +52,8 @@ struct ContentView: View {
                     }
                 }
                 ToolbarItem {
-                    if !showFilter {
-                        Button(action: {
-                            showFilter = true
-                        }) {
-                            Label("Filter", systemImage: activeFilter.isEmpty ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
-                        }.keyboardShortcut("F")
-                    } else {
-                        TextField("Filter", text: $activeFilter, onEditingChanged: { editing in
-                            showFilter = editing
-                        }).textFieldStyle(.roundedBorder).frame(width: 200)
-                    }
+                        TextField("Filter", text: $activeFilter
+                        ).textFieldStyle(.roundedBorder).frame(width: 200)
                 }
                 ToolbarItem {
                     Button(action: {
