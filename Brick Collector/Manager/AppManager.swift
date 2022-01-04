@@ -224,6 +224,52 @@ class AppManager: ObservableObject {
 
     }
     
+    func insertCustomPart(id:String, name:String, color:String, img:String, loose:String) {
+        let context = PersistenceController.shared.container.viewContext
+        let newPart = Part(context: context)
+        newPart.id = id
+        newPart.name = name
+        let partCount = Int64(loose)
+        if partCount != nil {
+            newPart.quantity = partCount!
+            newPart.loose = partCount!
+        } else {
+            print(" - unable to read part quantity")
+            return
+        }
+        
+        let fetchRequest = PartColor.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "rebrickableName == %@", color)
+        do {
+            let result:PartColor? = try context.fetch(fetchRequest).first
+            if result != nil {
+                newPart.colorId = result!.id
+            } else {
+                print(" - unrecognized color")
+            }
+        } catch {
+            print(" - failed to search for color")
+        }
+        
+        if img != "no_img.png" {
+            let imgUrl = URL(fileURLWithPath: "/Library/Application Support/com.dsalvati.brickcollector/part_images/\(img)")
+            do {
+                let imgData = try Data(contentsOf: imgUrl)
+                newPart.img = imgData
+            } catch {
+                print(" - unable to transfer image data, leaving as no img")
+            }
+        }
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+            } catch {
+                print("unable to save part \(id)")
+            }
+        }
+    }
+    
     func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertSet, description: "Insert set"))
         let context = PersistenceController.shared.container.viewContext

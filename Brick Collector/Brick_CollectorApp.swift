@@ -18,6 +18,7 @@ struct Brick_CollectorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
     @State private var importXML = false
+    @State private var importLegacy = false
     
     var body: some Scene {
         WindowGroup {
@@ -28,33 +29,16 @@ struct Brick_CollectorApp: App {
                 .onAppear(perform: {
                     // TODO: update colors once a week
                 })
-                .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml]) { result in
-                    do {
-                        let selectedFile: URL = try result.get()
-                        let input = try Data(contentsOf: selectedFile)
-                        let parser = BrickLinkParser(data: input)
-                        if parser.parse() {
-                            appManager.importing = true
-                            appManager.activeTab = .parts
-                            appManager.showAdditionModal = true
-                            DispatchQueue(label: "loadXML").async {
-                                Task {
-                                    await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
-                                }
-                            }
-                        } else {
-                            appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
-                        }
-                    } catch {
-                        appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
-                    }
-
-                }
+                .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
+                .fileImporter(isPresented: $importLegacy, allowedContentTypes: [.commaSeparatedText], onCompletion: importLegacy)
         }.commands {
             CommandGroup(replacing: .newItem) {
                 Menu("Import") {
-                    Button("BrickLink XML") {
+                    Button("BrickLink XML...") {
                         importXML = true
+                    }
+                    Button("Legacy CSV...") {
+                        importLegacy = true
                     }
                 }
             }
@@ -83,5 +67,52 @@ struct Brick_CollectorApp: App {
             Preferences().environmentObject(appManager)
         }
         #endif
+    }
+    
+    func importBricklinkXml(result: Result<URL, Error>) {
+        do {
+            let selectedFile: URL = try result.get()
+            let input = try Data(contentsOf: selectedFile)
+            let parser = BrickLinkParser(data: input)
+            if parser.parse() {
+                appManager.importing = true
+                appManager.activeTab = .parts
+                appManager.showAdditionModal = true
+                DispatchQueue(label: "loadXML").async {
+                    Task {
+                        await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+                    }
+                }
+            } else {
+                appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
+            }
+        } catch {
+            appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
+        }
+    }
+    
+    func importLegacy(result: Result<URL, Error>) {
+        do {
+            let selectedFile: URL = try result.get()
+            let data = try String(contentsOf: selectedFile)
+            var rows = data.split(whereSeparator: \.isNewline)
+            rows.remove(at: 0)
+            print("Found \(rows.count) parts to add")
+            print("====================")
+            var counter = 1
+            rows.forEach { row in
+                let values = row.split(separator: ";")
+                let id = String(values[0])
+                let name = String(values[1])
+                let color = String(values[2])
+                let img = String(values[3])
+                let loose = String(values[5])
+                print("[\(counter)/\(rows.count)] \(loose)x \(color) \(id) \(name)")
+                appManager.insertCustomPart(id: id, name: name, color: color, img: img, loose: loose)
+                counter += 1
+            }
+        } catch {
+            appManager.issueError(type: .ImportFile, description: "Import Legacy Data", error: .FileReadError)
+        }
     }
 }

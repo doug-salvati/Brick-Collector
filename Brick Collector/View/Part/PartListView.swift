@@ -74,7 +74,7 @@ struct PartListView: View {
                                                 Spacer()
                                             }
                                         }
-                                    }.clipped()
+                                    }.clipped().aspectRatio(1, contentMode: .fit)
                                 }
                             }.buttonStyle(.plain)
                         }
