@@ -8,7 +8,11 @@
 import CoreData
 
 struct PersistenceController {
+    #if DEBUG
+    static let shared = PersistenceController(inMemory: true)
+    #else
     static let shared = PersistenceController()
+    #endif
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
