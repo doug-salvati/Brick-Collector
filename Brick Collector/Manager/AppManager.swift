@@ -18,6 +18,7 @@ enum AppOperationType {
     case DeleteSet
     case DeletePart
     case ImportFile
+    case ExportFile
 }
 
 struct AppOperation {
@@ -36,6 +37,7 @@ enum AppView {
 enum AppError: Error {
     case DeletingUsedPart
     case FileReadError
+    case FileWriteError
 }
 
 extension AppError: LocalizedError {
@@ -45,6 +47,8 @@ extension AppError: LocalizedError {
             return NSLocalizedString("Can't delete part because it's being used by a set.", comment: "Refuse to delete parts that aren't loose")
         case .FileReadError:
             return NSLocalizedString("Unable to import the file.", comment: "Error parsing XML")
+        case .FileWriteError:
+            return NSLocalizedString("Unable to export the file", comment: "Error writing to BCC file")
         }
     }
 }

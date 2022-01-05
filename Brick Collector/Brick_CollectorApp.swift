@@ -19,18 +19,25 @@ struct Brick_CollectorApp: App {
     let persistenceController = PersistenceController.shared
     @State private var importXML = false
     @State private var importLegacy = false
+    @State private var exportBcc = false
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(Globals.rebrickableManager)
-                .environmentObject(appManager)
-                .onAppear(perform: {
-                    // TODO: update colors once a week
-                })
+            ZStack {
+                ContentView()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environmentObject(Globals.rebrickableManager)
+                    .environmentObject(appManager)
+                    .onAppear(perform: {
+                        // TODO: update colors once a week
+                    })
+                HStack {}
                 .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
+                HStack {}
                 .fileImporter(isPresented: $importLegacy, allowedContentTypes: [.commaSeparatedText], onCompletion: importLegacy)
+                HStack {}
+                .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
+            }
         }.commands {
             CommandGroup(replacing: .newItem) {
                 Menu("Import") {
@@ -39,6 +46,11 @@ struct Brick_CollectorApp: App {
                     }
                     Button("Legacy CSV...") {
                         importLegacy = true
+                    }
+                }
+                Menu("Export") {
+                    Button("Brick Collector...") {
+                        exportBcc = true
                     }
                 }
             }
@@ -113,6 +125,28 @@ struct Brick_CollectorApp: App {
             }
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import Legacy Data", error: .FileReadError)
+        }
+    }
+    
+    func exportBccFile() -> CollectionFile {
+        let context = persistenceController.container.viewContext
+        
+        do {
+            let parts = try context.fetch(Part.fetchRequest())
+            let sets = try context.fetch(Kit.fetchRequest())
+            let inventories = try context.fetch(InventoryItem.fetchRequest())
+            return CollectionFile(parts: parts, sets: sets, inventories: inventories)
+        } catch {
+            return CollectionFile()
+        }
+    }
+    
+    func finishExport(result: Result<URL, Error>) {
+        switch result {
+        case .success(_):
+            return
+        case .failure(_):
+            appManager.issueError(type: .ExportFile, description: "Export Brick Collector data", error: .FileWriteError)
         }
     }
 }
