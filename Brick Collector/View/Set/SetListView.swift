@@ -72,7 +72,7 @@ struct SetListView: View {
                                                 Spacer()
                                             }.padding()
                                         }
-                                    }.clipped()
+                                    }.clipped().aspectRatio(1, contentMode: .fit)
                                 }
                             }.buttonStyle(.plain)
                         }

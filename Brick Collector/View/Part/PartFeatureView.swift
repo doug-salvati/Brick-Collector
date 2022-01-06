@@ -22,7 +22,7 @@ struct PartFeatureView: View {
         let looseCount = part.loose
         let setCount = part.quantity - part.loose
         let usages = part.usages!.allObjects as! [InventoryItem]
-        let usageCount = usages.reduce(0) { $0 + $1.quantity }
+        let usageCount = usages.reduce(0) { $0 + (($1.kit?.quantity) ?? 0) }
         HSplitView {
             VStack {
                 HStack {

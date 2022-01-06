@@ -19,6 +19,7 @@ struct Brick_CollectorApp: App {
     let persistenceController = PersistenceController.shared
     @State private var importXML = false
     @State private var importLegacy = false
+    @State private var importBcc = false
     @State private var exportBcc = false
     
     var body: some Scene {
@@ -36,11 +37,16 @@ struct Brick_CollectorApp: App {
                 HStack {}
                 .fileImporter(isPresented: $importLegacy, allowedContentTypes: [.commaSeparatedText], onCompletion: importLegacy)
                 HStack {}
+                .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
+                HStack {}
                 .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
             }
         }.commands {
             CommandGroup(replacing: .newItem) {
                 Menu("Import") {
+                    Button("Brick Collector...") {
+                        importBcc = true
+                    }
                     Button("BrickLink XML...") {
                         importXML = true
                     }
@@ -126,6 +132,18 @@ struct Brick_CollectorApp: App {
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import Legacy Data", error: .FileReadError)
         }
+    }
+    
+    func importBcc(result: Result<URL, Error>) {
+        do {
+            let selectedFile: URL = try result.get()
+            let data = try Data(contentsOf: selectedFile)
+            let collection = try JSONDecoder().decode(IOCollection.self, from: data)
+            appManager.upsertCollection(collection: collection)
+        } catch {
+            appManager.issueError(type: .ImportFile, description: "Import Brick Collector Data", error: .FileReadError)
+        }
+
     }
     
     func exportBccFile() -> CollectionFile {

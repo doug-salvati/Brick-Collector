@@ -35,7 +35,7 @@ struct SetInventoryView: View {
                                     Spacer()
                                 }
                             }
-                        }
+                        }.clipped().aspectRatio(1, contentMode: .fit)
                     }
                 }
             }.buttonStyle(.plain)

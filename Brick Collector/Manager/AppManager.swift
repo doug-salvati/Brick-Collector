@@ -19,6 +19,7 @@ enum AppOperationType {
     case DeletePart
     case ImportFile
     case ExportFile
+    case ImportCollection
 }
 
 struct AppOperation {
@@ -273,7 +274,7 @@ class AppManager: ObservableObject {
             }
         }
     }
-    
+        
     func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertSet, description: "Insert set"))
         let context = PersistenceController.shared.container.viewContext
@@ -362,6 +363,76 @@ class AppManager: ObservableObject {
         }
     }
     
+    func upsertCollection(collection: IOCollection) {
+        let context = PersistenceController.shared.container.viewContext
+        let id:UUID = self.queue(op: AppOperation(type: .ImportCollection, description: "Import Brick Collector Collection"))
+        do {
+            let newParts = try collection.parts.compactMap(self.upsertPart)
+            let newSets = try collection.sets.compactMap(self.upsertSet)
+            collection.inventories.forEach { item in
+                let newSet = newSets.first(where: { $0.id == item.setId })
+                let newPart = newParts.first(where: { $0.id == item.partId })
+                guard newSet != nil && newPart != nil else { return }
+                let newInventoryItem = InventoryItem(context: context)
+                newInventoryItem.kit = newSet
+                newInventoryItem.quantity = Int64(item.quantity)
+                newInventoryItem.part = newPart
+            }
+        } catch let error {
+            self.finish(opId: id, withError: error)
+        }
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    // IOCollection based upsert methods
+    private func upsertPart(_ part:IOPart) throws -> Part? {
+        let context = PersistenceController.shared.container.viewContext
+        let request: NSFetchRequest<Part> = Part.fetchRequest()
+        request.predicate = NSPredicate(format: "id LIKE %@", part.id)
+        let existingPart = try context.fetch(request).first
+        if existingPart != nil {
+            existingPart!.quantity += Int64(part.quantity)
+            existingPart!.loose += Int64(part.loose)
+            return nil
+        } else {
+            let newPart = Part(context: context)
+            newPart.quantity = Int64(part.quantity)
+            newPart.loose = Int64(part.loose)
+            newPart.id = part.id
+            newPart.name = part.name
+            newPart.colorId = Int64(part.colorId)
+            newPart.img = part.img
+            return newPart
+        }
+    }
+    private func upsertSet(_ kit:IOSet) throws -> Kit? {
+        let context = PersistenceController.shared.container.viewContext
+        let request: NSFetchRequest<Kit> = Kit.fetchRequest()
+        request.predicate = NSPredicate(format: "id LIKE %@", kit.id)
+        let existingSet = try context.fetch(request).first
+        if existingSet != nil {
+            existingSet!.quantity += Int64(kit.quantity)
+            return nil
+        } else {
+            let newKit = Kit(context: context)
+            newKit.id = kit.id
+            newKit.name = kit.name
+            newKit.theme = kit.theme
+            newKit.quantity = Int64(kit.quantity)
+            newKit.partCount = Int64(kit.partCount)
+            newKit.img = kit.img
+            return newKit
+        }
+    }
+
     func adjustQuantity(of part:Part, by difference:Int64) {
         let id:UUID = self.queue(op: AppOperation(type: .UpdatePartQuantity, description: "Updating quantity of part \(part.id!)"))
         let context = PersistenceController.shared.container.viewContext
