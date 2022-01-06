@@ -63,6 +63,8 @@ class AppManager: ObservableObject {
     @Published var activeSetFeature:Kit?
     @Published var showAdditionModal:Bool = false
     @Published var importing = false
+    @AppStorage("colorsLastUpdated")
+    private var colorsLastUpdated:Int = 0
     
     init(using manager:RebrickableManager) {
         self.manager = manager
@@ -153,6 +155,7 @@ class AppManager: ObservableObject {
                 do {
                     try context.execute(deleteRequest)
                     try context.save()
+                    self.colorsLastUpdated = Int(Date.now.timeIntervalSince1970)
                     self.finish(opId: id)
                 } catch let error {
                     self.finish(opId: id, withError: error)

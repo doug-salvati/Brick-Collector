@@ -17,6 +17,8 @@ var appManager = AppManager(using: Globals.rebrickableManager)
 struct Brick_CollectorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
+    @AppStorage("colorsLastUpdated")
+    private var colorsLastUpated:Int = Int(Date.now.timeIntervalSince1970)
     @State private var importXML = false
     @State private var importLegacy = false
     @State private var importBcc = false
@@ -30,8 +32,12 @@ struct Brick_CollectorApp: App {
                     .environmentObject(Globals.rebrickableManager)
                     .environmentObject(appManager)
                     .onAppear(perform: {
-                        // TODO: update colors once a week
-                    })
+                        Task {
+                            if Date.now.timeIntervalSince1970 - TimeInterval(colorsLastUpated) > TimeInterval(604800) {
+                                await appManager.updateColors()
+                            }
+                        }
+                })
                 HStack {}
                 .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
                 HStack {}
