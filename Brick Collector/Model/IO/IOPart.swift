@@ -13,7 +13,7 @@ struct IOPart: Codable {
     var quantity:Int
     var loose:Int
     var colorId:Int
-    var img:Data
+    var img:Data?
     
     init(part:Part) {
         id = part.id ?? ""
@@ -21,6 +21,6 @@ struct IOPart: Codable {
         quantity = Int(part.quantity)
         loose = Int(part.loose)
         colorId = Int(part.colorId)
-        img = part.img ?? Data()
+        img = part.img
     }
 }

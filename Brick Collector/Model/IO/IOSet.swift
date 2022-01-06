@@ -12,7 +12,7 @@ struct IOSet: Codable {
     var name:String
     var partCount:Int
     var theme:String
-    var img:Data
+    var img:Data?
     var quantity:Int
     
     init(kit:Kit) {
@@ -20,7 +20,7 @@ struct IOSet: Codable {
         name = kit.name ?? ""
         partCount = Int(kit.partCount)
         theme = kit.theme ?? ""
-        img = kit.img ?? Data()
+        img = kit.img
         quantity = Int(kit.quantity)
     }
 }
