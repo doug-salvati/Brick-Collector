@@ -217,11 +217,11 @@ class RebrickableManager: ObservableObject {
         var items = try JSONDecoder().decode(ArrayResults<RBInventoryItem>.self, from: partData).results
         try await getMinifigs(bySetId: setId).asyncForEach { minifig in
             let minifigParts = try await getInventory(byMinifig: minifig.setNum).map { part in
-                return RBInventoryItem(part: part.part, color: part.color, elementId: part.elementId, quantity: part.quantity * minifig.quantity, isSpare: part.isSpare)
+                return RBInventoryItem(part: part.part, color: part.color, elementId: part.id, quantity: part.quantity * minifig.quantity, isSpare: part.isSpare)
             }
             items.append(contentsOf: minifigParts)
         }
-        return items.filter { !$0.isSpare }
+        return consolidate(inventory: items).filter { !$0.isSpare }
     }
     
     func getInventory(byMinifig minifig:String) async throws -> [RBInventoryItem] {
