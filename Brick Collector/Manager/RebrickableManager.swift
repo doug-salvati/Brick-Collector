@@ -221,7 +221,7 @@ class RebrickableManager: ObservableObject {
             }
             items.append(contentsOf: minifigParts)
         }
-        return consolidate(inventory: items).filter { !$0.isSpare }
+        return consolidate(inventory: items.filter { !$0.isSpare })
     }
     
     func getInventory(byMinifig minifig:String) async throws -> [RBInventoryItem] {
