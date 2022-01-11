@@ -10,9 +10,10 @@ import SwiftUI
 struct SetIdView: View {
     var setId:String
     var fontWeight:Font.Weight = .regular
-    @AppStorage("showSetSuffix") private var showSuffix:Bool = false
+    @AppStorage("setSuffixOption") private var suffixOption:SetSuffixOption = .notOne
     
     var body: some View {
+        let showSuffix = (suffixOption == .always) || (suffixOption == .notOne && String(setId.split(separator: "-").last ?? Substring(setId)) != "1")
         let displayId = showSuffix ? setId : String(setId.split(separator: "-").first ?? Substring(setId))
         Text(displayId).fontWeight(fontWeight)
     }

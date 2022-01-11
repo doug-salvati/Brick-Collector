@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum SetSuffixOption: String {
+    case never = "never"
+    case always = "always"
+    case notOne = "notOne"
+}
+
 struct Preferences: View {
     @AppStorage("apiKey")
     private var apiKey:String = ""
@@ -17,8 +23,8 @@ struct Preferences: View {
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
-    @AppStorage("showSetSuffix")
-    private var showSetSuffix:Bool = false
+    @AppStorage("setSuffixOption")
+    private var setSuffixOption:SetSuffixOption = .notOne
     
     @EnvironmentObject private var appManager: AppManager
     
@@ -60,9 +66,11 @@ struct Preferences: View {
                     Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
                     Text("by Set").tag(AddPartMethod.bySet)
                 }.frame(width:250)
-                Toggle(isOn: $showSetSuffix) {
-                    Text("Display Set Suffixes")
-                }
+                Picker("Display Set Suffixes:", selection: $setSuffixOption) {
+                    Text("always").tag(SetSuffixOption.always)
+                    Text("never").tag(SetSuffixOption.never)
+                    Text("when not 1").tag(SetSuffixOption.notOne)
+                }.frame(width:250)
             }
             .navigationTitle("Preferences")
         }
