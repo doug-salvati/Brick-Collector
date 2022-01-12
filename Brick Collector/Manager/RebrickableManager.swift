@@ -171,11 +171,11 @@ class RebrickableManager: ObservableObject {
         self.searchedSet = result
     }
     
-    func searchInventory(bySetId setId:String) async {
+    func searchInventory(bySetId setId:String, spares:Bool = false) async {
         self.searchedInventory.loading = true
         var result:RebrickableResult<[RBInventoryItem]>
         do {
-            let items = try await getInventory(bySetId: setId)
+            let items = try await getInventory(bySetId: setId, spares: spares)
             if (items.count == 0) {
                 result = RebrickableResult<[RBInventoryItem]>(error: RebrickableError.PartRetrievalFailure)
             } else {
@@ -211,7 +211,7 @@ class RebrickableManager: ObservableObject {
         return try JSONDecoder().decode(ArrayResults<MinifigInventoryItem>.self, from: minifigData).results
     }
     
-    func getInventory(bySetId setId:String) async throws -> [RBInventoryItem] {
+    func getInventory(bySetId setId:String, spares:Bool = false) async throws -> [RBInventoryItem] {
         let partUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(setId)/parts/\(queryParams)&page_size=10000")
         let (partData, _) = try await URLSession.shared.data(from: partUrl!)
         var items = try JSONDecoder().decode(ArrayResults<RBInventoryItem>.self, from: partData).results
@@ -221,7 +221,7 @@ class RebrickableManager: ObservableObject {
             }
             items.append(contentsOf: minifigParts)
         }
-        return consolidate(inventory: items.filter { !$0.isSpare })
+        return consolidate(inventory: items.filter { $0.isSpare == spares })
     }
     
     func getInventory(byMinifig minifig:String) async throws -> [RBInventoryItem] {

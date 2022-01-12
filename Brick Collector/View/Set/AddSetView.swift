@@ -15,6 +15,7 @@ struct AddSetView: View {
     @State private var input:String = ""
     @State private var suffix:String = "-1"
     @State private var secondPage:Bool = false
+    @State private var spares:Bool = false
     private var searchString:String {
         "\(input)\(suffix)"
     }
@@ -118,6 +119,15 @@ struct AddSetView: View {
                     Button(action:{
                         Task {
                             secondPage = true
+                            spares = true
+                            await manager.searchInventory(bySetId: manager.searchedSet.result!.id, spares: true)
+                        }
+                    }) {
+                        Text("Add Spares")
+                    }.disabled(manager.searchedSet.result == nil)
+                    Button(action:{
+                        Task {
+                            secondPage = true
                             await manager.searchInventory(bySetId: manager.searchedSet.result!.id)
                         }
                     }) {
@@ -128,18 +138,23 @@ struct AddSetView: View {
                 } else {
                     Button(action:{
                         secondPage = false
+                        spares = false
                         manager.resetParts()
                     }) {
                         Text("Previous")
                     }
                     Button(action:{
-                        appManager.upsertSet(manager.searchedSet.result!, containingParts: manager.searchedInventory.result!)
+                        if spares {
+                            appManager.upsertSpares(spares: manager.searchedInventory.result!)
+                        } else {
+                            appManager.upsertSet(manager.searchedSet.result!, containingParts: manager.searchedInventory.result!)
+                        }
                         secondPage = false
                         isPresented = false
                         manager.resetSet()
                         manager.resetParts()
                     }) {
-                        Text("Add Set")
+                        Text(spares ? "Add Spare Parts" : "Add Set")
                     }.disabled(manager.searchedInventory.result == nil)
                         .keyboardShortcut(.defaultAction)
                 }

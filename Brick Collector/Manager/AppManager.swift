@@ -366,6 +366,60 @@ class AppManager: ObservableObject {
         }
     }
     
+    func upsertSpares(spares:[RBInventoryItem]) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpsertSet, description: "Insert set spares"))
+        let context = PersistenceController.shared.container.viewContext
+                
+        spares.forEach { item in
+            let request: NSFetchRequest<Part> = Part.fetchRequest()
+            request.predicate = NSPredicate(format: "id LIKE %@", item.id)
+            var existingPart:Part? = nil
+            do {
+                existingPart = try context.fetch(request).first
+            } catch let error {
+                DispatchQueue.main.async {
+                    self.finish(opId: id, withError: error)
+                }
+                return            }
+            if existingPart != nil {
+                existingPart!.quantity += Int64(item.quantity)
+                existingPart!.loose += Int64(item.quantity)
+            } else {
+                let newPart = Part(context: context)
+                newPart.id = item.id
+                newPart.name = item.part.name
+                newPart.colorId = Int64(item.color.id)
+                newPart.quantity = Int64(item.quantity)
+                newPart.loose = Int64(item.quantity)
+                // add img later asynchronously
+            }
+        }
+        
+        var imageMap:[String:String] = [:]
+        spares.forEach { item in
+            imageMap[item.id] = item.part.img
+        }
+        
+        let group = DispatchGroup()
+        group.enter()
+        
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            DispatchQueue(label: "downloadImage").async {
+                self.downloadImages(forSet: "spare parts", withParts: imageMap)
+            }
+        }
+    }
+    
     func upsertCollection(collection: IOCollection) {
         let context = PersistenceController.shared.container.viewContext
         let id:UUID = self.queue(op: AppOperation(type: .ImportCollection, description: "Import Brick Collector Collection"))
@@ -394,6 +448,7 @@ class AppManager: ObservableObject {
             }
         }
     }
+
     
     // IOCollection based upsert methods
     private func upsertPart(_ part:IOPart) throws -> Part? {
