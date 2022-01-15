@@ -14,7 +14,7 @@ struct RBInventoryItem: Decodable, Identifiable {
     var quantity:Int
     var isSpare:Bool
     var id:String {
-        elementId ?? "\(part.name) (\(color.rebrickableName))"
+        elementId ?? "\(part.partNum) (\(color.rebrickableName))"
     }
     
     enum CodingKeys: String, CodingKey {
