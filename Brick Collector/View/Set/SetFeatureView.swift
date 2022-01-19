@@ -53,6 +53,12 @@ struct SetFeatureView: View {
                             Stepper(value: $quantity, in: 1...(.max)) {
                                 Text(String(quantity))
                             }.font(.title)
+                            Button("Increase") {
+                                quantity += 1
+                            }.hidden().keyboardShortcut("]").frame(width:0)
+                            Button("Decrease") {
+                                quantity = max(1, quantity - 1)
+                            }.hidden().keyboardShortcut("[").frame(width:0)
                             SetIdView(setId: set.id!, fontWeight: .bold)
                             Text(set.name!).font(.title2)
                         }

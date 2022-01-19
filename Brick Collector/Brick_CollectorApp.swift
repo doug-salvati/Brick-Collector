@@ -63,7 +63,7 @@ struct Brick_CollectorApp: App {
                 Menu("Export") {
                     Button("Brick Collector...") {
                         exportBcc = true
-                    }
+                    }.keyboardShortcut("E")
                 }
             }
             CommandGroup(before: .toolbar) {

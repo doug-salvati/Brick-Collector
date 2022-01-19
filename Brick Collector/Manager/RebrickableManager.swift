@@ -117,7 +117,7 @@ class RebrickableManager: ObservableObject {
             } else {
                 let elements:[RBElement] = items.map { item in
                     let id = item.id
-                    return RBElement(id: id, img: item.part.img!, name: item.part.name, colorId: item.color.id)
+                    return RBElement(id: id, img: item.part.img ?? nil, name: item.part.name, colorId: item.color.id)
                 }
                 result = RebrickableResult<[RBElement]>(result: elements)
             }

@@ -61,6 +61,12 @@ struct PartFeatureView: View {
                             Stepper(value: $quantity, in: max(Int(setCount),1)...(Int.max)) {
                                 Text(String(quantity))
                             }.font(.title)
+                            Button("Increase") {
+                                quantity += 1
+                            }.hidden().keyboardShortcut("]").frame(width:0)
+                            Button("Decrease") {
+                                quantity = max(Int(setCount), quantity - 1)
+                            }.hidden().keyboardShortcut("[").frame(width:0)
                             Text(part.name!).font(.title2)
                         }
                         Text("Element #\(part.id!)").italic()
