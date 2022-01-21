@@ -47,6 +47,17 @@ struct AddPartView: View {
         }
     }
     
+    func search() async {
+        switch method {
+        case .byElement:
+            await manager.searchParts(byElementId: input)
+        case .byMoldAndColor:
+            await manager.searchParts(byPartId: input)
+        case .bySet:
+            await manager.searchParts(bySetId: setSearch)
+        }
+    }
+    
     var body: some View {
         VStack {
             VStack {
@@ -68,7 +79,11 @@ struct AddPartView: View {
 
             if !appManager.importing {
                 HStack {
-                    TextField(placeholders[method]!, text: $input)
+                    TextField(placeholders[method]!, text: $input).onSubmit {
+                        Task {
+                            await search()
+                        }
+                    }
                     if method == .bySet {
                         Picker("Suffix", selection: $suffix) {
                             Text("No Suffix").tag("")
@@ -77,14 +92,7 @@ struct AddPartView: View {
                     }
                     Button(action: {
                         Task {
-                            switch method {
-                            case .byElement:
-                                await manager.searchParts(byElementId: input)
-                            case .byMoldAndColor:
-                                await manager.searchParts(byPartId: input)
-                            case .bySet:
-                                await manager.searchParts(bySetId: setSearch)
-                            }
+                            await search()
                         }
                     }) {
                         Text("Search")

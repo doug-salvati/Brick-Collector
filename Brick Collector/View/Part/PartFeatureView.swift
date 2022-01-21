@@ -34,7 +34,7 @@ struct PartFeatureView: View {
                     if quantityChange != 0 {
                         Button("Save") {
                             appManager.adjustQuantity(of: part, by: quantityChange)
-                        }
+                        }.keyboardShortcut("\\")
                     }
                     Spacer()
                     Button(action: {

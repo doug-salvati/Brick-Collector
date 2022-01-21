@@ -32,7 +32,11 @@ struct AddSetView: View {
             }.padding(.bottom)
             if (!secondPage) {
                 HStack {
-                    TextField("Set ID", text: $input)
+                    TextField("Set ID", text: $input).onSubmit {
+                        Task {
+                            await manager.searchSet(byId: searchString)
+                        }
+                    }
                     Picker("Suffix", selection: $suffix) {
                         Text("No Suffix").tag("")
                         ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
