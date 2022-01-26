@@ -52,12 +52,11 @@ struct Brick_CollectorApp: App {
                 Menu("Import") {
                     Button("Brick Collector...") {
                         importBcc = true
-                    }
-                    Button("BrickLink XML...") {
-                        importXML = true
-                    }
-                    Button("Legacy CSV...") {
-                        importLegacy = true
+                    }.keyboardShortcut("O")
+                    Menu("Parts") {
+                        Button("BrickLink XML...") {
+                            importXML = true
+                        }
                     }
                 }
                 Menu("Export") {
