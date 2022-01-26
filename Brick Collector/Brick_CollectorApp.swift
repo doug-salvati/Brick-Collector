@@ -84,6 +84,9 @@ struct Brick_CollectorApp: App {
                     appManager.showAdditionModal = true
                 }.keyboardShortcut("S")
             }
+            CommandGroup(replacing: .help) {
+                Link("Brick Collector Help", destination: URL(string: "https://github.com/doug-salvati/Brick-Collector/tree/main#readme")!)
+            }
         }
         #if os(macOS)
         Settings {
