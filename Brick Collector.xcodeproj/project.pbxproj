@@ -17,6 +17,7 @@
 		9110E0E32772DB5400A7F3F7 /* PartSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E22772DB5400A7F3F7 /* PartSelectionView.swift */; };
 		9110E0E52772E35700A7F3F7 /* RBMoldColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E42772E35700A7F3F7 /* RBMoldColor.swift */; };
 		9110E0E7277419AE00A7F3F7 /* GalleryToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */; };
+		9113292C27A4E1AF004840D4 /* TextFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113292B27A4E1AF004840D4 /* TextFile.swift */; };
 		9113431727765CB70035A7A1 /* RBInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113431627765CB70035A7A1 /* RBInventoryItem.swift */; };
 		911A53E125AB9C73002F03E9 /* ColorNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911A53E025AB9C73002F03E9 /* ColorNameView.swift */; };
 		911AD521277CEDCD005EB716 /* SetIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AD520277CEDCD005EB716 /* SetIdView.swift */; };
@@ -79,6 +80,7 @@
 		9110E0E22772DB5400A7F3F7 /* PartSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartSelectionView.swift; sourceTree = "<group>"; };
 		9110E0E42772E35700A7F3F7 /* RBMoldColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBMoldColor.swift; sourceTree = "<group>"; };
 		9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryToggleStyle.swift; sourceTree = "<group>"; };
+		9113292B27A4E1AF004840D4 /* TextFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFile.swift; sourceTree = "<group>"; };
 		9113431627765CB70035A7A1 /* RBInventoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBInventoryItem.swift; sourceTree = "<group>"; };
 		911A53E025AB9C73002F03E9 /* ColorNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNameView.swift; sourceTree = "<group>"; };
 		911AD520277CEDCD005EB716 /* SetIdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetIdView.swift; sourceTree = "<group>"; };
@@ -168,6 +170,15 @@
 				911AD51D277BEC4F005EB716 /* Rebrickable */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		9113292A27A4E18B004840D4 /* FileIO */ = {
+			isa = PBXGroup;
+			children = (
+				915280A12785446C0047E7A2 /* CollectionFile.swift */,
+				9113292B27A4E1AF004840D4 /* TextFile.swift */,
+			);
+			path = FileIO;
 			sourceTree = "<group>";
 		};
 		911AD51D277BEC4F005EB716 /* Rebrickable */ = {
@@ -265,7 +276,7 @@
 				91ECB80C25A25913008C5F72 /* Preview Content */,
 				9107F53D25A40BCC00978EC6 /* Model */,
 				911AD52C277E9802005EB716 /* AppDelegate.swift */,
-				915280A12785446C0047E7A2 /* CollectionFile.swift */,
+				9113292A27A4E18B004840D4 /* FileIO */,
 			);
 			path = "Brick Collector";
 			sourceTree = "<group>";
@@ -443,6 +454,7 @@
 				911AD523277CFD6D005EB716 /* PartFeatureView.swift in Sources */,
 				911AD525277D1360005EB716 /* PartInventoryView.swift in Sources */,
 				91C2772025B3CA330032336F /* AppManager.swift in Sources */,
+				9113292C27A4E1AF004840D4 /* TextFile.swift in Sources */,
 				911AD527277D389D005EB716 /* SetFeatureView.swift in Sources */,
 				918324E125A9463C007460D4 /* ColorSet.swift in Sources */,
 				911AD529277D3990005EB716 /* SetInventoryView.swift in Sources */,
@@ -622,7 +634,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Brick Collector/Preview Content\"";
 				DEVELOPMENT_TEAM = W7SSE97484;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -633,6 +645,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-Collector";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -648,7 +661,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Brick Collector/Preview Content\"";
 				DEVELOPMENT_TEAM = W7SSE97484;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -659,6 +672,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dsalvati.Brick-Collector";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
