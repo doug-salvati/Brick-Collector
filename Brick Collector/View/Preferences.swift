@@ -26,6 +26,9 @@ struct Preferences: View {
     @AppStorage("setSuffixOption")
     private var setSuffixOption:SetSuffixOption = .notOne
     
+    @AppStorage("jumpToNewSet")
+    private var jumpToNewSet:Bool = true
+    
     @EnvironmentObject private var appManager: AppManager
     
     var body: some View {
@@ -71,6 +74,9 @@ struct Preferences: View {
                     Text("never").tag(SetSuffixOption.never)
                     Text("when not 1").tag(SetSuffixOption.notOne)
                 }.frame(width:250)
+                Toggle(isOn: $jumpToNewSet) {
+                    Text("Jump to new set after adding")
+                }
             }
             .navigationTitle("Preferences")
         }

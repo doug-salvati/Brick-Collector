@@ -65,6 +65,8 @@ class AppManager: ObservableObject {
     @Published var importing = false
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpdated:Int = 0
+    @AppStorage("jumpToNewSet")
+    private var jumpToNewSet:Bool = true
     
     init(using manager:RebrickableManager) {
         self.manager = manager
@@ -353,6 +355,10 @@ class AppManager: ObservableObject {
             do {
                 try context.save()
                 self.finish(opId: id)
+                if self.jumpToNewSet {
+                    self.activeTab = .sets
+                    self.activeSetFeature = kit
+                }
             } catch let error {
                 self.finish(opId: id, withError: error)
             }
