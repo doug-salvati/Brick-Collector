@@ -30,9 +30,9 @@ struct AppOperation {
     var dismissed:Bool = false
 }
 
-enum AppView {
-    case sets
-    case parts
+enum AppView:String {
+    case sets = "Sets"
+    case parts = "Parts"
 }
 
 enum AppError: Error {
