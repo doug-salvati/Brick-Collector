@@ -41,6 +41,7 @@ struct PartListView: View {
                 HStack {
                     Picker(selection: $colorFilter, content: {
                         Text("All").tag(-999)
+                        Divider()
                         ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
                     }) {
                         Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)

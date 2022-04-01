@@ -39,6 +39,7 @@ struct SetListView: View {
                 HStack {
                     Picker(selection: $themeFilter, content: {
                         Text("All").tag("All")
+                        Divider()
                         ForEach(Array(themeNames).sorted(), id: \.self) {
                             Text($0).tag($0)
                         }
