@@ -39,6 +39,7 @@ enum AppError: Error {
     case DeletingUsedPart
     case FileReadError
     case FileWriteError
+    case AddingSetMinifigMismatch
 }
 
 extension AppError: LocalizedError {
@@ -49,7 +50,9 @@ extension AppError: LocalizedError {
         case .FileReadError:
             return NSLocalizedString("Unable to import the file.", comment: "Error parsing XML")
         case .FileWriteError:
-            return NSLocalizedString("Unable to export the file", comment: "Error writing to BCC file")
+            return NSLocalizedString("Unable to export the file.", comment: "Error writing to BCC file")
+        case .AddingSetMinifigMismatch:
+            return NSLocalizedString("Can't add set because you already have one with a different amount of minifigures.", comment: "Missing minifigures for some quantity of sets but not for others is not supported")
         }
     }
 }
@@ -280,7 +283,7 @@ class AppManager: ObservableObject {
         }
     }
         
-    func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem]) {
+    func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem], missingFigs:Bool) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertSet, description: "Insert set"))
         let context = PersistenceController.shared.container.viewContext
         
@@ -297,6 +300,12 @@ class AppManager: ObservableObject {
             return
         }
         if existingKit != nil {
+            if (existingKit!.missingFigs != missingFigs) {
+                DispatchQueue.main.async {
+                    self.finish(opId: id, withError: AppError.AddingSetMinifigMismatch)
+                }
+                return
+            }
             existingKit!.quantity += 1
             kit = existingKit!
         } else {
@@ -307,6 +316,7 @@ class AppManager: ObservableObject {
             newKit.quantity = 1
             newKit.partCount = Int64(set.partCount)
             newKit.img = set.img == nil ? nil : try? Data(contentsOf: URL(string: set.img!)!)
+            newKit.missingFigs = missingFigs
             kit = newKit
         }
         
@@ -442,7 +452,9 @@ class AppManager: ObservableObject {
                 newInventoryItem.part = newPart
             }
         } catch let error {
-            self.finish(opId: id, withError: error)
+            DispatchQueue.main.async {
+                self.finish(opId: id, withError: error)
+            }
         }
         
         DispatchQueue.main.async {
@@ -493,6 +505,7 @@ class AppManager: ObservableObject {
             newKit.quantity = Int64(kit.quantity)
             newKit.partCount = Int64(kit.partCount)
             newKit.img = kit.img
+            newKit.missingFigs = kit.missingFigs ?? false
             return newKit
         }
     }

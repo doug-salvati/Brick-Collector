@@ -14,6 +14,7 @@ struct IOSet: Codable {
     var theme:String
     var img:Data?
     var quantity:Int
+    var missingFigs:Bool?
     
     init(kit:Kit) {
         id = kit.id ?? ""
@@ -22,5 +23,6 @@ struct IOSet: Codable {
         theme = kit.theme ?? ""
         img = kit.img
         quantity = Int(kit.quantity)
+        missingFigs = kit.missingFigs
     }
 }

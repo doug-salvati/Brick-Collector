@@ -16,6 +16,7 @@ struct SetFeatureView: View {
         Int64(quantity) - set.quantity
     }
     @State private var showWarning = false
+    @State private var showPopover = false
     
     var body: some View {
         let inventory = set.inventory!.allObjects as! [InventoryItem]
@@ -72,7 +73,15 @@ struct SetFeatureView: View {
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {
-                Text("\(set.partCount) parts (\(inventory.count) unique)").fontWeight(.bold)
+                HStack {
+                    Text("\(set.partCount) parts (\(inventory.count) unique)").fontWeight(.bold)
+                    if (set.missingFigs) {
+                        Spacer()
+                        Label("Set is missing minifigures.", systemImage: "person.crop.circle.badge.xmark").labelStyle(.iconOnly)                      .popover(isPresented: $showPopover) {
+                            Text("Set is missing minifigures.").padding()
+                        }.onHover { showPopover = $0}
+                    }
+                }
                 SetInventoryView(inventory: inventory)
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {

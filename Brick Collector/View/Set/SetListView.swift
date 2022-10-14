@@ -44,7 +44,7 @@ struct SetListView: View {
                             Text($0).tag($0)
                         }
                     }) {
-                        Label("Color", systemImage: "tag").labelStyle(.iconOnly)
+                        Label("Theme", systemImage: "tag").labelStyle(.iconOnly)
                     }.frame(width: 200).padding()
                     Spacer()
                     Text("\(setCount) Sets").font(.title2).padding()
@@ -66,6 +66,12 @@ struct SetListView: View {
                                             Image(systemName: "photo").foregroundColor(.black)
                                         }
                                         VStack {
+                                            HStack {
+                                                Spacer()
+                                                if (set.missingFigs) {
+                                                    Label("Set is missing minifigures.", systemImage: "person.crop.circle.badge.xmark").labelStyle(.iconOnly).scaleEffect(2.0).colorInvert().padding()
+                                                }
+                                            }
                                             Spacer()
                                             HStack {
                                                 SetIdView(setId: set.id!, fontWeight: .bold).colorInvert()
