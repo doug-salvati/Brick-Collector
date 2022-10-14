@@ -16,12 +16,17 @@ struct AddSetView: View {
     @State private var suffix:String = "-1"
     @State private var secondPage:Bool = false
     @State private var spares:Bool = false
+    @State private var includeFigs:Bool = true
     private var searchString:String {
         "\(input)\(suffix)"
     }
     
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
+        let hasMinifigs: Bool = manager.searchedInventory.result?.contains(where: {$0.isMinifig}) ?? false
+        let inventory: [RBInventoryItem] = (manager.searchedInventory.result ?? []).filter {
+            includeFigs || !$0.isMinifig
+        }
         VStack {
             VStack {
                 HStack {
@@ -83,10 +88,10 @@ struct AddSetView: View {
                     } else if (manager.searchedInventory.error != nil) {
                         Text(manager.searchedInventory.error!.localizedDescription)
                     } else {
-                        let partCount = manager.searchedInventory.result!.reduce(0) { $0 + $1.quantity }
+                        let partCount = inventory.reduce(0) { $0 + $1.quantity }
                         ScrollView {
                             LazyVGrid(columns: columns) {
-                                ForEach(manager.searchedInventory.result!) { item in
+                                ForEach(inventory) { item in
                                     ZStack {
                                         if (item.part.img != nil) {
                                             AsyncImage(url: URL(string: item.part.img!)!)
@@ -106,61 +111,71 @@ struct AddSetView: View {
                             Text("\(partCount) Parts").font(.footnote).padding()
                         }
                     }
+                    if (!spares && hasMinifigs) {
+                        HStack {
+                            Toggle(isOn: $includeFigs) {
+                                Text("Include Minifigures")
+                            }
+                            Spacer()
+                        }.padding(.top).padding(.bottom)
+                    }
                 }
             }
             Spacer()
-            HStack {
-                Button(action:{
-                    secondPage = false
-                    isPresented = false
-                    manager.resetSet()
-                    manager.resetParts()
-                }) {
-                    Text("Cancel")
-                }
-                Spacer()
-                if (!secondPage) {
+            VStack {
+                HStack {
                     Button(action:{
-                        Task {
-                            secondPage = true
-                            spares = true
-                            await manager.searchInventory(bySetId: manager.searchedSet.result!.id, spares: true)
-                        }
-                    }) {
-                        Text("Add Spares")
-                    }.disabled(manager.searchedSet.result == nil)
-                    Button(action:{
-                        Task {
-                            secondPage = true
-                            await manager.searchInventory(bySetId: manager.searchedSet.result!.id)
-                        }
-                    }) {
-                        Text("Next")
-                    }.disabled(manager.searchedSet.result == nil)
-                        .keyboardShortcut(.defaultAction)
-
-                } else {
-                    Button(action:{
-                        secondPage = false
-                        spares = false
-                        manager.resetParts()
-                    }) {
-                        Text("Previous")
-                    }
-                    Button(action:{
-                        if spares {
-                            appManager.upsertSpares(spares: manager.searchedInventory.result!)
-                        } else {
-                            appManager.upsertSet(manager.searchedSet.result!, containingParts: manager.searchedInventory.result!)
-                        }
                         secondPage = false
                         isPresented = false
                         manager.resetSet()
                         manager.resetParts()
                     }) {
-                        Text(spares ? "Add Spare Parts" : "Add Set")
-                    }.disabled(manager.searchedInventory.result == nil)
-                        .keyboardShortcut(.defaultAction)
+                        Text("Cancel")
+                    }
+                    Spacer()
+                    if (!secondPage) {
+                        Button(action:{
+                            Task {
+                                secondPage = true
+                                spares = true
+                                await manager.searchInventory(bySetId: manager.searchedSet.result!.id, spares: true)
+                            }
+                        }) {
+                            Text("Add Spares")
+                        }.disabled(manager.searchedSet.result == nil)
+                        Button(action:{
+                            Task {
+                                secondPage = true
+                                await manager.searchInventory(bySetId: manager.searchedSet.result!.id)
+                            }
+                        }) {
+                            Text("Next")
+                        }.disabled(manager.searchedSet.result == nil)
+                            .keyboardShortcut(.defaultAction)
+
+                    } else {
+                        Button(action:{
+                            secondPage = false
+                            spares = false
+                            manager.resetParts()
+                        }) {
+                            Text("Previous")
+                        }
+                        Button(action:{
+                            if spares {
+                                appManager.upsertSpares(spares: inventory)
+                            } else {
+                                appManager.upsertSet(manager.searchedSet.result!, containingParts: inventory, missingFigs: !includeFigs)
+                            }
+                            secondPage = false
+                            isPresented = false
+                            manager.resetSet()
+                            manager.resetParts()
+                        }) {
+                            Text(spares ? "Add Spare Parts" : "Add Set")
+                        }.disabled(manager.searchedInventory.result == nil)
+                            .keyboardShortcut(.defaultAction)
+                    }
                 }
             }
         }.padding()

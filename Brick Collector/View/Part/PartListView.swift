@@ -20,7 +20,8 @@ struct PartListView: View {
             (
                 filter == nil ||
                 filter == "" ||
-                $0.name!.filterable().contains(filter!.filterable())
+                $0.name!.filterable().contains(filter!.filterable()) ||
+                filter!.filterable() == "jang" && ["4261572", "4621635", "6035345"].contains($0.id!)
             ) && (
                 colorFilter == -999 ||
                 colorFilter == $0.colorId
@@ -40,6 +41,7 @@ struct PartListView: View {
                 HStack {
                     Picker(selection: $colorFilter, content: {
                         Text("All").tag(-999)
+                        Divider()
                         ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
                     }) {
                         Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)

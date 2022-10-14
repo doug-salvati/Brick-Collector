@@ -15,6 +15,9 @@ struct ContentView: View {
     @State private var focusFilter = false
     @State private var activeFilter = ""
     
+    @AppStorage("homepage")
+    private var homepage:AppView = .parts
+    
     var body: some View {
         VStack {
             VStack {
@@ -75,7 +78,14 @@ struct ContentView: View {
                 AddSetView(isPresented: $appManager.showAdditionModal)
                     .frame(width: 300, height: 500, alignment: .center)
             }
-        }.frame(idealWidth: 800, idealHeight: 500, alignment: .center)
+        }.onAppear {
+            if homepage != .parts {
+                DispatchQueue.main.async {
+                    appManager.activeTab = homepage
+                }
+            }
+        }
+        .frame(idealWidth: 800, idealHeight: 500, alignment: .center)
     }
 }
 

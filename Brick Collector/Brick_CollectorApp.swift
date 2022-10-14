@@ -23,6 +23,7 @@ struct Brick_CollectorApp: App {
     @State private var importLegacy = false
     @State private var importBcc = false
     @State private var exportBcc = false
+    @State private var exportSetCsv = false
     
     var body: some Scene {
         WindowGroup {
@@ -46,6 +47,8 @@ struct Brick_CollectorApp: App {
                 .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
                 HStack {}
                 .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
+                HStack {}
+                .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
             }
         }.commands {
             CommandGroup(replacing: .newItem) {
@@ -63,6 +66,11 @@ struct Brick_CollectorApp: App {
                     Button("Brick Collector...") {
                         exportBcc = true
                     }.keyboardShortcut("E")
+                    Menu("Sets") {
+                        Button("Comma Separated...") {
+                            exportSetCsv = true
+                        }
+                    }
                 }
             }
             CommandGroup(before: .toolbar) {
@@ -167,12 +175,27 @@ struct Brick_CollectorApp: App {
         }
     }
     
+    func exportSetCsvFile() -> TextFile {
+        let context = persistenceController.container.viewContext
+        
+        do {
+            let sets = try context.fetch(Kit.fetchRequest())
+            let fields = "\"set number\",\"quantity\", \"name\",\"theme\",\"part count\"\n"
+            let content = sets.reduce(fields) { csv, kit in
+                return csv + "\"\(kit.id ?? "")\",\"\(kit.quantity)\",\"\(kit.name?.replacingOccurrences(of: "\"", with: "\\\"") ?? "")\",\"\(kit.theme ?? "")\",\"\(kit.partCount)\"\n"
+            }
+            return TextFile(content)
+        } catch {
+            return TextFile()
+        }
+    }
+    
     func finishExport(result: Result<URL, Error>) {
         switch result {
         case .success(_):
             return
         case .failure(_):
-            appManager.issueError(type: .ExportFile, description: "Export Brick Collector data", error: .FileWriteError)
+            appManager.issueError(type: .ExportFile, description: "Export", error: .FileWriteError)
         }
     }
 }
