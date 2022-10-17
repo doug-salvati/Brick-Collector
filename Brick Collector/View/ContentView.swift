@@ -55,8 +55,20 @@ struct ContentView: View {
                     }
                 }
                 ToolbarItem {
+                    ZStack {
                         TextField("Filter", text: $activeFilter
                         ).textFieldStyle(.roundedBorder).frame(width: 200)
+                        HStack {
+                            Spacer()
+                            if (!activeFilter.isEmpty) {
+                                Button(action: {
+                                    activeFilter = ""
+                                }) {
+                                    Label("Clear Filter", systemImage: "xmark.circle.fill").padding(8)
+                                }.buttonStyle(.borderless)
+                            }
+                        }
+                    }
                 }
                 ToolbarItem {
                     Button(action: {
