@@ -121,6 +121,7 @@ struct AddPartView: View {
                 }) {
                     Text("Cancel")
                 }.disabled(appManager.importing && manager.searchedParts.loading)
+                    .keyboardShortcut(.cancelAction)
                 Spacer()
                 Button(action:{
                     appManager.upsertParts(elements: getSelections())

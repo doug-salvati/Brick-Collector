@@ -132,6 +132,7 @@ struct AddSetView: View {
                     }) {
                         Text("Cancel")
                     }
+                    .keyboardShortcut(.cancelAction)
                     Spacer()
                     if (!secondPage) {
                         Button(action:{
