@@ -69,7 +69,7 @@ struct SetListView: View {
                                             HStack {
                                                 Spacer()
                                                 if (set.missingFigs) {
-                                                    Label("Set is missing minifigures.", systemImage: "person.crop.circle.badge.xmark").labelStyle(.iconOnly).scaleEffect(2.0).colorInvert().padding()
+                                                    Label("Set is missing minifigures.", systemImage: "person.crop.circle.badge.xmark").labelStyle(.iconOnly).imageScale(.large).colorInvert().padding()
                                                 }
                                             }
                                             Spacer()
