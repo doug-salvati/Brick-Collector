@@ -19,6 +19,7 @@ struct PartSelectionView: View {
         VStack {
             Picker("Color:", selection: $colorFilter) {
                 Text("All").tag(-999)
+                Divider()
                 ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
             }
             HStack {
