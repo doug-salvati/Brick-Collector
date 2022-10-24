@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum PreferenceView:String {
+    case general = "General"
+    case colors = "Colors"
+    case parts = "Parts"
+    case sets = "Sets"
+}
+
 enum SetSuffixOption: String {
     case never = "never"
     case always = "always"
@@ -26,6 +33,9 @@ struct Preferences: View {
     @AppStorage("separateTransColors")
     private var separateTransColors:Bool = true
     
+    @AppStorage("colorsLastUpdated")
+    private var colorsLastUpated:Int = 0
+    
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
@@ -42,28 +52,48 @@ struct Preferences: View {
     
     var body: some View {
         let loadingColors:Bool = appManager.isLoading(type: .UpdateColors)
-        VStack {
+        TabView {
             VStack {
-                HStack {
-                    Text("Rebrickable API Key")
-                    Link(destination: URL(string: "https://rebrickable.com/api/")!) {
-                        Image(systemName: "questionmark")
+                VStack {
+                    HStack {
+                        Text("Rebrickable API Key")
+                        Link(destination: URL(string: "https://rebrickable.com/api/")!) {
+                            Image(systemName: "questionmark")
+                        }
                     }
+                    SecureField("", text: $apiKey).frame(width: 400)
+                }.padding(.bottom)
+                Form {
+                    Picker("Home Page:", selection: $homepage) {
+                        Text("Parts").tag(AppView.parts)
+                        Text("Sets").tag(AppView.sets)
+                    }.frame(width:250)
                 }
-                SecureField("", text: $apiKey)
-            }.padding()
-            Form {
-                Picker("Home Page:", selection: $homepage) {
-                    Text("Parts").tag(AppView.parts)
-                    Text("Sets").tag(AppView.sets)
-                }.frame(width:250)
-                HStack {
+            }
+            .padding()
+            .tabItem {
+                Label("General", systemImage: "gearshape")
+            }.frame(width: 600, height: 150)
+            VStack {
+                Form {
                     Picker("Color Names:", selection: $colorSet) {
                         ForEach(ColorSet.allCases) {
                             set in
                             Text(set.rawValue)
                         }
                     }.frame(width:200)
+                    Toggle(isOn: $separateBasicColors) {
+                        Text("Separate basic colors in dropdowns")
+                    }
+                    Toggle(isOn: $separateTransColors) {
+                        Text("Separate translucent colors in dropdowns")
+                    }
+                }
+                Spacer()
+                VStack {
+                    if loadingColors {
+                        ProgressView().scaleEffect(2/3)
+                    }
                     Button(action: {
                         Task {
                             await appManager.updateColors()
@@ -71,23 +101,24 @@ struct Preferences: View {
                     }) {
                         Text("Update Colors")
                     }.disabled(loadingColors)
-                    if loadingColors {
-                        ProgressView().scaleEffect(2/3)
-                    } else {
-                        ProgressView().scaleEffect(2/3).hidden()
-                    }
+                    Text("Brick Collector automatically checks for color updates weekly.")
+                        .font(.footnote)
+                    Text("Last updated \(Date(timeIntervalSince1970: TimeInterval(colorsLastUpated)).formatted())")
+                        .font(.footnote)
                 }
-                Toggle(isOn: $separateBasicColors) {
-                    Text("Separate basic colors in dropdowns")
-                }
-                Toggle(isOn: $separateTransColors) {
-                    Text("Separate translucent colors in dropdowns")
-                }
+            }.tabItem {
+                Label("Colors", systemImage: "paintpalette")
+            }.frame(width: 600, height: 175).padding()
+            Form {
                 Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
                     Text("by Element ID").tag(AddPartMethod.byElement)
                     Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
                     Text("by Set").tag(AddPartMethod.bySet)
                 }.frame(width:250)
+            }.tabItem {
+                Label("Parts", systemImage: "puzzlepiece")
+            }.frame(width: 600, height: 100)
+            Form {
                 Picker("Display Set Suffixes:", selection: $setSuffixOption) {
                     Text("always").tag(SetSuffixOption.always)
                     Text("never").tag(SetSuffixOption.never)
@@ -96,11 +127,10 @@ struct Preferences: View {
                 Toggle(isOn: $jumpToNewSet) {
                     Text("Jump to new set after adding")
                 }
-            }
-            .navigationTitle("Preferences")
-        }
-        .frame(width: 400, height: 300)
-        .padding()
+            }.tabItem {
+                Label("Sets", systemImage: "shippingbox")
+            }.frame(width: 600, height: 100)
+        }.frame(width: 600)
     }
 }
 
