@@ -42,6 +42,7 @@
 		91B86478277AA7F200638F4D /* RBSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B86477277AA7F200638F4D /* RBSet.swift */; };
 		91B8647A277AAABE00638F4D /* RBTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B86479277AAABE00638F4D /* RBTheme.swift */; };
 		91C2772025B3CA330032336F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C2771F25B3CA330032336F /* AppManager.swift */; };
+		91EB70F62904F6A4009C9E8F /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EB70F52904F6A4009C9E8F /* ColorPicker.swift */; };
 		91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */; };
 		91ECB80925A25912008C5F72 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80825A25912008C5F72 /* ContentView.swift */; };
 		91ECB80B25A25913008C5F72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91ECB80A25A25913008C5F72 /* Assets.xcassets */; };
@@ -105,6 +106,7 @@
 		91B86477277AA7F200638F4D /* RBSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBSet.swift; sourceTree = "<group>"; };
 		91B86479277AAABE00638F4D /* RBTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBTheme.swift; sourceTree = "<group>"; };
 		91C2771F25B3CA330032336F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
+		91EB70F52904F6A4009C9E8F /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		91ECB80325A25912008C5F72 /* Brick Collector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brick Collector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brick_CollectorApp.swift; sourceTree = "<group>"; };
 		91ECB80825A25912008C5F72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				9110E0DA2770FCFB00A7F3F7 /* AppOperationQueueView.swift */,
 				918324DB25A94515007460D4 /* Preferences.swift */,
 				911A53E025AB9C73002F03E9 /* ColorNameView.swift */,
+				91EB70F52904F6A4009C9E8F /* ColorPicker.swift */,
 				918AD40425BE6D7C00FCD903 /* AsyncImage.swift */,
 				9110E0E6277419AE00A7F3F7 /* GalleryToggleStyle.swift */,
 			);
@@ -453,6 +456,7 @@
 				911AD521277CEDCD005EB716 /* SetIdView.swift in Sources */,
 				911AD523277CFD6D005EB716 /* PartFeatureView.swift in Sources */,
 				911AD525277D1360005EB716 /* PartInventoryView.swift in Sources */,
+				91EB70F62904F6A4009C9E8F /* ColorPicker.swift in Sources */,
 				91C2772025B3CA330032336F /* AppManager.swift in Sources */,
 				9113292C27A4E1AF004840D4 /* TextFile.swift in Sources */,
 				911AD527277D389D005EB716 /* SetFeatureView.swift in Sources */,

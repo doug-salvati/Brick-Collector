@@ -20,6 +20,12 @@ struct Preferences: View {
     @AppStorage("colorSet")
     private var colorSet:ColorSet = .bricklink
     
+    @AppStorage("separateBasicColors")
+    private var separateBasicColors:Bool = true
+    
+    @AppStorage("separateTransColors")
+    private var separateTransColors:Bool = true
+    
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
@@ -70,6 +76,12 @@ struct Preferences: View {
                     } else {
                         ProgressView().scaleEffect(2/3).hidden()
                     }
+                }
+                Toggle(isOn: $separateBasicColors) {
+                    Text("Separate basic colors in dropdowns")
+                }
+                Toggle(isOn: $separateTransColors) {
+                    Text("Separate translucent colors in dropdowns")
                 }
                 Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
                     Text("by Element ID").tag(AddPartMethod.byElement)

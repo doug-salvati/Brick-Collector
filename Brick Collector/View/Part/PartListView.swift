@@ -39,13 +39,7 @@ struct PartListView: View {
         VStack {
             if appManager.activePartFeature == nil {
                 HStack {
-                    Picker(selection: $colorFilter, content: {
-                        Text("All").tag(-999)
-                        Divider()
-                        ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
-                    }) {
-                        Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)
-                    }.frame(width: 200).padding()
+                    ColorPicker(availableColorIds: Array(colorIds), colorFilter: $colorFilter).padding()
                     Spacer()
                     Text("\(partCount) Parts (\(parts.count) Unique)").font(.title2).padding()
                 }

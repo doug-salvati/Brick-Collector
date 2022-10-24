@@ -17,10 +17,9 @@ struct PartSelectionView: View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
         let colorIds = Set(selections.map { $0.value.colorId })
         VStack {
-            Picker("Color:", selection: $colorFilter) {
-                Text("All").tag(-999)
-                Divider()
-                ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
+            HStack {
+                ColorPicker(availableColorIds: Array(colorIds), colorFilter: $colorFilter)
+                Spacer()
             }
             HStack {
                 Button(action: {
