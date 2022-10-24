@@ -23,16 +23,14 @@ struct SetFeatureView: View {
         HSplitView {
             VStack {
                 HStack {
-                    Button("Close") {
+                    Button(action: {
                         withAnimation {
                             appManager.activeSetFeature = nil
                         }
-                    }.keyboardShortcut(.cancelAction)
-                    if quantityChange != 0 {
-                        Button("Save") {
-                            appManager.adjustQuantity(of: set, by: quantityChange)
-                        }
-                    }
+                    }) {
+                        Label("Close", systemImage: "xmark.circle.fill")
+                    }.labelStyle(.iconOnly).buttonStyle(.borderless)
+                        .keyboardShortcut(.cancelAction)
                     Spacer()
                     Button(action: {
                         showWarning = true
@@ -46,7 +44,7 @@ struct SetFeatureView: View {
                         }) {
                             Text("Delete")
                         }
-                    }.keyboardShortcut("D")
+                    }.keyboardShortcut(.delete, modifiers: [])
                 }
                 HStack {
                     VStack(alignment: .leading) {
@@ -70,6 +68,11 @@ struct SetFeatureView: View {
                 Spacer()
                 if set.img != nil {
                     Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit()
+                }
+                if quantityChange != 0 {
+                    Button("Save") {
+                        appManager.adjustQuantity(of: set, by: quantityChange)
+                    }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {
