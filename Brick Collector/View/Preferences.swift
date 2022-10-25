@@ -27,6 +27,12 @@ enum PartSortOption: String {
     case quantityUp = "quantity (low to high)"
 }
 
+enum SetSortOption: String {
+    case id = "id"
+    case name = "name"
+    case theme = "theme"
+}
+
 struct Preferences: View {
     @AppStorage("apiKey")
     private var apiKey:String = ""
@@ -48,6 +54,9 @@ struct Preferences: View {
     
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
+    
+    @AppStorage("setSort")
+    private var setSort:SetSortOption = .id
     
     @AppStorage("setSuffixOption")
     private var setSuffixOption:SetSuffixOption = .notOne
@@ -125,7 +134,7 @@ struct Preferences: View {
                     Text("name").tag(PartSortOption.name)
                     Text("quantity (high to low)").tag(PartSortOption.quantityDown)
                     Text("quantity (low to high)").tag(PartSortOption.quantityUp)
-                }.frame(width:250)
+                }.frame(width:300)
                 Picker("Default part addition:", selection: $defaultAddPartMethod) {
                     Text("by element ID").tag(AddPartMethod.byElement)
                     Text("by part ID").tag(AddPartMethod.byMoldAndColor)
@@ -135,6 +144,11 @@ struct Preferences: View {
                 Label("Parts", systemImage: "puzzlepiece")
             }.frame(width: 600, height: 100)
             Form {
+                Picker("Sort collection by:", selection: $setSort) {
+                    Text("ID").tag(SetSortOption.id)
+                    Text("name").tag(SetSortOption.name)
+                    Text("theme").tag(SetSortOption.theme)
+                }.frame(width:250)
                 Picker("Display set suffixes:", selection: $setSuffixOption) {
                     Text("always").tag(SetSuffixOption.always)
                     Text("never").tag(SetSuffixOption.never)
@@ -145,7 +159,7 @@ struct Preferences: View {
                 }
             }.tabItem {
                 Label("Sets", systemImage: "shippingbox")
-            }.frame(width: 600, height: 100)
+            }.frame(width: 600, height: 125)
         }.frame(width: 600)
     }
 }

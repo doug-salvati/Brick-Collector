@@ -16,9 +16,9 @@ struct SetInventoryView: View {
     private func getSortMethod() -> (InventoryItem, InventoryItem) -> Bool {
         switch partSort {
         case .color:
-            return {$0.part!.colorId < $1.part!.colorId}
+            return {$0.part?.colorId ?? 0 < $1.part?.colorId ?? 0}
         case .name:
-            return {$0.part!.name ?? "" < $1.part!.name ?? ""}
+            return {$0.part?.name ?? "" < $1.part?.name ?? ""}
         case .quantityDown:
             return {$0.quantity > $1.quantity}
         case .quantityUp:

@@ -29,6 +29,23 @@ struct SetListView: View {
     }
     var filter:String?
     @State private var themeFilter:String = "All"
+    @AppStorage("setSort")
+    private var setSort:SetSortOption = .id
+
+    private func getSortMethod() -> (Kit, Kit) -> Bool {
+        switch setSort {
+        case .id:
+            return {
+                let firstBaseId = Int($0.id!.split(separator: "-").first ?? "0") ?? 0
+                let secondBaseId = Int($1.id!.split(separator: "-").first ?? "0") ?? 0
+                return firstBaseId < secondBaseId
+            }
+        case .name:
+            return {$0.name ?? "" < $1.name ?? ""}
+        case .theme:
+            return {$0.theme ?? "" < $1.theme ?? ""}
+        }
+    }
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
@@ -51,7 +68,7 @@ struct SetListView: View {
                 }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(filteredSets) { set in
+                        ForEach(filteredSets.sorted(by: getSortMethod())) { set in
                             Button(action: {
                                 withAnimation {
                                     appManager.activeSetFeature = set
