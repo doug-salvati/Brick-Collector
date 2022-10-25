@@ -30,7 +30,22 @@ struct PartListView: View {
     }
     var filter:String?
     @State private var colorFilter:Int = -999
+    @AppStorage("partSort")
+    private var partSort:PartSortOption = .color
 
+    private func getSortMethod() -> (Part, Part) -> Bool {
+        switch partSort {
+        case .color:
+            return {$0.colorId < $1.colorId}
+        case .name:
+            return {$0.name ?? "" < $1.name ?? ""}
+        case .quantityDown:
+            return {$0.quantity > $1.quantity}
+        case .quantityUp:
+            return {$0.quantity < $1.quantity}
+        }
+    }
+    
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
         let partCount = parts.reduce(0) { $0 + $1.quantity }
@@ -45,7 +60,7 @@ struct PartListView: View {
                 }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(filteredParts) { part in
+                        ForEach(filteredParts.sorted(by: getSortMethod())) { part in
                             Button(action: {
                                 withAnimation {
                                     appManager.activePartFeature = part

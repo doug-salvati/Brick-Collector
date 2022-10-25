@@ -10,12 +10,27 @@ import SwiftUI
 struct SetInventoryView: View {
     @EnvironmentObject private var appManager: AppManager
     var inventory:[InventoryItem]
+    @AppStorage("partSort")
+    private var partSort:PartSortOption = .color
+    
+    private func getSortMethod() -> (InventoryItem, InventoryItem) -> Bool {
+        switch partSort {
+        case .color:
+            return {$0.part!.colorId < $1.part!.colorId}
+        case .name:
+            return {$0.part!.name ?? "" < $1.part!.name ?? ""}
+        case .quantityDown:
+            return {$0.quantity > $1.quantity}
+        case .quantityUp:
+            return {$0.quantity < $1.quantity}
+        }
+    }
     
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
         ScrollView {
             LazyVGrid(columns: columns) {
-                ForEach(inventory) { item in
+                ForEach(inventory.sorted(by: getSortMethod())) { item in
                     let part = item.part!
                     Button(action: {
                         appManager.activeTab = .parts

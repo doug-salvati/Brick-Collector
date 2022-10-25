@@ -20,6 +20,13 @@ enum SetSuffixOption: String {
     case notOne = "notOne"
 }
 
+enum PartSortOption: String {
+    case color = "color"
+    case name = "name"
+    case quantityDown = "quantity (high to low)"
+    case quantityUp = "quantity (low to high)"
+}
+
 struct Preferences: View {
     @AppStorage("apiKey")
     private var apiKey:String = ""
@@ -35,6 +42,9 @@ struct Preferences: View {
     
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpated:Int = 0
+    
+    @AppStorage("partSort")
+    private var partSort:PartSortOption = .color
     
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
@@ -64,7 +74,7 @@ struct Preferences: View {
                     SecureField("", text: $apiKey).frame(width: 400)
                 }.padding(.bottom)
                 Form {
-                    Picker("Home Page:", selection: $homepage) {
+                    Picker("Home page:", selection: $homepage) {
                         Text("Parts").tag(AppView.parts)
                         Text("Sets").tag(AppView.sets)
                     }.frame(width:250)
@@ -76,7 +86,7 @@ struct Preferences: View {
             }.frame(width: 600, height: 150)
             VStack {
                 Form {
-                    Picker("Color Names:", selection: $colorSet) {
+                    Picker("Color names:", selection: $colorSet) {
                         ForEach(ColorSet.allCases) {
                             set in
                             Text(set.rawValue)
@@ -110,16 +120,22 @@ struct Preferences: View {
                 Label("Colors", systemImage: "paintpalette")
             }.frame(width: 600, height: 175).padding()
             Form {
-                Picker("Default Part Addition:", selection: $defaultAddPartMethod) {
-                    Text("by Element ID").tag(AddPartMethod.byElement)
-                    Text("by Part ID").tag(AddPartMethod.byMoldAndColor)
-                    Text("by Set").tag(AddPartMethod.bySet)
+                Picker("Sort collection by:", selection: $partSort) {
+                    Text("color").tag(PartSortOption.color)
+                    Text("name").tag(PartSortOption.name)
+                    Text("quantity (high to low)").tag(PartSortOption.quantityDown)
+                    Text("quantity (low to high)").tag(PartSortOption.quantityUp)
+                }.frame(width:250)
+                Picker("Default part addition:", selection: $defaultAddPartMethod) {
+                    Text("by element ID").tag(AddPartMethod.byElement)
+                    Text("by part ID").tag(AddPartMethod.byMoldAndColor)
+                    Text("by set").tag(AddPartMethod.bySet)
                 }.frame(width:250)
             }.tabItem {
                 Label("Parts", systemImage: "puzzlepiece")
             }.frame(width: 600, height: 100)
             Form {
-                Picker("Display Set Suffixes:", selection: $setSuffixOption) {
+                Picker("Display set suffixes:", selection: $setSuffixOption) {
                     Text("always").tag(SetSuffixOption.always)
                     Text("never").tag(SetSuffixOption.never)
                     Text("when not 1").tag(SetSuffixOption.notOne)
