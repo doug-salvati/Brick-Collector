@@ -32,7 +32,7 @@ struct AddPartView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
     @State private var suffix:String = "-1"
-    @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod")!) ?? .byElement
+    @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod") ?? "byElement") ?? .byElement
     @State
     var selections:[ElementSelection] = []
     private var setSearch:String {

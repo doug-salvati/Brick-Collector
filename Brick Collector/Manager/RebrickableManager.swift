@@ -99,7 +99,7 @@ class RebrickableManager: ObservableObject {
             let elements:[RBElement] = moldColors.map { moldColor in
                 let id = moldColor.elements.first ?? "\(mold.partNum) (\(moldColor.colorName))"
                 return RBElement(id: id, img: moldColor.img, name: mold.name, colorId: moldColor.colorId)
-                }
+            }
             result = RebrickableResult<[RBElement]>(result: elements)
         } catch {
             result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
@@ -164,6 +164,18 @@ class RebrickableManager: ObservableObject {
         var result:RebrickableResult<RBSet>
         do {
             let set = try await getSet(byId: id)
+            result = RebrickableResult<RBSet>(result: set)
+        } catch {
+            result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
+        }
+        self.searchedSet = result
+    }
+    
+    func searchSet(bySearchQuery query:String) async {
+        self.searchedSet.loading = true
+        var result:RebrickableResult<RBSet>
+        do {
+            let set = try await getSet(bySearchQuery: query)
             result = RebrickableResult<RBSet>(result: set)
         } catch {
             result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
@@ -236,6 +248,16 @@ class RebrickableManager: ObservableObject {
         var set = try JSONDecoder().decode(RBSet.self, from: setData)
         set.theme = try await getTheme(byId: set.themeId)
         return set
+    }
+    
+    func getSet(bySearchQuery query:String) async throws -> RBSet? {
+        let setUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(queryParams)&page_size=1&search=\(query)".replacingOccurrences(of: " ", with: "%20"))
+        let (setData, _) = try await URLSession.shared.data(from: setUrl!)
+        let results = try JSONDecoder().decode(ArrayResults<RBSet>.self, from: setData)
+        var set = results.results.first
+        guard set != nil else { return nil }
+        set!.theme = try await getTheme(byId: set!.themeId)
+        return set!
     }
     
     func getTheme(byId id:Int) async throws -> String {

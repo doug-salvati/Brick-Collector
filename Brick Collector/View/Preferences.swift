@@ -55,6 +55,9 @@ struct Preferences: View {
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
+    @AppStorage("defaultAddSetMethod")
+    private var defaultAddSetMethod:AddSetMethod = .byID
+    
     @AppStorage("setSort")
     private var setSort:SetSortOption = .id
     
@@ -149,6 +152,10 @@ struct Preferences: View {
                     Text("name").tag(SetSortOption.name)
                     Text("theme").tag(SetSortOption.theme)
                 }.frame(width:250)
+                Picker("Default set addition:", selection: $defaultAddSetMethod) {
+                    Text("by ID").tag(AddSetMethod.byID)
+                    Text("by search term").tag(AddSetMethod.bySearchQuery)
+                }.frame(width:250)
                 Picker("Display set suffixes:", selection: $setSuffixOption) {
                     Text("always").tag(SetSuffixOption.always)
                     Text("never").tag(SetSuffixOption.never)
@@ -159,7 +166,7 @@ struct Preferences: View {
                 }
             }.tabItem {
                 Label("Sets", systemImage: "shippingbox")
-            }.frame(width: 600, height: 125)
+            }.frame(width: 600, height: 150)
         }.frame(width: 600)
     }
 }
