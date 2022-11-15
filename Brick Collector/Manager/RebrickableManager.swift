@@ -273,11 +273,15 @@ class RebrickableManager: ObservableObject {
     }
     
     func resetParts() {
-        self.searchedParts = RebrickableResult<[RBElement]>()
+        DispatchQueue.main.async {
+            self.searchedParts = RebrickableResult<[RBElement]>()
+        }
     }
     
     func resetSet() {
-        self.searchedSet = RebrickableResult<RBSet>()
+        DispatchQueue.main.async {
+            self.searchedSet = RebrickableResult<RBSet>()
+        }
     }
     
     func updateColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
