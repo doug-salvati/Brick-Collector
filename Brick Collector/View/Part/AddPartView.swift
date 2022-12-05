@@ -17,6 +17,7 @@ struct ElementSelection: Identifiable {
     var value: RBElement
     var id: String { value.id }
     var selected: Bool
+    var quantity: Int = 1
 }
 
 let placeholders: [AddPartMethod : String] = [
@@ -38,13 +39,9 @@ struct AddPartView: View {
     private var setSearch:String {
         "\(input)\(suffix)"
     }
-
-    func getSelections() -> [RBElement] {
-        return selections.filter { element in
-            element.selected
-        }.map { element in
-            element.value
-        }
+    
+    func getSelectionCount() -> Int {
+        return selections.filter{$0.selected}.reduce(0) {$0 + $1.quantity}
     }
     
     func search() async {
@@ -54,11 +51,14 @@ struct AddPartView: View {
         case .byMoldAndColor:
             await manager.searchParts(byPartId: input)
         case .bySet:
-            await manager.searchParts(bySetId: setSearch)
+            await manager.searchInventory(bySetId: setSearch)
         }
     }
     
     var body: some View {
+        let loading = manager.searchedParts.loading || manager.searchedInventory.loading
+        let error = manager.searchedParts.error ?? manager.searchedInventory.error
+        let resultsPresent = method == .bySet ? manager.searchedInventory.result != nil : manager.searchedParts.result != nil
         VStack {
             VStack {
                 HStack {
@@ -100,17 +100,17 @@ struct AddPartView: View {
                 }
             }
             Spacer()
-            if manager.searchedParts.loading {
+            if loading {
                 VStack {
                     ProgressView().padding()
                     if appManager.importing {
                         Text("Fetching data at reduced speed. Please be patient.").font(.footnote).italic().multilineTextAlignment(.center)
                     }
                 }
-            } else if manager.searchedParts.result != nil {
-                PartSelectionView(parts: (manager.searchedParts.result)!, selections: $selections)
+            } else if resultsPresent {
+                PartSelectionView(selections: $selections)
             } else {
-                Text(manager.searchedParts.error?.localizedDescription ?? "Enter Search")
+                Text(error?.localizedDescription ?? "Enter Search")
             }
             Spacer()
             HStack {
@@ -120,29 +120,34 @@ struct AddPartView: View {
                     appManager.importing = false
                 }) {
                     Text("Cancel")
-                }.disabled(appManager.importing && manager.searchedParts.loading)
+                }.disabled(appManager.importing && loading)
                     .keyboardShortcut(.cancelAction)
                 Spacer()
                 Button(action:{
-                    appManager.upsertParts(elements: getSelections())
+                    appManager.upsertParts(selections: selections.filter{$0.selected})
                     manager.resetParts()
                     isPresented = false
                     appManager.importing = false
                 }) {
-                    let partCount = getSelections().count
-                    switch partCount {
+                    let partCount = getSelectionCount()
+                    switch getSelectionCount() {
                     case 0, 1:
                         Text("Add Part")
                     default:
                         Text("Add \(partCount) Parts")
                     }
                 }
-                .disabled(manager.searchedParts.result == nil || getSelections().count < 1)
+                .disabled(!resultsPresent || getSelectionCount() < 1)
                 .keyboardShortcut(.defaultAction)
             }
         }.padding().onReceive(manager.$searchedParts) { newParts in
             self.selections = (newParts.result ?? []).map { part in
-                return ElementSelection(value: part, selected: appManager.importing || method != .byMoldAndColor)
+                return ElementSelection(value: part, selected: appManager.importing || method != .byMoldAndColor, quantity: 1)
+            }
+        }.onReceive(manager.$searchedInventory) { newInventory in
+            self.selections = (newInventory.result ?? []).map { item in
+                let element = RBElement(id: item.id, img: item.part.img ?? nil, name: item.part.name, colorId: item.color.id)
+                return ElementSelection(value: element, selected: appManager.importing || method != .byMoldAndColor, quantity: item.quantity)
             }
         }
     }

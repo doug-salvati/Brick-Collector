@@ -197,10 +197,12 @@ class AppManager: ObservableObject {
         }
     }
 
-    func upsertParts(elements:[RBElement]) {
+    func upsertParts(selections:[ElementSelection]) {
         let id:UUID = self.queue(op: AppOperation(type: .UpsertPart, description: "Insert part"))
         let context = PersistenceController.shared.container.viewContext
-        elements.forEach { element in
+        selections.forEach { selection in
+            let element = selection.value
+            let quantity = Int64(selection.quantity)
             let request: NSFetchRequest<Part> = Part.fetchRequest()
             request.predicate = NSPredicate(format: "id LIKE %@", element.id)
             var existingPart:Part? = nil
@@ -213,15 +215,15 @@ class AppManager: ObservableObject {
                 return
             }
             if existingPart != nil {
-                existingPart!.quantity += 1
-                existingPart!.loose += 1
+                existingPart!.quantity += quantity
+                existingPart!.loose += quantity
             } else {
                 let newPart = Part(context: context)
                 newPart.id = element.id
                 newPart.name = element.name
                 newPart.colorId = Int64(element.colorId)
-                newPart.quantity = 1
-                newPart.loose = 1
+                newPart.quantity = quantity
+                newPart.loose = quantity
                 newPart.img = element.img == nil ? nil : try? Data(contentsOf: URL(string: element.img!)!)
             }
         }

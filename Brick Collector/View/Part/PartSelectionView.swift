@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import Combine
 
 struct PartSelectionView: View {
-    var parts:[RBElement]
     @Binding
     var selections:[ElementSelection]
     @State private var colorFilter:Int = -999
+        
+    func getFormatter() -> NumberFormatter {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.minimum = 1
+        numberFormatter.maximum = 10000
+        return numberFormatter
+    }
     
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
@@ -42,13 +49,20 @@ struct PartSelectionView: View {
                 LazyVGrid(columns: columns) {
                     ForEach($selections) { $selection in
                         if (colorFilter == -999 || selection.value.colorId == colorFilter) {
-                            Toggle(isOn: $selection.selected) {
+                            VStack {
                                 if selection.value.img != nil {
-                                    AsyncImage(url: URL(string: selection.value.img!)!)
+                                    AsyncImage(url: URL(string: selection.value.img!)!).padding()
                                 } else {
                                     Image(systemName: "photo")
                                 }
-                            }.toggleStyle(.gallery)
+                                Toggle(isOn: $selection.selected) {
+                                    Stepper(value: $selection.quantity, in: 1...10000) {
+                                        TextField("", value: $selection.quantity, formatter: getFormatter())
+                                    }.disabled(!selection.selected)
+                                }.padding(.leading).padding(.trailing).padding(.bottom)
+                            }.background(
+                                RoundedRectangle(cornerRadius: 5).fill(Color("IconBorder")).opacity(0.2)
+                            )
                         }
                     }
                 }
@@ -59,7 +73,6 @@ struct PartSelectionView: View {
 
 struct PartSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        let element = RBElement(id: "4106356", img: "foo.png", name: "Brick 2x4", colorId: 0)
-        PartSelectionView(parts: [element], selections: .constant([])).frame(width: 300)
+        PartSelectionView(selections: .constant([])).frame(width: 300)
     }
 }

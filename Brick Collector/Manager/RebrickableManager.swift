@@ -129,6 +129,7 @@ class RebrickableManager: ObservableObject {
     
     func searchParts(byBricklinkItems items:[BrickLinkXMLItem]) async {
         self.searchedParts.loading = true
+        // TODO: use inventory instead of element to capture quantity
         var result:RebrickableResult<[RBElement]>
         var elements:[RBElement] = []
         do {
@@ -147,7 +148,6 @@ class RebrickableManager: ObservableObject {
                 elements.append(element)
             }
             if elements.isEmpty {
-                print("oops")
                 result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
             } else {
                 result = RebrickableResult<[RBElement]>(result: elements)
