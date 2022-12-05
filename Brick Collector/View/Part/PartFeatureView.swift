@@ -17,6 +17,7 @@ struct PartFeatureView: View {
     }
     @State private var showWarning = false
     @State private var showTooltip = false
+    @State private var showAddQuantityPopup = false
     
     var body: some View {
         let looseCount = part.loose
@@ -35,6 +36,13 @@ struct PartFeatureView: View {
                     }.labelStyle(.iconOnly).buttonStyle(.borderless)
                         .keyboardShortcut(.cancelAction)
                     Spacer()
+                    Button(action: {
+                        showAddQuantityPopup = true
+                    }) {
+                        Label("Bulk Add", systemImage: "plus.square.on.square").labelStyle(.iconOnly)
+                    }.popover(isPresented: $showAddQuantityPopup, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
+                        QuantityModifier(value: $quantity).padding()
+                    }.buttonStyle(.borderless)
                     Button(action: {
                         showWarning = true
                     }) {
