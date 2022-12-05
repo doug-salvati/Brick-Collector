@@ -73,6 +73,7 @@ struct AddPartView: View {
                         Text("Set").tag(AddPartMethod.bySet)
                     }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
                         manager.resetParts()
+                        manager.resetInventory()
                     }
                 }
             }.padding(.bottom)
@@ -126,6 +127,7 @@ struct AddPartView: View {
                 Button(action:{
                     appManager.upsertParts(selections: selections.filter{$0.selected})
                     manager.resetParts()
+                    manager.resetInventory()
                     isPresented = false
                     appManager.importing = false
                 }) {

@@ -284,6 +284,12 @@ class RebrickableManager: ObservableObject {
         }
     }
     
+    func resetInventory() {
+        DispatchQueue.main.async {
+            self.searchedInventory = RebrickableResult<[RBInventoryItem]>()
+        }
+    }
+    
     func updateColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {
         self.colors.loading = true
         var result:RebrickableResult<[RBElementColor]>

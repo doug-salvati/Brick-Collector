@@ -59,6 +59,7 @@ struct AddSetView: View {
                     Text("Name").tag(AddSetMethod.bySearchQuery)
                 }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
                     manager.resetSet()
+                    manager.resetInventory()
                 }
             }.padding(.bottom)
             if (!secondPage) {
@@ -157,6 +158,7 @@ struct AddSetView: View {
                         isPresented = false
                         manager.resetSet()
                         manager.resetParts()
+                        manager.resetInventory()
                     }) {
                         Text("Cancel")
                     }
@@ -200,6 +202,7 @@ struct AddSetView: View {
                             isPresented = false
                             manager.resetSet()
                             manager.resetParts()
+                            manager.resetInventory()
                         }) {
                             Text(spares ? "Add Spare Parts" : "Add Set")
                         }.disabled(manager.searchedInventory.result == nil)
