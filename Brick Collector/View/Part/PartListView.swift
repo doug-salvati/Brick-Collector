@@ -30,7 +30,22 @@ struct PartListView: View {
     }
     var filter:String?
     @State private var colorFilter:Int = -999
+    @AppStorage("partSort")
+    private var partSort:PartSortOption = .color
 
+    private func getSortMethod() -> (Part, Part) -> Bool {
+        switch partSort {
+        case .color:
+            return {$0.colorId < $1.colorId}
+        case .name:
+            return {$0.name ?? "" < $1.name ?? ""}
+        case .quantityDown:
+            return {$0.quantity > $1.quantity}
+        case .quantityUp:
+            return {$0.quantity < $1.quantity}
+        }
+    }
+    
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
         let partCount = parts.reduce(0) { $0 + $1.quantity }
@@ -39,19 +54,13 @@ struct PartListView: View {
         VStack {
             if appManager.activePartFeature == nil {
                 HStack {
-                    Picker(selection: $colorFilter, content: {
-                        Text("All").tag(-999)
-                        Divider()
-                        ForEach(Array(colorIds).sorted(), id: \.self) { ColorNameView(type: .Label, colorId: $0, stroke: .black).tag($0) }
-                    }) {
-                        Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)
-                    }.frame(width: 200).padding()
+                    ColorPicker(availableColorIds: Array(colorIds), colorFilter: $colorFilter).padding()
                     Spacer()
                     Text("\(partCount) Parts (\(parts.count) Unique)").font(.title2).padding()
                 }
                 ScrollView {
                     LazyVGrid(columns: columns) {
-                        ForEach(filteredParts) { part in
+                        ForEach(filteredParts.sorted(by: getSortMethod())) { part in
                             Button(action: {
                                 withAnimation {
                                     appManager.activePartFeature = part

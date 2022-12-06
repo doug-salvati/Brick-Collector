@@ -99,7 +99,7 @@ class RebrickableManager: ObservableObject {
             let elements:[RBElement] = moldColors.map { moldColor in
                 let id = moldColor.elements.first ?? "\(mold.partNum) (\(moldColor.colorName))"
                 return RBElement(id: id, img: moldColor.img, name: mold.name, colorId: moldColor.colorId)
-                }
+            }
             result = RebrickableResult<[RBElement]>(result: elements)
         } catch {
             result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
@@ -129,6 +129,7 @@ class RebrickableManager: ObservableObject {
     
     func searchParts(byBricklinkItems items:[BrickLinkXMLItem]) async {
         self.searchedParts.loading = true
+        // TODO: use inventory instead of element to capture quantity
         var result:RebrickableResult<[RBElement]>
         var elements:[RBElement] = []
         do {
@@ -147,7 +148,6 @@ class RebrickableManager: ObservableObject {
                 elements.append(element)
             }
             if elements.isEmpty {
-                print("oops")
                 result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
             } else {
                 result = RebrickableResult<[RBElement]>(result: elements)
@@ -164,6 +164,18 @@ class RebrickableManager: ObservableObject {
         var result:RebrickableResult<RBSet>
         do {
             let set = try await getSet(byId: id)
+            result = RebrickableResult<RBSet>(result: set)
+        } catch {
+            result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
+        }
+        self.searchedSet = result
+    }
+    
+    func searchSet(bySearchQuery query:String) async {
+        self.searchedSet.loading = true
+        var result:RebrickableResult<RBSet>
+        do {
+            let set = try await getSet(bySearchQuery: query)
             result = RebrickableResult<RBSet>(result: set)
         } catch {
             result = RebrickableResult<RBSet>(error: RebrickableError.SetRetrievalFailure)
@@ -238,6 +250,16 @@ class RebrickableManager: ObservableObject {
         return set
     }
     
+    func getSet(bySearchQuery query:String) async throws -> RBSet? {
+        let setUrl = URL(string: "\(RebrickableManager.endpoint)/sets/\(queryParams)&page_size=1&search=\(query)".replacingOccurrences(of: " ", with: "%20"))
+        let (setData, _) = try await URLSession.shared.data(from: setUrl!)
+        let results = try JSONDecoder().decode(ArrayResults<RBSet>.self, from: setData)
+        var set = results.results.first
+        guard set != nil else { return nil }
+        set!.theme = try await getTheme(byId: set!.themeId)
+        return set!
+    }
+    
     func getTheme(byId id:Int) async throws -> String {
         let themeUrl = URL(string: "\(RebrickableManager.endpoint)/themes/\(id)/\(queryParams)")
         let (themeData, _) = try await URLSession.shared.data(from: themeUrl!)
@@ -251,11 +273,21 @@ class RebrickableManager: ObservableObject {
     }
     
     func resetParts() {
-        self.searchedParts = RebrickableResult<[RBElement]>()
+        DispatchQueue.main.async {
+            self.searchedParts = RebrickableResult<[RBElement]>()
+        }
     }
     
     func resetSet() {
-        self.searchedSet = RebrickableResult<RBSet>()
+        DispatchQueue.main.async {
+            self.searchedSet = RebrickableResult<RBSet>()
+        }
+    }
+    
+    func resetInventory() {
+        DispatchQueue.main.async {
+            self.searchedInventory = RebrickableResult<[RBInventoryItem]>()
+        }
     }
     
     func updateColors(callback: @escaping (RebrickableResult<[RBElementColor]>) -> Void) async {

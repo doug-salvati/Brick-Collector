@@ -17,6 +17,7 @@ struct PartFeatureView: View {
     }
     @State private var showWarning = false
     @State private var showTooltip = false
+    @State private var showAddQuantityPopup = false
     
     var body: some View {
         let looseCount = part.loose
@@ -26,17 +27,22 @@ struct PartFeatureView: View {
         HSplitView {
             VStack {
                 HStack {
-                    Button("Close") {
+                    Button(action: {
                         withAnimation {
                             appManager.activePartFeature = nil
                         }
-                    }.keyboardShortcut(.cancelAction)
-                    if quantityChange != 0 {
-                        Button("Save") {
-                            appManager.adjustQuantity(of: part, by: quantityChange)
-                        }.keyboardShortcut("\\")
-                    }
+                    }) {
+                        Label("Close", systemImage: "xmark.circle.fill")
+                    }.labelStyle(.iconOnly).buttonStyle(.borderless)
+                        .keyboardShortcut(.cancelAction)
                     Spacer()
+                    Button(action: {
+                        showAddQuantityPopup = true
+                    }) {
+                        Label("Bulk Add", systemImage: "plus.square.on.square").labelStyle(.iconOnly)
+                    }.popover(isPresented: $showAddQuantityPopup, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
+                        QuantityModifier(value: $quantity).padding()
+                    }.buttonStyle(.borderless)
                     Button(action: {
                         showWarning = true
                     }) {
@@ -53,7 +59,7 @@ struct PartFeatureView: View {
                         .popover(isPresented: $showTooltip) {
                             Text("Part must not be used in any sets to be deleted.").padding()
                         }.onHover { showTooltip = $0 && part.quantity > part.loose}
-                        .keyboardShortcut("D")
+                        .keyboardShortcut(.delete, modifiers: [])
                 }
                 HStack {
                     VStack(alignment: .leading) {
@@ -65,7 +71,7 @@ struct PartFeatureView: View {
                                 quantity += 1
                             }.hidden().keyboardShortcut("]").frame(width:0)
                             Button("Decrease") {
-                                quantity = max(Int(setCount), quantity - 1)
+                                quantity = max(max(Int(setCount), 1), quantity - 1)
                             }.hidden().keyboardShortcut("[").frame(width:0)
                             Text(part.name!).font(.title2)
                         }
@@ -77,6 +83,11 @@ struct PartFeatureView: View {
                 Spacer()
                 if part.img != nil {
                     Image(nsImage: NSImage(data: part.img!)!).resizable().scaledToFit()
+                }
+                if quantityChange != 0 {
+                    Button("Save") {
+                        appManager.adjustQuantity(of: part, by: quantityChange)
+                    }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {

@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum AddSetMethod: String {
+    case byID = "byID"
+    case bySearchQuery = "bySearchQuery"
+}
+
 struct AddSetView: View {
     @Binding var isPresented: Bool
     @EnvironmentObject private var manager: RebrickableManager
@@ -14,11 +19,26 @@ struct AddSetView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var input:String = ""
     @State private var suffix:String = "-1"
+    @State private var method:AddSetMethod = AddSetMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddSetMethod") ?? "byID") ?? .byID
     @State private var secondPage:Bool = false
     @State private var spares:Bool = false
     @State private var includeFigs:Bool = true
     private var searchString:String {
         "\(input)\(suffix)"
+    }
+    
+    private static var placeholders: [AddSetMethod : String] = [
+        .byID: "Set ID",
+        .bySearchQuery: "Search",
+    ]
+    
+    func search() async {
+        switch method {
+        case .byID:
+            await manager.searchSet(byId: searchString)
+        case .bySearchQuery:
+            await manager.searchSet(bySearchQuery: input)
+        }
     }
     
     var body: some View {
@@ -34,21 +54,30 @@ struct AddSetView: View {
                         .font(.largeTitle)
                     Spacer()
                 }
+                Picker(selection: $method, label: Text("by:")) {
+                    Text("ID").tag(AddSetMethod.byID)
+                    Text("Name").tag(AddSetMethod.bySearchQuery)
+                }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
+                    manager.resetSet()
+                    manager.resetInventory()
+                }
             }.padding(.bottom)
             if (!secondPage) {
                 HStack {
-                    TextField("Set ID", text: $input).onSubmit {
+                    TextField(AddSetView.placeholders[method]!, text: $input).onSubmit {
                         Task {
-                            await manager.searchSet(byId: searchString)
+                            await search()
                         }
                     }
-                    Picker("Suffix", selection: $suffix) {
-                        Text("No Suffix").tag("")
-                        ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
-                    }.labelsHidden()
+                    if method == .byID {
+                        Picker("Suffix", selection: $suffix) {
+                            Text("No Suffix").tag("")
+                            ForEach(1..<31) { Text("-\($0)").tag("-\($0)") }
+                        }.labelsHidden()
+                    }
                     Button(action: {
                         Task {
-                            await manager.searchSet(byId: searchString)
+                            await search()
                         }
                     }) {
                         Text("Search")
@@ -129,9 +158,11 @@ struct AddSetView: View {
                         isPresented = false
                         manager.resetSet()
                         manager.resetParts()
+                        manager.resetInventory()
                     }) {
                         Text("Cancel")
                     }
+                    .keyboardShortcut(.cancelAction)
                     Spacer()
                     if (!secondPage) {
                         Button(action:{
@@ -171,6 +202,7 @@ struct AddSetView: View {
                             isPresented = false
                             manager.resetSet()
                             manager.resetParts()
+                            manager.resetInventory()
                         }) {
                             Text(spares ? "Add Spare Parts" : "Add Set")
                         }.disabled(manager.searchedInventory.result == nil)

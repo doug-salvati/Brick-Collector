@@ -18,7 +18,7 @@ struct Brick_CollectorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
     @AppStorage("colorsLastUpdated")
-    private var colorsLastUpated:Int = Int(Date.now.timeIntervalSince1970)
+    private var colorsLastUpated:Int = 0
     @State private var importXML = false
     @State private var importLegacy = false
     @State private var importBcc = false
@@ -34,7 +34,8 @@ struct Brick_CollectorApp: App {
                     .environmentObject(appManager)
                     .onAppear(perform: {
                         Task {
-                            if Date.now.timeIntervalSince1970 - TimeInterval(colorsLastUpated) > TimeInterval(604800) {
+                            // update colors weekly
+                            if Int(Date.now.timeIntervalSince1970) - colorsLastUpated > 604800 {
                                 await appManager.updateColors()
                             }
                         }
