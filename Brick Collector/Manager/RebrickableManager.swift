@@ -267,7 +267,7 @@ class RebrickableManager: ObservableObject {
     }
     
     func getColors() async throws -> [RBElementColor] {
-        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=200")
+        let url = URL(string: "\(RebrickableManager.endpoint)/colors/\(queryParams)&page_size=250")
         let (data, _) = try await URLSession.shared.data(from: url!)
         return try JSONDecoder().decode(ArrayResults<RBElementColor>.self, from: data).results
     }
