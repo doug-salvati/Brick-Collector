@@ -1,6 +1,6 @@
 # Brick Collector
 A LEGO® collection manager for MacOS.
-<img width="956" alt="Screen Shot 2022-01-27 at 23 04 21" src="https://user-images.githubusercontent.com/17438678/151485443-342c22d6-d35d-427f-b70b-d8a1aa41a3b4.png">
+<img width="843" alt="A view of the main app screen, presenting a gallery of bricks. In the toolbar, there is a filter search for 'Brick 1x1'" src="https://user-images.githubusercontent.com/17438678/205797671-7662c6aa-3c54-43f8-b30f-3a6ea5d7adfc.png">
 
 # Installing
 Download the `Brick.Collector.app.zip` from the latest release on the sidebar!
