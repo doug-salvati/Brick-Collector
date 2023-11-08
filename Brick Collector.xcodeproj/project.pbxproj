@@ -41,6 +41,7 @@
 		91B86478277AA7F200638F4D /* RBSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B86477277AA7F200638F4D /* RBSet.swift */; };
 		91B8647A277AAABE00638F4D /* RBTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B86479277AAABE00638F4D /* RBTheme.swift */; };
 		91C2772025B3CA330032336F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C2771F25B3CA330032336F /* AppManager.swift */; };
+		91C875C72AFC57390057221E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 91C875C62AFC57390057221E /* .gitignore */; };
 		91EA040129232FF8005B3D03 /* QuantityModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EA040029232FF8005B3D03 /* QuantityModifier.swift */; };
 		91EB70F62904F6A4009C9E8F /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EB70F52904F6A4009C9E8F /* ColorPicker.swift */; };
 		91ECB80725A25912008C5F72 /* Brick_CollectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECB80625A25912008C5F72 /* Brick_CollectorApp.swift */; };
@@ -105,6 +106,7 @@
 		91B86477277AA7F200638F4D /* RBSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBSet.swift; sourceTree = "<group>"; };
 		91B86479277AAABE00638F4D /* RBTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBTheme.swift; sourceTree = "<group>"; };
 		91C2771F25B3CA330032336F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
+		91C875C62AFC57390057221E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		91EA040029232FF8005B3D03 /* QuantityModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityModifier.swift; sourceTree = "<group>"; };
 		91EB70F52904F6A4009C9E8F /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		91ECB80325A25912008C5F72 /* Brick Collector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brick Collector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +248,7 @@
 		91ECB7FA25A25912008C5F72 = {
 			isa = PBXGroup;
 			children = (
+				91C875C62AFC57390057221E /* .gitignore */,
 				91ECB80525A25912008C5F72 /* Brick Collector */,
 				91ECB81D25A25913008C5F72 /* Brick CollectorTests */,
 				91ECB82825A25913008C5F72 /* Brick CollectorUITests */,
@@ -414,6 +417,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91ECB80E25A25913008C5F72 /* Preview Assets.xcassets in Resources */,
+				91C875C72AFC57390057221E /* .gitignore in Resources */,
 				91ECB80B25A25913008C5F72 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
