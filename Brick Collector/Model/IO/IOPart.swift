@@ -21,6 +21,6 @@ struct IOPart: Codable {
         quantity = Int(part.quantity)
         loose = Int(part.loose)
         colorId = Int(part.colorId)
-        img = part.img
+        img = part.img?.binary
     }
 }

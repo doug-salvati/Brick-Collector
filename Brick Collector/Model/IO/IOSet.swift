@@ -21,7 +21,7 @@ struct IOSet: Codable {
         name = kit.name ?? ""
         partCount = Int(kit.partCount)
         theme = kit.theme ?? ""
-        img = kit.img
+        img = kit.img?.binary
         quantity = Int(kit.quantity)
         missingFigs = kit.missingFigs
     }

@@ -187,7 +187,11 @@ class AppManager: ObservableObject {
                     request.predicate = NSPredicate(format: "id LIKE %@", partId)
                     let part = try? context.fetch(request).first
                     guard part != nil else { return }
-                    part!.img = downloadedImages[partId]
+                    if downloadedImages[partId] != nil {
+                        let newImage = ItemImage(context: context)
+                        newImage.binary = downloadedImages[partId]
+                        part!.img = newImage
+                    }
                 }
                 try context.save()
                 self.finish(opId: id)
@@ -224,7 +228,12 @@ class AppManager: ObservableObject {
                 newPart.colorId = Int64(element.colorId)
                 newPart.quantity = quantity
                 newPart.loose = quantity
-                newPart.img = element.img == nil ? nil : try? Data(contentsOf: URL(string: element.img!)!)
+                let img = element.img == nil ? nil : try? Data(contentsOf: URL(string: element.img!)!)
+                if (img != nil) {
+                    let newImage = ItemImage(context: context)
+                    newImage.binary = img
+                    newPart.img = newImage
+                }
             }
         }
 
@@ -270,7 +279,9 @@ class AppManager: ObservableObject {
             let imgUrl = URL(fileURLWithPath: "/Library/Application Support/com.dsalvati.brickcollector/part_images/\(img)")
             do {
                 let imgData = try Data(contentsOf: imgUrl)
-                newPart.img = imgData
+                let newImage = ItemImage(context: context)
+                newImage.binary = imgData
+                newPart.img = newImage
             } catch {
                 print(" - unable to transfer image data, leaving as no img")
             }
@@ -317,7 +328,12 @@ class AppManager: ObservableObject {
             newKit.theme = set.theme!
             newKit.quantity = 1
             newKit.partCount = Int64(set.partCount)
-            newKit.img = set.img == nil ? nil : try? Data(contentsOf: URL(string: set.img!)!)
+            let img = set.img == nil ? nil : try? Data(contentsOf: URL(string: set.img!)!)
+            if (img != nil) {
+                let newImage = ItemImage(context: context)
+                newImage.binary = img
+                newKit.img = newImage
+            }
             newKit.missingFigs = missingFigs
             kit = newKit
         }
@@ -487,7 +503,11 @@ class AppManager: ObservableObject {
             newPart.id = part.id
             newPart.name = part.name
             newPart.colorId = Int64(part.colorId)
-            newPart.img = part.img
+            if (part.img != nil) {
+                let newImage = ItemImage(context: context)
+                newImage.binary = part.img
+                newPart.img = newImage
+            }
             return newPart
         }
     }
@@ -506,7 +526,11 @@ class AppManager: ObservableObject {
             newKit.theme = kit.theme
             newKit.quantity = Int64(kit.quantity)
             newKit.partCount = Int64(kit.partCount)
-            newKit.img = kit.img
+            if (kit.img != nil) {
+                let newImage = ItemImage(context: context)
+                newImage.binary = kit.img
+                newKit.img = newImage
+            }
             newKit.missingFigs = kit.missingFigs ?? false
             return newKit
         }
