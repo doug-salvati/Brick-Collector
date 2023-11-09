@@ -20,7 +20,6 @@ struct Brick_CollectorApp: App {
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpated:Int = 0
     @State private var importXML = false
-    @State private var importLegacy = false
     @State private var importBcc = false
     @State private var exportBcc = false
     @State private var exportSetCsv = false
@@ -42,8 +41,6 @@ struct Brick_CollectorApp: App {
                 })
                 HStack {}
                 .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
-                HStack {}
-                .fileImporter(isPresented: $importLegacy, allowedContentTypes: [.commaSeparatedText], onCompletion: importLegacy)
                 HStack {}
                 .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
                 HStack {}
@@ -123,31 +120,6 @@ struct Brick_CollectorApp: App {
             }
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
-        }
-    }
-    
-    func importLegacy(result: Result<URL, Error>) {
-        do {
-            let selectedFile: URL = try result.get()
-            let data = try String(contentsOf: selectedFile)
-            var rows = data.split(whereSeparator: \.isNewline)
-            rows.remove(at: 0)
-            print("Found \(rows.count) parts to add")
-            print("====================")
-            var counter = 1
-            rows.forEach { row in
-                let values = row.split(separator: ";")
-                let id = String(values[0])
-                let name = String(values[1])
-                let color = String(values[2])
-                let img = String(values[3])
-                let loose = String(values[5])
-                print("[\(counter)/\(rows.count)] \(loose)x \(color) \(id) \(name)")
-                appManager.insertCustomPart(id: id, name: name, color: color, img: img, loose: loose)
-                counter += 1
-            }
-        } catch {
-            appManager.issueError(type: .ImportFile, description: "Import Legacy Data", error: .FileReadError)
         }
     }
     
