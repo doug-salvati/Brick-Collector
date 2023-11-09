@@ -154,9 +154,14 @@ struct Brick_CollectorApp: App {
     func importBcc(result: Result<URL, Error>) {
         do {
             let selectedFile: URL = try result.get()
-            let data = try Data(contentsOf: selectedFile)
-            let collection = try JSONDecoder().decode(IOCollection.self, from: data)
-            appManager.upsertCollection(collection: collection)
+            if (selectedFile.startAccessingSecurityScopedResource()) {
+                let data = try Data(contentsOf: selectedFile)
+                let collection = try JSONDecoder().decode(IOCollection.self, from: data)
+                appManager.upsertCollection(collection: collection)
+            } else {
+                appManager.issueError(type: .ImportFile, description: "Import Brick Collector Data", error: .FileReadError)
+            }
+            selectedFile.stopAccessingSecurityScopedResource();
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import Brick Collector Data", error: .FileReadError)
         }
