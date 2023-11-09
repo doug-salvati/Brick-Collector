@@ -147,7 +147,7 @@ struct AddPartView: View {
                 return ElementSelection(value: part, selected: appManager.importing || method != .byMoldAndColor, quantity: 1)
             }
         }.onReceive(manager.$searchedInventory) { newInventory in
-            self.selections = (newInventory.result ?? []).map { item in
+            self.selections = consolidate(inventory: newInventory.result ?? []).map { item in
                 let element = RBElement(id: item.id, img: item.part.img ?? nil, name: item.part.name, colorId: item.color.id)
                 return ElementSelection(value: element, selected: appManager.importing || method != .byMoldAndColor, quantity: item.quantity)
             }

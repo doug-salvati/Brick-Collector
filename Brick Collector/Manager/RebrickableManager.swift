@@ -107,26 +107,6 @@ class RebrickableManager: ObservableObject {
         self.searchedParts = result
     }
     
-    func searchParts(bySetId set:String) async {
-        self.searchedParts.loading = true
-        var result:RebrickableResult<[RBElement]>
-        do {
-            let items = try await getInventory(bySetId: set)
-            if (items.count == 0) {
-                result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
-            } else {
-                let elements:[RBElement] = items.map { item in
-                    let id = item.id
-                    return RBElement(id: id, img: item.part.img ?? nil, name: item.part.name, colorId: item.color.id)
-                }
-                result = RebrickableResult<[RBElement]>(result: elements)
-            }
-        } catch {
-            result = RebrickableResult<[RBElement]>(error: RebrickableError.PartRetrievalFailure)
-        }
-        self.searchedParts = result
-    }
-    
     func searchParts(byBricklinkItems items:[BrickLinkXMLItem]) async {
         self.searchedParts.loading = true
         // TODO: use inventory instead of element to capture quantity
@@ -233,7 +213,7 @@ class RebrickableManager: ObservableObject {
             }
             items.append(contentsOf: minifigParts)
         }
-        return consolidate(inventory: items.filter { $0.isSpare == spares })
+        return items.filter { $0.isSpare == spares }
     }
     
     func getInventory(byMinifig minifig:String) async throws -> [RBInventoryItem] {
@@ -317,10 +297,6 @@ class RebrickableManagerPreview: RebrickableManager {
     }
     
     override func searchParts(byPartId part: String) async {
-        await searchParts(byElementId: "elementId")
-    }
-    
-    override func searchParts(bySetId set: String) async {
         await searchParts(byElementId: "elementId")
     }
     
