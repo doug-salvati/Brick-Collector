@@ -17,6 +17,7 @@ enum AppOperationType {
     case UpdateSetQuantity
     case DeleteSet
     case DeletePart
+    case DeleteAll
     case ImportFile
     case ExportFile
     case ImportCollection
@@ -618,5 +619,27 @@ class AppManager: ObservableObject {
                 self.finish(opId: id, withError: error)
             }
         }
+    }
+    
+    func deleteAll() {
+        let id:UUID = self.queue(op: AppOperation(type: .DeleteAll, description: "Deleting collection"))
+        DispatchQueue.main.async {
+            do {
+                try self.deleteAll(ofEntity: "Kit")
+                try self.deleteAll(ofEntity: "Part")
+                try self.deleteAll(ofEntity: "InventoryItem")
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    private func deleteAll(ofEntity entityName:String) throws {
+        let context = PersistenceController.shared.container.viewContext
+        let fetch: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
+        let delete = NSBatchDeleteRequest(fetchRequest: fetch)
+        try context.execute(delete)
+        context.reset()
     }
 }

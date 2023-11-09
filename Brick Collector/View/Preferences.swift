@@ -72,6 +72,8 @@ struct Preferences: View {
     
     @EnvironmentObject private var appManager: AppManager
     
+    @State private var showDataManagement:Bool = false
+    
     var body: some View {
         let loadingColors:Bool = appManager.isLoading(type: .UpdateColors)
         TabView {
@@ -90,6 +92,21 @@ struct Preferences: View {
                         Text("Parts").tag(AppView.parts)
                         Text("Sets").tag(AppView.sets)
                     }.frame(width:250)
+                }
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showDataManagement = true
+                    }) {
+                        Text("Manage Data...")
+                    }.sheet(isPresented: $showDataManagement) {
+                        DataManagement(isPresented: $showDataManagement){
+                            appManager.activeSetFeature = nil
+                            appManager.activePartFeature = nil
+                            appManager.activeTab = .parts
+                            appManager.deleteAll()
+                        }.padding()
+                    }
                 }
             }
             .padding()
