@@ -44,9 +44,10 @@ struct AddSetView: View {
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
         let hasMinifigs: Bool = manager.searchedInventory.result?.contains(where: {$0.isMinifig}) ?? false
-        let inventory: [RBInventoryItem] = (manager.searchedInventory.result ?? []).filter {
+        let rawInventory: [RBInventoryItem] = (manager.searchedInventory.result ?? []).filter {
             includeFigs || !$0.isMinifig
         }
+        let inventory = consolidate(inventory: rawInventory)
         VStack {
             VStack {
                 HStack {
