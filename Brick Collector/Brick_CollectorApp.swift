@@ -104,20 +104,25 @@ struct Brick_CollectorApp: App {
     func importBricklinkXml(result: Result<URL, Error>) {
         do {
             let selectedFile: URL = try result.get()
-            let input = try Data(contentsOf: selectedFile)
-            let parser = BrickLinkParser(data: input)
-            if parser.parse() {
-                appManager.importing = true
-                appManager.activeTab = .parts
-                appManager.showAdditionModal = true
-                DispatchQueue(label: "loadXML").async {
-                    Task {
-                        await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+            if (selectedFile.startAccessingSecurityScopedResource()) {
+                let input = try Data(contentsOf: selectedFile)
+                let parser = BrickLinkParser(data: input)
+                if parser.parse() {
+                    appManager.importing = true
+                    appManager.activeTab = .parts
+                    appManager.showAdditionModal = true
+                    DispatchQueue(label: "loadXML").async {
+                        Task {
+                            await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+                        }
                     }
+                } else {
+                    appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
                 }
             } else {
-                appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
+                appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
             }
+            selectedFile.stopAccessingSecurityScopedResource();
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
         }
