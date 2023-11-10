@@ -23,6 +23,7 @@ struct Brick_CollectorApp: App {
     @State private var importBcc = false
     @State private var exportBcc = false
     @State private var exportSetCsv = false
+    @State private var exportPartCsv = false
     
     var body: some Scene {
         WindowGroup {
@@ -40,13 +41,15 @@ struct Brick_CollectorApp: App {
                         }
                 })
                 HStack {}
-                .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
+                    .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
                 HStack {}
-                .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
+                    .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
                 HStack {}
-                .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
+                    .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
                 HStack {}
-                .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
+                    .fileExporter(isPresented: $exportPartCsv, document: exportPartCsvFile(), contentType: .commaSeparatedText, defaultFilename: "elements.csv", onCompletion: finishExport)
+                HStack {}
+                    .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
             }
         }.commands {
             CommandGroup(replacing: .newItem) {
@@ -64,6 +67,11 @@ struct Brick_CollectorApp: App {
                     Button("Brick Collector...") {
                         exportBcc = true
                     }.keyboardShortcut("E")
+                    Menu("Parts") {
+                        Button("Comma Separated...") {
+                            exportPartCsv = true
+                        }
+                    }
                     Menu("Sets") {
                         Button("Comma Separated...") {
                             exportSetCsv = true
@@ -155,6 +163,21 @@ struct Brick_CollectorApp: App {
             return CollectionFile(parts: parts, sets: sets, inventories: inventories)
         } catch {
             return CollectionFile()
+        }
+    }
+    
+    func exportPartCsvFile() -> TextFile {
+        let context = persistenceController.container.viewContext
+        
+        do {
+            let parts = try context.fetch(Part.fetchRequest())
+            let fields = "\"element\",\"quantity\", \"name\",\"color id\"\n"
+            let content = parts.reduce(fields) { csv, part in
+                return csv + "\"\(part.id ?? "")\",\"\(part.quantity)\",\"\(part.name?.replacingOccurrences(of: "\"", with: "\\\"") ?? "")\",\"\(part.colorId)\"\n"
+            }
+            return TextFile(content)
+        } catch {
+            return TextFile()
         }
     }
     
