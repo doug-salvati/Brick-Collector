@@ -20,10 +20,10 @@ struct Brick_CollectorApp: App {
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpated:Int = 0
     @State private var importXML = false
-    @State private var importLegacy = false
     @State private var importBcc = false
     @State private var exportBcc = false
     @State private var exportSetCsv = false
+    @State private var exportPartCsv = false
     
     var body: some Scene {
         WindowGroup {
@@ -41,15 +41,15 @@ struct Brick_CollectorApp: App {
                         }
                 })
                 HStack {}
-                .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
+                    .fileImporter(isPresented: $importXML, allowedContentTypes: [.xml], onCompletion: importBricklinkXml)
                 HStack {}
-                .fileImporter(isPresented: $importLegacy, allowedContentTypes: [.commaSeparatedText], onCompletion: importLegacy)
+                    .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
                 HStack {}
-                .fileImporter(isPresented: $importBcc, allowedContentTypes: [.data], onCompletion: importBcc)
+                    .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
                 HStack {}
-                .fileExporter(isPresented: $exportBcc, document: exportBccFile(), contentType: .data, defaultFilename: "collection.bcc", onCompletion: finishExport)
+                    .fileExporter(isPresented: $exportPartCsv, document: exportPartCsvFile(), contentType: .commaSeparatedText, defaultFilename: "elements.csv", onCompletion: finishExport)
                 HStack {}
-                .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
+                    .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
             }
         }.commands {
             CommandGroup(replacing: .newItem) {
@@ -67,6 +67,11 @@ struct Brick_CollectorApp: App {
                     Button("Brick Collector...") {
                         exportBcc = true
                     }.keyboardShortcut("E")
+                    Menu("Parts") {
+                        Button("Comma Separated...") {
+                            exportPartCsv = true
+                        }
+                    }
                     Menu("Sets") {
                         Button("Comma Separated...") {
                             exportSetCsv = true
@@ -107,56 +112,41 @@ struct Brick_CollectorApp: App {
     func importBricklinkXml(result: Result<URL, Error>) {
         do {
             let selectedFile: URL = try result.get()
-            let input = try Data(contentsOf: selectedFile)
-            let parser = BrickLinkParser(data: input)
-            if parser.parse() {
-                appManager.importing = true
-                appManager.activeTab = .parts
-                appManager.showAdditionModal = true
-                DispatchQueue(label: "loadXML").async {
-                    Task {
-                        await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+            if (selectedFile.startAccessingSecurityScopedResource()) {
+                let input = try Data(contentsOf: selectedFile)
+                let parser = BrickLinkParser(data: input)
+                if parser.parse() {
+                    appManager.importing = true
+                    appManager.activeTab = .parts
+                    appManager.showAdditionModal = true
+                    DispatchQueue(label: "loadXML").async {
+                        Task {
+                            await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
+                        }
                     }
+                } else {
+                    appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
                 }
             } else {
-                appManager.issueError(type: .ImportFile, description: "Import \(selectedFile.relativePath.split(separator: "/").last ?? "Bricklink XML")", error: .FileReadError)
+                appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
             }
+            selectedFile.stopAccessingSecurityScopedResource();
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import BrickLink XML", error: .FileReadError)
-        }
-    }
-    
-    func importLegacy(result: Result<URL, Error>) {
-        do {
-            let selectedFile: URL = try result.get()
-            let data = try String(contentsOf: selectedFile)
-            var rows = data.split(whereSeparator: \.isNewline)
-            rows.remove(at: 0)
-            print("Found \(rows.count) parts to add")
-            print("====================")
-            var counter = 1
-            rows.forEach { row in
-                let values = row.split(separator: ";")
-                let id = String(values[0])
-                let name = String(values[1])
-                let color = String(values[2])
-                let img = String(values[3])
-                let loose = String(values[5])
-                print("[\(counter)/\(rows.count)] \(loose)x \(color) \(id) \(name)")
-                appManager.insertCustomPart(id: id, name: name, color: color, img: img, loose: loose)
-                counter += 1
-            }
-        } catch {
-            appManager.issueError(type: .ImportFile, description: "Import Legacy Data", error: .FileReadError)
         }
     }
     
     func importBcc(result: Result<URL, Error>) {
         do {
             let selectedFile: URL = try result.get()
-            let data = try Data(contentsOf: selectedFile)
-            let collection = try JSONDecoder().decode(IOCollection.self, from: data)
-            appManager.upsertCollection(collection: collection)
+            if (selectedFile.startAccessingSecurityScopedResource()) {
+                let data = try Data(contentsOf: selectedFile)
+                let collection = try JSONDecoder().decode(IOCollection.self, from: data)
+                appManager.upsertCollection(collection: collection)
+            } else {
+                appManager.issueError(type: .ImportFile, description: "Import Brick Collector Data", error: .FileReadError)
+            }
+            selectedFile.stopAccessingSecurityScopedResource();
         } catch {
             appManager.issueError(type: .ImportFile, description: "Import Brick Collector Data", error: .FileReadError)
         }
@@ -173,6 +163,21 @@ struct Brick_CollectorApp: App {
             return CollectionFile(parts: parts, sets: sets, inventories: inventories)
         } catch {
             return CollectionFile()
+        }
+    }
+    
+    func exportPartCsvFile() -> TextFile {
+        let context = persistenceController.container.viewContext
+        
+        do {
+            let parts = try context.fetch(Part.fetchRequest())
+            let fields = "\"element\",\"quantity\", \"name\",\"color id\"\n"
+            let content = parts.reduce(fields) { csv, part in
+                return csv + "\"\(part.id ?? "")\",\"\(part.quantity)\",\"\(part.name?.replacingOccurrences(of: "\"", with: "\\\"") ?? "")\",\"\(part.colorId)\"\n"
+            }
+            return TextFile(content)
+        } catch {
+            return TextFile()
         }
     }
     

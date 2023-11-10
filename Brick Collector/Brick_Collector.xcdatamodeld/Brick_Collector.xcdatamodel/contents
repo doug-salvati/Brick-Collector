@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B2082" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="InventoryItem" representedClassName="InventoryItem" syncable="YES" codeGenerationType="class">
         <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="kit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kit" inverseName="inventory" inverseEntity="Kit"/>
         <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="usages" inverseEntity="Part"/>
     </entity>
+    <entity name="ItemImage" representedClassName="ItemImage" syncable="YES" codeGenerationType="class">
+        <attribute name="binary" attributeType="Binary"/>
+        <relationship name="kit" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kit" inverseName="img" inverseEntity="Kit"/>
+        <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="img" inverseEntity="Part"/>
+    </entity>
     <entity name="Kit" representedClassName="Kit" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String"/>
-        <attribute name="img" optional="YES" attributeType="Binary"/>
         <attribute name="missingFigs" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="partCount" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="theme" attributeType="String"/>
+        <relationship name="img" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemImage" inverseName="kit" inverseEntity="ItemImage"/>
         <relationship name="inventory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InventoryItem" inverseName="kit" inverseEntity="InventoryItem"/>
     </entity>
     <entity name="Part" representedClassName="Part" syncable="YES" codeGenerationType="class">
         <attribute name="colorId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="String"/>
-        <attribute name="img" optional="YES" attributeType="Binary"/>
         <attribute name="loose" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="quantity" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="img" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemImage" inverseName="part" inverseEntity="ItemImage"/>
         <relationship name="usages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InventoryItem" inverseName="part" inverseEntity="InventoryItem"/>
     </entity>
     <entity name="PartColor" representedClassName="PartColor" syncable="YES" codeGenerationType="class">

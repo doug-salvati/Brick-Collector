@@ -55,6 +55,9 @@ struct Preferences: View {
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
+    @AppStorage("useActualPartQuantities")
+    private var useActualPartQuantities:Bool = true
+    
     @AppStorage("defaultAddSetMethod")
     private var defaultAddSetMethod:AddSetMethod = .byID
     
@@ -71,6 +74,8 @@ struct Preferences: View {
     private var homepage:AppView = .parts
     
     @EnvironmentObject private var appManager: AppManager
+    
+    @State private var showDataManagement:Bool = false
     
     var body: some View {
         let loadingColors:Bool = appManager.isLoading(type: .UpdateColors)
@@ -90,6 +95,21 @@ struct Preferences: View {
                         Text("Parts").tag(AppView.parts)
                         Text("Sets").tag(AppView.sets)
                     }.frame(width:250)
+                }
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showDataManagement = true
+                    }) {
+                        Text("Manage Data...")
+                    }.sheet(isPresented: $showDataManagement) {
+                        DataManagement(isPresented: $showDataManagement){
+                            appManager.activeSetFeature = nil
+                            appManager.activePartFeature = nil
+                            appManager.activeTab = .parts
+                            appManager.deleteAll()
+                        }.padding()
+                    }
                 }
             }
             .padding()
@@ -143,8 +163,11 @@ struct Preferences: View {
                     Text("by part ID").tag(AddPartMethod.byMoldAndColor)
                     Text("by set").tag(AddPartMethod.bySet)
                 }.frame(width:250)
+                Toggle(isOn: $useActualPartQuantities) {
+                    Text("Use actual part quantities when adding by set")
+                }
             }.tabItem {
-                Label("Parts", systemImage: "puzzlepiece")
+                Label("Parts", systemImage: "batteryblock")
             }.frame(width: 600, height: 100)
             Form {
                 Picker("Sort collection by:", selection: $setSort) {

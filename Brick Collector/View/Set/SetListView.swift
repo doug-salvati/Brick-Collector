@@ -77,8 +77,8 @@ struct SetListView: View {
                                 HStack {
                                     ZStack {
                                         Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
-                                        if set.img != nil {
-                                            Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit().padding()
+                                        if set.img?.binary != nil {
+                                            Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit().padding()
                                         } else {
                                             Image(systemName: "photo").foregroundColor(.black)
                                         }

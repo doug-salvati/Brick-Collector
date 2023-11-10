@@ -48,7 +48,6 @@ struct ContentView: View {
                                 ProgressView().scaleEffect(2/3).offset(x: 0, y: -4)
                             }
                         }.popover(isPresented: $showQueue,
-                                  attachmentAnchor: .point(.bottom),
                                   arrowEdge: .bottom) {
                             AppOperationQueueView()
                         }
@@ -58,9 +57,9 @@ struct ContentView: View {
                     ZStack {
                         TextField("Filter", text: $activeFilter
                         ).textFieldStyle(.roundedBorder).frame(width: 200)
+                        if (!activeFilter.isEmpty) {
                         HStack {
                             Spacer()
-                            if (!activeFilter.isEmpty) {
                                 Button(action: {
                                     activeFilter = ""
                                 }) {

@@ -66,8 +66,8 @@ struct SetFeatureView: View {
                     Spacer()
                 }
                 Spacer()
-                if set.img != nil {
-                    Image(nsImage: NSImage(data: set.img!)!).resizable().scaledToFit()
+                if set.img?.binary != nil {
+                    Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit()
                 }
                 if quantityChange != 0 {
                     Button("Save") {

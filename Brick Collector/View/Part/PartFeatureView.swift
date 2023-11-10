@@ -81,8 +81,8 @@ struct PartFeatureView: View {
                     Spacer()
                 }
                 Spacer()
-                if part.img != nil {
-                    Image(nsImage: NSImage(data: part.img!)!).resizable().scaledToFit()
+                if part.img?.binary != nil {
+                    Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit()
                 }
                 if quantityChange != 0 {
                     Button("Save") {

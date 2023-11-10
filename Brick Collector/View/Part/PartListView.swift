@@ -69,8 +69,8 @@ struct PartListView: View {
                                 HStack {
                                     ZStack {
                                         Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
-                                        if part.img != nil && NSImage(data: part.img!) != nil {
-                                            Image(nsImage: NSImage(data: part.img!)!).resizable().scaledToFit().padding()
+                                        if part.img?.binary != nil && NSImage(data: part.img!.binary!) != nil {
+                                            Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit().padding()
                                         } else {
                                             Image(systemName: "photo").foregroundColor(.black)
                                         }

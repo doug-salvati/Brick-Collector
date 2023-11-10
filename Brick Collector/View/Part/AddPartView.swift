@@ -31,6 +31,7 @@ struct AddPartView: View {
     @EnvironmentObject private var manager: RebrickableManager
     @EnvironmentObject private var appManager: AppManager
     @Environment(\.managedObjectContext) private var viewContext
+    @AppStorage("useActualPartQuantities") private var useActualPartQuantities:Bool = true
     @State private var input:String = ""
     @State private var suffix:String = "-1"
     @State private var method:AddPartMethod = AddPartMethod(rawValue: UserDefaults.standard.string(forKey: "defaultAddPartMethod") ?? "byElement") ?? .byElement
@@ -147,9 +148,9 @@ struct AddPartView: View {
                 return ElementSelection(value: part, selected: appManager.importing || method != .byMoldAndColor, quantity: 1)
             }
         }.onReceive(manager.$searchedInventory) { newInventory in
-            self.selections = (newInventory.result ?? []).map { item in
+            self.selections = consolidate(inventory: newInventory.result ?? []).map { item in
                 let element = RBElement(id: item.id, img: item.part.img ?? nil, name: item.part.name, colorId: item.color.id)
-                return ElementSelection(value: element, selected: appManager.importing || method != .byMoldAndColor, quantity: item.quantity)
+                return ElementSelection(value: element, selected: appManager.importing || method != .byMoldAndColor, quantity: useActualPartQuantities ? item.quantity : 1)
             }
         }
     }
