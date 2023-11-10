@@ -55,6 +55,9 @@ struct Preferences: View {
     @AppStorage("defaultAddPartMethod")
     private var defaultAddPartMethod:AddPartMethod = .byElement
     
+    @AppStorage("useActualPartQuantities")
+    private var useActualPartQuantities:Bool = true
+    
     @AppStorage("defaultAddSetMethod")
     private var defaultAddSetMethod:AddSetMethod = .byID
     
@@ -160,8 +163,11 @@ struct Preferences: View {
                     Text("by part ID").tag(AddPartMethod.byMoldAndColor)
                     Text("by set").tag(AddPartMethod.bySet)
                 }.frame(width:250)
+                Toggle(isOn: $useActualPartQuantities) {
+                    Text("Use actual part quantities when adding by set")
+                }
             }.tabItem {
-                Label("Parts", systemImage: "puzzlepiece")
+                Label("Parts", systemImage: "batteryblock")
             }.frame(width: 600, height: 100)
             Form {
                 Picker("Sort collection by:", selection: $setSort) {
