@@ -74,9 +74,9 @@ struct PartFeatureView: View {
                             Button("Decrease") {
                                 quantity = max(max(Int(setCount), 1), quantity - 1)
                             }.hidden().keyboardShortcut("[").frame(width:0)
-                            Text(part.name!).font(.title2)
+                            Text(part.name!).font(.title2).textSelection(.enabled)
                         }
-                        Text("Element #\(part.id!)").italic()
+                        Text("Element #\(part.id!)").italic().textSelection(.enabled)
                         ColorNameView(colorId: Int(part.colorId))
                         HStack {
                             Image(systemName: "pencil.and.list.clipboard")

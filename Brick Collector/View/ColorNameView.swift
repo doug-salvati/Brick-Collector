@@ -50,7 +50,7 @@ struct ColorNameView: View {
             case .IconAndLabel:
                 HStack {
                     icon
-                    label
+                    label.textSelection(.enabled)
                 }
             }
         }

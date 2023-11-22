@@ -60,9 +60,9 @@ struct SetFeatureView: View {
                                 quantity = max(1, quantity - 1)
                             }.hidden().keyboardShortcut("[").frame(width:0)
                             SetIdView(setId: set.id!, fontWeight: .bold)
-                            Text(set.name!).font(.title2)
+                            Text(set.name!).font(.title2).textSelection(.enabled)
                         }
-                        Text(set.theme!)
+                        Text(set.theme!).textSelection(.enabled)
                         HStack {
                             Image(systemName: "pencil.and.list.clipboard")
                             TextField("Notes", text: $notes).padding(.trailing)
