@@ -12,6 +12,7 @@ struct PartFeatureView: View {
 
     var part:Part
     @State private var quantity = 0
+    @State private var notes = ""
     private var quantityChange:Int64 {
         Int64(quantity) - part.quantity
     }
@@ -77,6 +78,10 @@ struct PartFeatureView: View {
                         }
                         Text("Element #\(part.id!)").italic()
                         ColorNameView(colorId: Int(part.colorId))
+                        HStack {
+                            Image(systemName: "pencil.and.list.clipboard")
+                            TextField("Notes", text: $notes).padding(.trailing)
+                        }
                     }
                     Spacer()
                 }
@@ -84,9 +89,10 @@ struct PartFeatureView: View {
                 if part.img?.binary != nil {
                     Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit()
                 }
-                if quantityChange != 0 {
+                if quantityChange != 0 || notes != part.notes ?? "" {
                     Button("Save") {
                         appManager.adjustQuantity(of: part, by: quantityChange)
+                        appManager.setNotes(of: part, to: notes)
                     }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
@@ -97,8 +103,11 @@ struct PartFeatureView: View {
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(part.quantity)
+            notes = part.notes ?? ""
         }.onChange(of: part.quantity) { newQuantity in
             quantity = Int(newQuantity)
+        }.onChange(of: part.notes) { newNotes in
+            notes = newNotes ?? ""
         }
     }
 }

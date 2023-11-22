@@ -15,6 +15,7 @@ struct IOSet: Codable {
     var img:Data?
     var quantity:Int
     var missingFigs:Bool?
+    var notes:String?
     
     init(kit:Kit) {
         id = kit.id ?? ""
@@ -24,5 +25,6 @@ struct IOSet: Codable {
         img = kit.img?.binary
         quantity = Int(kit.quantity)
         missingFigs = kit.missingFigs
+        notes = kit.notes
     }
 }

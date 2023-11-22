@@ -12,6 +12,7 @@ struct SetFeatureView: View {
 
     var set:Kit
     @State private var quantity = 0
+    @State private var notes = ""
     private var quantityChange:Int64 {
         Int64(quantity) - set.quantity
     }
@@ -62,6 +63,10 @@ struct SetFeatureView: View {
                             Text(set.name!).font(.title2)
                         }
                         Text(set.theme!)
+                        HStack {
+                            Image(systemName: "pencil.and.list.clipboard")
+                            TextField("Notes", text: $notes).padding(.trailing)
+                        }
                     }
                     Spacer()
                 }
@@ -69,9 +74,10 @@ struct SetFeatureView: View {
                 if set.img?.binary != nil {
                     Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit()
                 }
-                if quantityChange != 0 {
+                if quantityChange != 0 || notes != set.notes ?? "" {
                     Button("Save") {
                         appManager.adjustQuantity(of: set, by: quantityChange)
+                        appManager.setNotes(of: set, to: notes)
                     }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
@@ -89,8 +95,11 @@ struct SetFeatureView: View {
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(set.quantity)
+            notes = set.notes ?? ""
         }.onChange(of: set.quantity) { newQuantity in
             quantity = Int(newQuantity)
+        }.onChange(of: set.notes) { newNotes in
+            notes = newNotes ?? ""
         }
     }
 }

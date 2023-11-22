@@ -15,6 +15,8 @@ enum AppOperationType {
     case DownloadImagesForSet
     case UpdatePartQuantity
     case UpdateSetQuantity
+    case UpdatePartNotes
+    case UpdateSetNotes
     case DeleteSet
     case DeletePart
     case DeleteAll
@@ -509,6 +511,7 @@ class AppManager: ObservableObject {
                 newImage.binary = part.img
                 newPart.img = newImage
             }
+            newPart.notes = part.notes
             return newPart
         }
     }
@@ -533,6 +536,7 @@ class AppManager: ObservableObject {
                 newKit.img = newImage
             }
             newKit.missingFigs = kit.missingFigs ?? false
+            newKit.notes = kit.notes
             return newKit
         }
     }
@@ -567,6 +571,38 @@ class AppManager: ObservableObject {
             item.part!.quantity += change * item.quantity
         }
 
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    func setNotes(of part:Part, to notes:String) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdatePartNotes, description: "Updating notes of part \(part.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        part.notes = notes
+    
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+                self.finish(opId: id)
+            } catch let error {
+                self.finish(opId: id, withError: error)
+            }
+        }
+    }
+    
+    func setNotes(of kit:Kit, to notes:String) {
+        let id:UUID = self.queue(op: AppOperation(type: .UpdateSetNotes, description: "Updating notes of set \(kit.id!)"))
+        let context = PersistenceController.shared.container.viewContext
+
+        kit.notes = notes
+    
         DispatchQueue.main.async {
             do {
                 try context.save()

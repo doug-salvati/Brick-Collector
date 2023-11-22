@@ -14,6 +14,7 @@ struct IOPart: Codable {
     var loose:Int
     var colorId:Int
     var img:Data?
+    var notes:String?
     
     init(part:Part) {
         id = part.id ?? ""
@@ -22,5 +23,6 @@ struct IOPart: Codable {
         loose = Int(part.loose)
         colorId = Int(part.colorId)
         img = part.img?.binary
+        notes = part.notes
     }
 }
