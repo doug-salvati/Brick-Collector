@@ -33,6 +33,11 @@ enum SetSortOption: String {
     case theme = "theme"
 }
 
+enum InventoryViewChoice:String {
+    case icons="Icons"
+    case list="List"
+}
+
 struct Preferences: View {
     @AppStorage("apiKey")
     private var apiKey:String = ""

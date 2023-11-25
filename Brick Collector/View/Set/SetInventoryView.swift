@@ -10,6 +10,7 @@ import SwiftUI
 struct SetInventoryView: View {
     @EnvironmentObject private var appManager: AppManager
     var inventory:[InventoryItem]
+    var style:InventoryViewChoice = .icons
     @AppStorage("partSort")
     private var partSort:PartSortOption = .color
     
@@ -29,31 +30,60 @@ struct SetInventoryView: View {
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
         ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach(inventory.sorted(by: getSortMethod())) { item in
-                    let part = item.part!
-                    Button(action: {
-                        appManager.activeTab = .parts
-                        appManager.activePartFeature = part
-                    }) {
-                        ZStack {
-                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
-                            if part.img?.binary != nil {
-                                Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit().padding()
-                            } else {
-                                Image(systemName: "photo").foregroundColor(.black)
-                            }
-                            VStack {
-                                Spacer()
+            if (style == .icons) {
+                LazyVGrid(columns: columns, spacing: 6) {
+                    ForEach(inventory.sorted(by: getSortMethod())) { item in
+                        let part = item.part!
+                        Button(action: {
+                            appManager.activeTab = .parts
+                            appManager.activePartFeature = part
+                        }) {
+                            ZStack {
+                                Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                                if part.img?.binary != nil {
+                                    Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit().padding()
+                                } else {
+                                    Image(systemName: "photo").foregroundColor(.black)
+                                }
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        Text("\(item.quantity)x").fontWeight(.bold).colorInvert().padding()
+                                        Spacer()
+                                    }
+                                }
+                            }.clipped().aspectRatio(1, contentMode: .fit)
+                        }
+                    }
+                }.buttonStyle(.plain)
+            } else {
+                LazyVStack  {
+                    ForEach(inventory.sorted(by: getSortMethod())) { item in
+                        let part = item.part!
+                        VStack {
+                            Button(action: {
+                                appManager.activeTab = .parts
+                                appManager.activePartFeature = part
+                            }) {
                                 HStack {
-                                    Text("\(item.quantity)x").fontWeight(.bold).colorInvert().padding()
+                                    Text("\(item.quantity)x").fontWeight(.bold).padding(.trailing)
+                                    if part.img?.binary != nil {
+                                        Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().frame(width: 50, height: 50)
+                                    } else {
+                                        Image(systemName: "photo").resizable().frame(width: 50, height: 50).foregroundColor(.black).background(.white)
+                                    }                                
+                                    VStack(alignment: .leading) {
+                                        Text(part.name ?? "Unknown Name")
+                                        ColorNameView(type: .IconAndLabel, colorId: Int(part.colorId))
+                                    }.padding(.leading)
                                     Spacer()
                                 }
-                            }
-                        }.clipped().aspectRatio(1, contentMode: .fit)
+                            }.buttonStyle(.plain)
+                            Divider()
+                        }
                     }
                 }
-            }.buttonStyle(.plain)
+            }
         }
     }
 }

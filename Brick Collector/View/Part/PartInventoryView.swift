@@ -12,6 +12,7 @@ struct PartInventoryView: View {
     var inventory:[InventoryItem]
     @AppStorage("setSort")
     private var setSort:SetSortOption = .id
+    var style:InventoryViewChoice = .icons
 
     private func getSortMethod() -> (InventoryItem, InventoryItem) -> Bool {
         switch setSort {
@@ -31,31 +32,63 @@ struct PartInventoryView: View {
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
         ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach(inventory.sorted(by: getSortMethod())) { usage in
-                    let set = usage.kit!
-                    Button(action: {
-                        appManager.activeTab = .sets
-                        appManager.activeSetFeature = set
-                    }) {
-                        ZStack {
-                            Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
-                            if set.img?.binary != nil {
-                                Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit().padding()
-                            } else {
-                                Image(systemName: "photo").foregroundColor(.black)
-                            }
-                            VStack {
-                                Spacer()
+            if style == .icons {
+                LazyVGrid(columns: columns, spacing: 6) {
+                    ForEach(inventory.sorted(by: getSortMethod())) { usage in
+                        let set = usage.kit!
+                        Button(action: {
+                            appManager.activeTab = .sets
+                            appManager.activeSetFeature = set
+                        }) {
+                            ZStack {
+                                Rectangle().aspectRatio(1, contentMode: .fill).foregroundColor(.white)
+                                if set.img?.binary != nil {
+                                    Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit().padding()
+                                } else {
+                                    Image(systemName: "photo").foregroundColor(.black)
+                                }
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        let setQuantity = usage.kit!.quantity
+                                        let suffix = setQuantity > 1 ? " (\(setQuantity))" : ""
+                                        Text("\(usage.quantity)x in \(set.id!)\(suffix)").fontWeight(.bold).colorInvert().padding()
+                                        Spacer()
+                                    }
+                                }
+                            }.clipped().aspectRatio(1, contentMode: .fit)
+                        }.buttonStyle(.plain)
+                    }
+                }
+            } else {
+                LazyVStack  {
+                    ForEach(inventory.sorted(by: getSortMethod())) { usage in
+                        let set = usage.kit!
+                        VStack {
+                            Button(action: {
+                                appManager.activeTab = .sets
+                                appManager.activeSetFeature = set
+                            }) {
                                 HStack {
-                                    let setQuantity = usage.kit!.quantity
-                                    let suffix = setQuantity > 1 ? " (\(setQuantity))" : ""
-                                    Text("\(usage.quantity)x in \(set.id!)\(suffix)").fontWeight(.bold).colorInvert().padding()
+                                    Text("\(usage.quantity)x in").fontWeight(.bold).padding(.trailing)
+                                    if set.img?.binary != nil {
+                                        Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().frame(width: 50, height: 50)
+                                    } else {
+                                        Image(systemName: "photo").resizable().frame(width: 50, height: 50).foregroundColor(.black).background(.white)
+                                    }
+                                    VStack(alignment: .leading) {
+                                        Text(set.name ?? "Unknown Name")
+                                        HStack {
+                                            Image(systemName: "tag")
+                                            Text(set.theme ?? "Unknown Theme")
+                                        }
+                                    }.padding(.leading)
                                     Spacer()
                                 }
-                            }
-                        }.clipped().aspectRatio(1, contentMode: .fit)
-                    }.buttonStyle(.plain)
+                            }.buttonStyle(.plain)
+                            Divider()
+                        }
+                    }
                 }
             }
         }
