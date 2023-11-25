@@ -15,6 +15,7 @@ struct DataManagement: View {
     var body: some View {
         VStack {
             Text("Delete Collection").bold().font(.system(.title2)).foregroundStyle(.red)
+            Divider()
             HStack {
                 Image(systemName: "exclamationmark.octagon").font(.system(size: 30)).foregroundStyle(.red)
                 VStack {

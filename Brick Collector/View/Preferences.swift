@@ -99,7 +99,7 @@ struct Preferences: View {
                     Picker("Home page:", selection: $homepage) {
                         Text("Parts").tag(AppView.parts)
                         Text("Sets").tag(AppView.sets)
-                    }.frame(width:250)
+                    }.frame(width:150)
                 }
                 HStack {
                     Spacer()
@@ -173,7 +173,7 @@ struct Preferences: View {
                 }
             }.tabItem {
                 Label("Parts", systemImage: "batteryblock")
-            }.frame(width: 600, height: 100)
+            }.frame(width: 600, height: 120)
             Form {
                 Picker("Sort collection by:", selection: $setSort) {
                     Text("ID").tag(SetSortOption.id)
