@@ -12,11 +12,13 @@ struct SetFeatureView: View {
 
     var set:Kit
     @State private var quantity = 0
+    @State private var notes = ""
     private var quantityChange:Int64 {
         Int64(quantity) - set.quantity
     }
     @State private var showWarning = false
     @State private var showPopover = false
+    @AppStorage("inventoryViewChoice") private var viewChoice:InventoryViewChoice = .icons
     
     var body: some View {
         let inventory = set.inventory!.allObjects as! [InventoryItem]
@@ -58,10 +60,20 @@ struct SetFeatureView: View {
                             Button("Decrease") {
                                 quantity = max(1, quantity - 1)
                             }.hidden().keyboardShortcut("[").frame(width:0)
-                            SetIdView(setId: set.id!, fontWeight: .bold)
-                            Text(set.name!).font(.title2)
+                            VStack(alignment: .leading) {
+                                Text(set.name!).font(.title).textSelection(.enabled)
+                                SetIdView(setId: set.id!, fontWeight: .bold)
+                            }
                         }
-                        Text(set.theme!)
+                        Divider()
+                        HStack {
+                            Image(systemName: "tag")
+                            Text(set.theme!).textSelection(.enabled)
+                        }
+                        HStack {
+                            Image(systemName: "pencil.and.list.clipboard")
+                            TextField("Notes", text: $notes)
+                        }
                     }
                     Spacer()
                 }
@@ -69,28 +81,39 @@ struct SetFeatureView: View {
                 if set.img?.binary != nil {
                     Image(nsImage: NSImage(data: set.img!.binary!)!).resizable().scaledToFit()
                 }
-                if quantityChange != 0 {
+                if quantityChange != 0 || notes != set.notes ?? "" {
                     Button("Save") {
                         appManager.adjustQuantity(of: set, by: quantityChange)
+                        appManager.setNotes(of: set, to: notes)
                     }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {
                 HStack {
-                    Text("\(set.partCount) parts (\(inventory.count) unique)").fontWeight(.bold)
+                    VStack(alignment: .leading) {
+                        Text("\(set.partCount) parts").font(.title)
+                        Text("\(inventory.count) unique").bold()
+                    }
+                    Spacer()
+                    Picker(selection: $viewChoice, label: Text("View").hidden()) {
+                        Image(systemName: "square.grid.2x2").tag(InventoryViewChoice.icons)
+                        Image(systemName: "list.bullet").tag(InventoryViewChoice.list)
+                    }.pickerStyle(SegmentedPickerStyle()).fixedSize()
                     if (set.missingFigs) {
-                        Spacer()
                         Label("Set is missing minifigures.", systemImage: "person.crop.circle.badge.xmark").labelStyle(.iconOnly)                      .popover(isPresented: $showPopover) {
                             Text("Set is missing minifigures.").padding()
                         }.onHover { showPopover = $0}
                     }
                 }
-                SetInventoryView(inventory: inventory)
+                SetInventoryView(inventory: inventory, style: viewChoice)
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(set.quantity)
+            notes = set.notes ?? ""
         }.onChange(of: set.quantity) { newQuantity in
             quantity = Int(newQuantity)
+        }.onChange(of: set.notes) { newNotes in
+            notes = newNotes ?? ""
         }
     }
 }

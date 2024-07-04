@@ -15,7 +15,7 @@ struct SetIdView: View {
     var body: some View {
         let showSuffix = (suffixOption == .always) || (suffixOption == .notOne && String(setId.split(separator: "-").last ?? Substring(setId)) != "1")
         let displayId = showSuffix ? setId : String(setId.split(separator: "-").first ?? Substring(setId))
-        Text(displayId).fontWeight(fontWeight)
+        Text(displayId).fontWeight(fontWeight).textSelection(.enabled)
     }
 }
 

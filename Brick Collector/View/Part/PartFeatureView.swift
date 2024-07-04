@@ -12,12 +12,14 @@ struct PartFeatureView: View {
 
     var part:Part
     @State private var quantity = 0
+    @State private var notes = ""
     private var quantityChange:Int64 {
         Int64(quantity) - part.quantity
     }
     @State private var showWarning = false
     @State private var showTooltip = false
     @State private var showAddQuantityPopup = false
+    @AppStorage("inventoryViewChoice") private var viewChoice:InventoryViewChoice = .icons
     
     var body: some View {
         let looseCount = part.loose
@@ -73,10 +75,17 @@ struct PartFeatureView: View {
                             Button("Decrease") {
                                 quantity = max(max(Int(setCount), 1), quantity - 1)
                             }.hidden().keyboardShortcut("[").frame(width:0)
-                            Text(part.name!).font(.title2)
+                            VStack(alignment: .leading) {
+                                Text(part.name!).font(.title).textSelection(.enabled)
+                                Text(part.id!).bold().textSelection(.enabled)
+                            }
                         }
-                        Text("Element #\(part.id!)").italic()
-                        ColorNameView(colorId: Int(part.colorId))
+                        Divider()
+                        ColorNameView(colorId: Int(part.colorId)).padding([.leading], 2)
+                        HStack {
+                            Image(systemName: "pencil.and.list.clipboard")
+                            TextField("Notes", text: $notes)
+                        }
                     }
                     Spacer()
                 }
@@ -84,21 +93,34 @@ struct PartFeatureView: View {
                 if part.img?.binary != nil {
                     Image(nsImage: NSImage(data: part.img!.binary!)!).resizable().scaledToFit()
                 }
-                if quantityChange != 0 {
+                if quantityChange != 0 || notes != part.notes ?? "" {
                     Button("Save") {
                         appManager.adjustQuantity(of: part, by: quantityChange)
+                        appManager.setNotes(of: part, to: notes)
                     }.keyboardShortcut(.return, modifiers: []).padding()
                 }
             }.padding().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity).layoutPriority(1)
             VStack {
-                Text("\(setCount)x from \(usageCount) set\(usageCount == 1 ? "" : "s")").fontWeight(.bold)
-                Text("\(looseCount)x loose").fontWeight(.bold)
-                PartInventoryView(inventory: usages)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("\(setCount)x from \(usageCount) set\(usageCount == 1 ? "" : "s")").font(.title)
+                        Text("\(looseCount)x loose").bold()
+                    }
+                    Spacer()
+                    Picker(selection: $viewChoice, label: Text("View").hidden()) {
+                        Image(systemName: "square.grid.2x2").tag(InventoryViewChoice.icons)
+                        Image(systemName: "list.bullet").tag(InventoryViewChoice.list)
+                    }.pickerStyle(SegmentedPickerStyle()).fixedSize()
+                }
+                PartInventoryView(inventory: usages, style: viewChoice)
             }.padding().frame(minWidth: 200, maxWidth: 600, maxHeight: .infinity)
         }.onAppear {
             quantity = Int(part.quantity)
+            notes = part.notes ?? ""
         }.onChange(of: part.quantity) { newQuantity in
             quantity = Int(newQuantity)
+        }.onChange(of: part.notes) { newNotes in
+            notes = newNotes ?? ""
         }
     }
 }
