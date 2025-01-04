@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SwiftUI
+@preconcurrency import SwiftUI
 
 enum AppOperationType {
     case UpdateColors
@@ -60,8 +60,8 @@ extension AppError: LocalizedError {
     }
 }
 
-
-class AppManager: ObservableObject {
+// TODO: update to Swift 6 concurrency
+class AppManager: ObservableObject, @unchecked Sendable {
     private var manager:RebrickableManager
     @Published var queue:[UUID:AppOperation] = [:]
     @Published var activeTab:AppView = .parts

@@ -11,7 +11,6 @@ import SwiftUI
 enum Globals {
     static let rebrickableManager = RebrickableManager()
 }
-var appManager = AppManager(using: Globals.rebrickableManager)
 
 @main
 struct Brick_CollectorApp: App {
@@ -24,6 +23,8 @@ struct Brick_CollectorApp: App {
     @State private var exportBcc = false
     @State private var exportSetCsv = false
     @State private var exportPartCsv = false
+    
+    var appManager = AppManager(using: Globals.rebrickableManager)
     
     var body: some Scene {
         WindowGroup {
