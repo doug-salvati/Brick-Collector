@@ -71,7 +71,7 @@ struct ContentView: View {
                 }
                 ToolbarItem {
                     Button(action: {
-                        appManager.showAdditionModal = true
+                        appManager.setActiveModal(.add)
                     }) {
                         switch appManager.activeTab {
                         case .parts: Label("Add Part", systemImage: "plus")
@@ -80,13 +80,19 @@ struct ContentView: View {
                     }
                 }
             }
-        }.sheet(isPresented: $appManager.showAdditionModal) {
+        }.sheet(isPresented: $appManager.showModal) {
             switch appManager.activeTab {
             case .parts:
-                AddPartView(isPresented: $appManager.showAdditionModal)
-                    .frame(width: 300, height: 500, alignment: .center)
+                switch appManager.activeModal {
+                case .add:
+                    AddPartView(isPresented: $appManager.showModal)
+                        .frame(width: 300, height: 500, alignment: .center)
+                case .addCustom:
+                    AddCustomPartView(isPresented: $appManager.showModal)
+                        .frame(width: 300, height: 500, alignment: .center)
+                }
             case .sets:
-                AddSetView(isPresented: $appManager.showAdditionModal)
+                AddSetView(isPresented: $appManager.showModal)
                     .frame(width: 300, height: 500, alignment: .center)
             }
         }.onAppear {

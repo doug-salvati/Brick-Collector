@@ -25,11 +25,17 @@ struct ColorPicker: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \PartColor.id, ascending: true)],
         animation: .default)
     private var colors: FetchedResults<PartColor>
-    var availableColorIds:[Int]
+    var availableColorIds:[Int] = []
+    var showEveryColor = false
+    var showAll = true
+    var label:Text?
     @Binding
     var colorFilter:Int
     var availableColors:[PartColor] {
-        availableColorIds.filter { colorId in
+        if showEveryColor {
+            return colors.map { $0 }
+        }
+        return availableColorIds.filter { colorId in
             return colors.contains(where: {$0.id == colorId})
         }.map { colorId in
             return colors.first(where: {$0.id == colorId})!
@@ -72,7 +78,7 @@ struct ColorPicker: View {
     
     var body: some View {
         Picker(selection: $colorFilter, content: {
-            Text("All").tag(-999)
+            if showAll { Text("All").tag(-999) }
             ForEach(getSections(), id: \.self) {
                 Divider()
                 ForEach($0) {
@@ -80,7 +86,11 @@ struct ColorPicker: View {
                 }
             }
         }) {
-            Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)
+            if ((label) != nil) {
+                label
+            } else {
+                Label("Color", systemImage: "paintpalette.fill").labelStyle(.iconOnly)
+            }
         }.frame(width: 200)
     }
 }

@@ -118,12 +118,23 @@ struct AddPartView: View {
             HStack {
                 Button(action:{
                     manager.resetParts()
+                    manager.resetInventory()
                     isPresented = false
                     appManager.importing = false
                 }) {
                     Text("Cancel")
                 }.disabled(appManager.importing && loading)
                     .keyboardShortcut(.cancelAction)
+                Spacer()
+                if !appManager.importing {
+                    Button(action:{
+                        appManager.setActiveModal(.addCustom)
+                        manager.resetParts()
+                        manager.resetInventory()
+                    }) {
+                        Text("Custom...")
+                    }
+                }
                 Spacer()
                 Button(action:{
                     appManager.upsertParts(selections: selections.filter{$0.selected})

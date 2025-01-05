@@ -90,14 +90,19 @@ struct Brick_CollectorApp: App {
                 Divider()
             }
             CommandMenu("Collection") {
-                Button("Add Part") {
+                Button("Add Part...") {
                     appManager.activeTab = .parts
-                    appManager.showAdditionModal = true
+                    appManager.setActiveModal(.add)
                 }.keyboardShortcut("P")
-                Button("Add Set") {
+                Button("Add Set...") {
                     appManager.activeTab = .sets
-                    appManager.showAdditionModal = true
+                    appManager.setActiveModal(.add)
                 }.keyboardShortcut("S")
+                Divider()
+                Button("Add Custom Part...") {
+                    appManager.activeTab = .parts
+                    appManager.setActiveModal(.addCustom)
+                }
             }
             CommandGroup(replacing: .help) {
                 Link("Brick Collector Help", destination: URL(string: "https://github.com/doug-salvati/Brick-Collector/tree/main#readme")!)
@@ -119,7 +124,7 @@ struct Brick_CollectorApp: App {
                 if parser.parse() {
                     appManager.importing = true
                     appManager.activeTab = .parts
-                    appManager.showAdditionModal = true
+                    appManager.setActiveModal(.add)
                     DispatchQueue(label: "loadXML").async {
                         Task {
                             await Globals.rebrickableManager.searchParts(byBricklinkItems: parser.bricklinkItems)
