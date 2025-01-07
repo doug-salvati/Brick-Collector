@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SwiftUI
+@preconcurrency import SwiftUI
 
 enum AppOperationType {
     case UpdateColors
@@ -38,6 +38,11 @@ enum AppView:String {
     case parts = "Parts"
 }
 
+enum ModalType {
+    case add
+    case addCustom
+}
+
 enum AppError: Error {
     case DeletingUsedPart
     case FileReadError
@@ -60,14 +65,15 @@ extension AppError: LocalizedError {
     }
 }
 
-
-class AppManager: ObservableObject {
+// TODO: update to Swift 6 concurrency
+class AppManager: ObservableObject, @unchecked Sendable {
     private var manager:RebrickableManager
     @Published var queue:[UUID:AppOperation] = [:]
     @Published var activeTab:AppView = .parts
     @Published var activePartFeature:Part?
     @Published var activeSetFeature:Kit?
-    @Published var showAdditionModal:Bool = false
+    @Published var showModal:Bool = false
+    @Published var activeModal:ModalType = .add
     @Published var importing = false
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpdated:Int = 0
@@ -106,6 +112,11 @@ class AppManager: ObservableObject {
                 self.queue[opId] = op
             }
         }
+    }
+    
+    func setActiveModal(_ modal:ModalType) {
+        self.activeModal = modal
+        self.showModal = true
     }
     
     func dismiss(opId:UUID) {
@@ -249,54 +260,6 @@ class AppManager: ObservableObject {
             }
         }
 
-    }
-    
-    func insertCustomPart(id:String, name:String, color:String, img:String, loose:String) {
-        let context = PersistenceController.shared.container.viewContext
-        let newPart = Part(context: context)
-        newPart.id = id
-        newPart.name = name
-        let partCount = Int64(loose)
-        if partCount != nil {
-            newPart.quantity = partCount!
-            newPart.loose = partCount!
-        } else {
-            print(" - unable to read part quantity")
-            return
-        }
-        
-        let fetchRequest = PartColor.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "rebrickableName == %@", color)
-        do {
-            let result:PartColor? = try context.fetch(fetchRequest).first
-            if result != nil {
-                newPart.colorId = result!.id
-            } else {
-                print(" - unrecognized color")
-            }
-        } catch {
-            print(" - failed to search for color")
-        }
-        
-        if img != "no_img.png" {
-            let imgUrl = URL(fileURLWithPath: "/Library/Application Support/com.dsalvati.brickcollector/part_images/\(img)")
-            do {
-                let imgData = try Data(contentsOf: imgUrl)
-                let newImage = ItemImage(context: context)
-                newImage.binary = imgData
-                newPart.img = newImage
-            } catch {
-                print(" - unable to transfer image data, leaving as no img")
-            }
-        }
-        
-        DispatchQueue.main.async {
-            do {
-                try context.save()
-            } catch {
-                print("unable to save part \(id)")
-            }
-        }
     }
         
     func upsertSet(_ set:RBSet, containingParts parts:[RBInventoryItem], missingFigs:Bool) {

@@ -77,7 +77,7 @@ struct PartFeatureView: View {
                             }.hidden().keyboardShortcut("[").frame(width:0)
                             VStack(alignment: .leading) {
                                 Text(part.name!).font(.title).textSelection(.enabled)
-                                Text(part.id!).bold().textSelection(.enabled)
+                                Text(part.id!.hasPrefix("CUSTOM-") ? "Custom Part" : part.id!).bold().textSelection(.enabled)
                             }
                         }
                         Divider()
