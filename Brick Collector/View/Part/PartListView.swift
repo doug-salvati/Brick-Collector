@@ -32,6 +32,8 @@ struct PartListView: View {
     @State private var colorFilter:Int = -999
     @AppStorage("partSort")
     private var partSort:PartSortOption = .color
+    @AppStorage("zoomLevel")
+    private var zoomLevel:Int = 4
 
     private func getSortMethod() -> (Part, Part) -> Bool {
         switch partSort {
@@ -47,7 +49,7 @@ struct PartListView: View {
     }
     
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: zoomLevel)
         let partCount = parts.reduce(0) { $0 + $1.quantity }
         let colorIds = Set(parts.map { Int($0.colorId) })
         

@@ -18,6 +18,8 @@ struct Brick_CollectorApp: App {
     let persistenceController = PersistenceController.shared
     @AppStorage("colorsLastUpdated")
     private var colorsLastUpated:Int = 0
+    @AppStorage("zoomLevel")
+    private var zoomLevel:Int = 4
     @State private var importXML = false
     @State private var importBcc = false
     @State private var exportBcc = false
@@ -87,6 +89,16 @@ struct Brick_CollectorApp: App {
                 Button("Sets") {
                     appManager.activeTab = .sets
                 }.keyboardShortcut("2")
+                Divider()
+                Button("Larger Tiles") {
+                    zoomLevel = max(zoomLevel - 1, 1)
+                }.keyboardShortcut("+")
+                Button("Smaller Tiles") {
+                    zoomLevel = min(zoomLevel + 1, 8)
+                }.keyboardShortcut("-")
+                Button("Default Tiles") {
+                    zoomLevel = 4
+                }.keyboardShortcut("0")
                 Divider()
             }
             CommandMenu("Collection") {

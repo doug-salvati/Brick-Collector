@@ -31,6 +31,8 @@ struct SetListView: View {
     @State private var themeFilter:String = "All"
     @AppStorage("setSort")
     private var setSort:SetSortOption = .id
+    @AppStorage("zoomLevel")
+    private var zoomLevel:Int = 4
 
     private func getSortMethod() -> (Kit, Kit) -> Bool {
         switch setSort {
@@ -48,7 +50,7 @@ struct SetListView: View {
     }
 
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: zoomLevel)
         let setCount = sets.reduce(0) { $0 + $1.quantity }
         let themeNames = Set(sets.map { $0.theme! })
         VStack {
