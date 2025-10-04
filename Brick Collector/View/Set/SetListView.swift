@@ -55,19 +55,6 @@ struct SetListView: View {
         let themeNames = Set(sets.map { $0.theme! })
         VStack {
             if appManager.activeSetFeature == nil {
-                HStack {
-                    Picker(selection: $themeFilter, content: {
-                        Text("All").tag("All")
-                        Divider()
-                        ForEach(Array(themeNames).sorted(), id: \.self) {
-                            Text($0).tag($0)
-                        }
-                    }) {
-                        Label("Theme", systemImage: "tag").labelStyle(.iconOnly)
-                    }.frame(width: 200).padding()
-                    Spacer()
-                    Text("\(setCount) Sets").font(.title2).padding()
-                }
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(filteredSets.sorted(by: getSortMethod())) { set in
@@ -101,6 +88,22 @@ struct SetListView: View {
                                     }.clipped().aspectRatio(1, contentMode: .fit)
                                 }
                             }.buttonStyle(.plain)
+                        }
+                    }
+                }
+                .navigationTitle("\(setCount) Sets")
+                .toolbar {
+                    ToolbarItem {
+                        Menu {
+                            Picker("Theme", selection: $themeFilter) {
+                                Text("All").tag("All")
+                                Divider()
+                                ForEach(Array(themeNames).sorted(), id: \.self) {
+                                    Text($0).tag($0)
+                                }
+                            }.pickerStyle(.inline).labelsHidden()
+                        } label: {
+                            Label("Theme", systemImage: "tag")
                         }
                     }
                 }

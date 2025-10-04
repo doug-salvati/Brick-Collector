@@ -58,7 +58,7 @@ struct AddSetView: View {
                 Picker(selection: $method, label: Text("by:")) {
                     Text("ID").tag(AddSetMethod.byID)
                     Text("Name").tag(AddSetMethod.bySearchQuery)
-                }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
+                }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) {
                     manager.resetSet()
                     manager.resetInventory()
                 }

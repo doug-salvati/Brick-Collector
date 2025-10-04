@@ -110,11 +110,11 @@ struct SetFeatureView: View {
         }.onAppear {
             quantity = Int(set.quantity)
             notes = set.notes ?? ""
-        }.onChange(of: set.quantity) { newQuantity in
+        }.onChange(of: set.quantity) { oldQuantity, newQuantity in
             quantity = Int(newQuantity)
-        }.onChange(of: set.notes) { newNotes in
+        }.onChange(of: set.notes) { oldNotes, newNotes in
             notes = newNotes ?? ""
-        }
+        }.frame(maxHeight: .infinity)
     }
 }
 

@@ -54,64 +54,75 @@ struct Brick_CollectorApp: App {
                 HStack {}
                     .fileExporter(isPresented: $exportSetCsv, document: exportSetCsvFile(), contentType: .commaSeparatedText, defaultFilename: "sets.csv", onCompletion: finishExport)
             }
-        }.commands {
+        }
+        .commands {
             CommandGroup(replacing: .newItem) {
-                Menu("Import") {
-                    Button("Brick Collector...") {
+                Menu {
+                    Button("Brick Collector...", systemImage: "app") {
                         importBcc = true
                     }.keyboardShortcut("O")
-                    Menu("Parts") {
-                        Button("BrickLink XML...") {
+                    Menu {
+                        Button("BrickLink XML...", systemImage: "chevron.left.chevron.right") {
                             importXML = true
                         }
+                    } label: {
+                        Label("Parts", systemImage: "batteryblock")
                     }
+                } label: {
+                    Label("Import", systemImage: "square.and.arrow.down")
                 }
-                Menu("Export") {
-                    Button("Brick Collector...") {
+                Menu {
+                    Button("Brick Collector...", systemImage: "app") {
                         exportBcc = true
                     }.keyboardShortcut("E")
-                    Menu("Parts") {
-                        Button("Comma Separated...") {
+                    Menu {
+                        Button("Comma Separated...", systemImage: "rectangle.grid.3x3") {
                             exportPartCsv = true
                         }
+                    } label: {
+                        Label("Parts", systemImage: "batteryblock")
                     }
-                    Menu("Sets") {
-                        Button("Comma Separated...") {
+                    Menu {
+                        Button("Comma Separated...", systemImage: "rectangle.grid.3x3") {
                             exportSetCsv = true
                         }
+                    } label: {
+                        Label("Sets", systemImage: "shippingbox")
                     }
+                } label: {
+                    Label("Export", systemImage: "square.and.arrow.up")
                 }
             }
             CommandGroup(before: .toolbar) {
-                Button("Parts") {
+                Button("Parts", systemImage: "batteryblock") {
                     appManager.activeTab = .parts
                 }.keyboardShortcut("1")
-                Button("Sets") {
+                Button("Sets", systemImage: "shippingbox") {
                     appManager.activeTab = .sets
                 }.keyboardShortcut("2")
                 Divider()
-                Button("Larger Tiles") {
+                Button("Larger Tiles", systemImage: "square") {
                     zoomLevel = max(zoomLevel - 1, 1)
                 }.keyboardShortcut("+")
-                Button("Smaller Tiles") {
+                Button("Smaller Tiles", systemImage: "square.grid.2x2") {
                     zoomLevel = min(zoomLevel + 1, 8)
                 }.keyboardShortcut("-")
-                Button("Default Tiles") {
+                Button("Default Tiles", systemImage: "arrow.clockwise") {
                     zoomLevel = 4
                 }.keyboardShortcut("0")
                 Divider()
             }
             CommandMenu("Collection") {
-                Button("Add Part...") {
+                Button("Add Part...", systemImage: "batteryblock") {
                     appManager.activeTab = .parts
                     appManager.setActiveModal(.add)
                 }.keyboardShortcut("P")
-                Button("Add Set...") {
+                Button("Add Set...", systemImage: "shippingbox") {
                     appManager.activeTab = .sets
                     appManager.setActiveModal(.add)
                 }.keyboardShortcut("S")
                 Divider()
-                Button("Add Custom Part...") {
+                Button("Add Custom Part...", systemImage: "paintbrush.pointed") {
                     appManager.activeTab = .parts
                     appManager.setActiveModal(.addCustom)
                 }

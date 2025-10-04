@@ -117,9 +117,9 @@ struct PartFeatureView: View {
         }.onAppear {
             quantity = Int(part.quantity)
             notes = part.notes ?? ""
-        }.onChange(of: part.quantity) { newQuantity in
+        }.onChange(of: part.quantity) { oldQuantity, newQuantity in
             quantity = Int(newQuantity)
-        }.onChange(of: part.notes) { newNotes in
+        }.onChange(of: part.notes) { oldNotes, newNotes in
             notes = newNotes ?? ""
         }
     }

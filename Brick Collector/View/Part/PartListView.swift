@@ -53,14 +53,9 @@ struct PartListView: View {
         let partCount = parts.reduce(0) { $0 + $1.quantity }
         let colorIds = Set(parts.map { Int($0.colorId) })
         
-        VStack {
+        ScrollView {
             if appManager.activePartFeature == nil {
-                HStack {
-                    ColorPicker(availableColorIds: Array(colorIds), colorFilter: $colorFilter).padding()
-                    Spacer()
-                    Text("\(partCount) Parts (\(parts.count) Unique)").font(.title2).padding()
-                }
-                ScrollView {
+                VStack {
                     LazyVGrid(columns: columns) {
                         ForEach(filteredParts.sorted(by: getSortMethod())) { part in
                             Button(action: {
@@ -90,6 +85,17 @@ struct PartListView: View {
                                     }.clipped().aspectRatio(1, contentMode: .fit)
                                 }
                             }.buttonStyle(.plain)
+                        }
+                    }
+                }
+                .navigationTitle("\(partCount) Parts")
+                .navigationSubtitle("\(parts.count) Unique")
+                .toolbar {
+                    ToolbarItem {
+                        Menu {
+                            ColorPicker(availableColorIds: Array(colorIds), colorFilter: $colorFilter).padding().pickerStyle(.inline)
+                        } label: {
+                            Label("Color", systemImage: "paintpalette.fill")
                         }
                     }
                 }
