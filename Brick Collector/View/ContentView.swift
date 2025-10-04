@@ -12,7 +12,6 @@ struct ContentView: View {
     @EnvironmentObject private var appManager: AppManager
     
     @State private var showQueue = false
-    @State private var focusFilter = false
     @State private var activeFilter = ""
     
     @AppStorage("homepage")
@@ -29,14 +28,11 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker(selection: $appManager.activeTab, label: Text("View")) {
-                        Text("Parts").tag(AppView.parts)
-                        Text("Sets").tag(AppView.sets)
+                        Label("Parts", systemImage: "batteryblock").tag(AppView.parts)
+                        Label("Sets", systemImage: "shippingbox").tag(AppView.sets)
                     }.pickerStyle(SegmentedPickerStyle())
                 }
-                ToolbarItem {
-                    Spacer()
-                }
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     let showQueueButton = appManager.isLoading() || appManager.hasError()
                     if showQueueButton {
                         Button(action: {
@@ -45,7 +41,7 @@ struct ContentView: View {
                             if appManager.hasError() {
                                 Label("Status", systemImage: "exclamationmark.triangle")
                             } else {
-                                ProgressView().scaleEffect(2/3).offset(x: 0, y: -4)
+                                ProgressView().scaleEffect(2/3)
                             }
                         }.popover(isPresented: $showQueue,
                                   arrowEdge: .bottom) {
@@ -53,23 +49,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                ToolbarItem {
-                    ZStack {
-                        TextField("Filter", text: $activeFilter
-                        ).textFieldStyle(.roundedBorder).frame(width: 200)
-                        if (!activeFilter.isEmpty) {
-                        HStack {
-                            Spacer()
-                                Button(action: {
-                                    activeFilter = ""
-                                }) {
-                                    Label("Clear Filter", systemImage: "xmark.circle.fill").padding(8)
-                                }.buttonStyle(.borderless)
-                            }
-                        }
-                    }
-                }
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     Button(action: {
                         appManager.setActiveModal(.add)
                     }) {
@@ -80,20 +60,21 @@ struct ContentView: View {
                     }
                 }
             }
+            .searchable(text: $activeFilter, prompt: "Search")
         }.sheet(isPresented: $appManager.showModal) {
             switch appManager.activeTab {
             case .parts:
                 switch appManager.activeModal {
                 case .add:
                     AddPartView(isPresented: $appManager.showModal)
-                        .frame(width: 300, height: 500, alignment: .center)
+                        .frame(width: 350, height: 500, alignment: .center)
                 case .addCustom:
                     AddCustomPartView(isPresented: $appManager.showModal)
-                        .frame(width: 300, height: 500, alignment: .center)
+                        .frame(width: 350, height: 500, alignment: .center)
                 }
             case .sets:
                 AddSetView(isPresented: $appManager.showModal)
-                    .frame(width: 300, height: 500, alignment: .center)
+                    .frame(width: 350, height: 500, alignment: .center)
             }
         }.onAppear {
             if homepage != .parts {

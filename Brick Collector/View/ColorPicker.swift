@@ -63,7 +63,7 @@ struct ColorPicker: View {
         sortedColors().forEach { color in
             if separateBasicColors && basicColors.contains(color.bricklinkName ?? "continue") {
                 basicSection.append(color)
-            } else if separateTransColors && (color.bricklinkName ?? "continue").hasPrefix("Trans-") {
+            } else if separateTransColors && (color.bricklinkName ?? "continue").contains("Trans-") {
                 transSection.append(color)
             } else {
                 otherSection.append(color)

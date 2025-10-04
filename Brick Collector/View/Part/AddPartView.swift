@@ -72,7 +72,7 @@ struct AddPartView: View {
                         Text("Element ID").tag(AddPartMethod.byElement)
                         Text("Part ID").tag(AddPartMethod.byMoldAndColor)
                         Text("Set").tag(AddPartMethod.bySet)
-                    }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) { method in
+                    }.pickerStyle(SegmentedPickerStyle()).onChange(of: method) {
                         manager.resetParts()
                         manager.resetInventory()
                     }
@@ -175,3 +175,4 @@ struct AddPartView_Previews: PreviewProvider {
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
+

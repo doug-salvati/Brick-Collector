@@ -31,6 +31,8 @@ struct SetListView: View {
     @State private var themeFilter:String = "All"
     @AppStorage("setSort")
     private var setSort:SetSortOption = .id
+    @AppStorage("zoomLevel")
+    private var zoomLevel:Int = 4
 
     private func getSortMethod() -> (Kit, Kit) -> Bool {
         switch setSort {
@@ -48,24 +50,11 @@ struct SetListView: View {
     }
 
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+        let columns: [GridItem] = Array(repeating: .init(.flexible()), count: zoomLevel)
         let setCount = sets.reduce(0) { $0 + $1.quantity }
         let themeNames = Set(sets.map { $0.theme! })
         VStack {
             if appManager.activeSetFeature == nil {
-                HStack {
-                    Picker(selection: $themeFilter, content: {
-                        Text("All").tag("All")
-                        Divider()
-                        ForEach(Array(themeNames).sorted(), id: \.self) {
-                            Text($0).tag($0)
-                        }
-                    }) {
-                        Label("Theme", systemImage: "tag").labelStyle(.iconOnly)
-                    }.frame(width: 200).padding()
-                    Spacer()
-                    Text("\(setCount) Sets").font(.title2).padding()
-                }
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(filteredSets.sorted(by: getSortMethod())) { set in
@@ -99,6 +88,22 @@ struct SetListView: View {
                                     }.clipped().aspectRatio(1, contentMode: .fit)
                                 }
                             }.buttonStyle(.plain)
+                        }
+                    }
+                }
+                .navigationTitle("\(setCount) Sets")
+                .toolbar {
+                    ToolbarItem {
+                        Menu {
+                            Picker("Theme", selection: $themeFilter) {
+                                Text("All").tag("All")
+                                Divider()
+                                ForEach(Array(themeNames).sorted(), id: \.self) {
+                                    Text($0).tag($0)
+                                }
+                            }.pickerStyle(.inline).labelsHidden()
+                        } label: {
+                            Label("Theme", systemImage: "tag")
                         }
                     }
                 }
