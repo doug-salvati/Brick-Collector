@@ -20,8 +20,7 @@ struct PartListView: View {
             (
                 filter == nil ||
                 filter == "" ||
-                $0.name!.filterable().contains(filter!.filterable()) ||
-                filter!.filterable() == "jang" && ["4261572", "4621635", "6035345"].contains($0.id!)
+                $0.name!.filterable().contains(filter!.filterable())
             ) && (
                 colorFilter == -999 ||
                 colorFilter == $0.colorId
@@ -53,9 +52,9 @@ struct PartListView: View {
         let partCount = parts.reduce(0) { $0 + $1.quantity }
         let colorIds = Set(parts.map { Int($0.colorId) })
         
-        ScrollView {
+        VStack {
             if appManager.activePartFeature == nil {
-                VStack {
+                ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(filteredParts.sorted(by: getSortMethod())) { part in
                             Button(action: {

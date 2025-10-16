@@ -114,7 +114,7 @@ struct SetFeatureView: View {
             quantity = Int(newQuantity)
         }.onChange(of: set.notes) { oldNotes, newNotes in
             notes = newNotes ?? ""
-        }.frame(maxHeight: .infinity)
+        }
     }
 }
 
